@@ -4,6 +4,7 @@
   "description": "",
   "private": true,
   "scripts": {
+    "start-watch": "concurrently \"babel --watch --presets @babel/preset-react src\\main\\resources\\preprocessed --out-dir src\\main\\resources\\static\" \"npx webpack --watch\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +26,7 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
+    "concurrently": "^5.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   }

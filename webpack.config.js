@@ -7,6 +7,5 @@ module.exports = {
         filename: 'bundle.js',
         path: path.resolve(__dirname, staticDir)
     },
-    mode: 'development',
-    watch: true
+    mode: 'none'
 }
