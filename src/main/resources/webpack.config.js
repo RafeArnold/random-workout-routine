@@ -7,5 +7,13 @@ module.exports = {
         filename: 'bundle.js',
         path: path.resolve(__dirname, staticDirName)
     },
-    mode: 'none'
-}
+    mode: 'none',
+    module: {
+        rules: [
+            {
+                test: /\.css$/i,
+                use: ['style-loader','css-loader']
+            }
+        ]
+    }
+};
