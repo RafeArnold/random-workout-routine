@@ -5,7 +5,8 @@
         <title>Random Workout Routine</title>
     </head>
     <body>
-        <div id="exerciseDisplay">
+        <button id="startBtn" style="display: none">start</button>
+        <div id="exerciseDisplay" style="display: none">
             <p>
                 <label for="exerciseName">exercise:</label>
                 <input id="exerciseName" readonly type="text"/>
@@ -15,7 +16,7 @@
                 <input id="repCount" readonly type="number"/>
             </p>
             <button id="nextBtn">next</button>
-            <button id="clearBtn">clear</button>
+            <button id="resetBtn">reset</button>
             <p>set count: <span id="setCount"></span></p>
         </div>
         <script src="index.js"></script>

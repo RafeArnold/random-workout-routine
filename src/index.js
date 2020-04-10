@@ -17,47 +17,37 @@ var currentExercise;
 
 document.onreadystatechange = function () {
     if (document.readyState === 'complete') {
-        load();
-        start();
+        loadListeners();
+        if (storageAvailable()) {
+            loadStorage();
+            displayExercise();
+        } else {
+            displayStartBtn();
+        }
     }
 };
 
-var load = function () {
-    document.onkeypress = function(event) {
-        if (event.code === 'Enter' || event.code === 'Space') {
+var loadListeners = function () {
+    document.onkeypress = function (event) {
+        if (event.code === 'Enter') {
+            event.preventDefault();
             next();
         }
     };
-    var nextBtn = document.getElementById('nextBtn');
-    nextBtn.onclick = function () {
-        next();
-        nextBtn.blur();
-    };
-    var clearBtn = document.getElementById('clearBtn');
-    clearBtn.onclick = function () {
-        clear();
-        clearBtn.blur();
-    };
-};
-
-var start = function () {
-    if (storageAvailable()) {
-        loadStorage();
-    } else {
-        next();
-    }
-    display();
+    document.getElementById('startBtn').onclick = next;
+    document.getElementById('nextBtn').onclick = next;
+    document.getElementById('resetBtn').onclick = reset;
 };
 
 var next = function () {
     setCount++;
-    currentExercise = nextExercise(currentGroupIndex);
+    currentExercise = nextExercise();
     incrementCurrentGroupIndex();
     saveStorage();
-    display();
+    displayExercise();
 };
 
-var nextExercise = function (currentGroupIndex) {
+var nextExercise = function () {
     var currentGroup = routine[currentGroupIndex];
     var exerciseOption = getRandomExerciseOption(currentGroup);
     return getExerciseFromOption(exerciseOption);
@@ -80,26 +70,24 @@ var incrementCurrentGroupIndex = function () {
     currentGroupIndex %= routine.length;
 };
 
-var display = function () {
-    displayExercise();
-    displaySetCount();
-};
-
 var displayExercise = function () {
+    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('exerciseDisplay').style.display = null;
     document.getElementById('exerciseName').value = currentExercise.name;
     document.getElementById('repCount').value = currentExercise.repCount;
-};
-
-var displaySetCount = function () {
     document.getElementById('setCount').innerText = setCount;
 };
 
-var clear = function () {
+var displayStartBtn = function () {
+    document.getElementById('exerciseDisplay').style.display = 'none';
+    document.getElementById('startBtn').style.display = null;
+};
+
+var reset = function () {
     currentGroupIndex = 0;
     setCount = 0;
     localStorage.clear();
-    next();
-    display();
+    displayStartBtn();
 };
 
 var storageGroupIndexName = 'groupIndex';
