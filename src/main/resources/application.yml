@@ -4,4 +4,5 @@ spring:
     url: jdbc:postgresql://localhost:5432/random-workout-routine
     username: random-workout-routine
     password: random-workout-routine
+    initialization-mode: always
   jpa.hibernate.ddl-auto: create-drop
