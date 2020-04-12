@@ -1,23 +1,27 @@
 package net.ddns.rarnold.randomworkoutroutine.service;
 
+import lombok.RequiredArgsConstructor;
 import net.ddns.rarnold.randomworkoutroutine.model.Exercise;
+import net.ddns.rarnold.randomworkoutroutine.model.ExerciseOption;
+import net.ddns.rarnold.randomworkoutroutine.repository.ExerciseOptionRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class ExerciseService {
-
-    private static final String[] exerciseNames =
-            {"sit ups", "push ups", "tricep dips", "rope climbs", "monkey bars", "bicep curls"};
-    private static final int repCountLowerBound = 5;
-    private static final int repCountUpperBound = 20;
 
     private static final Random random = new Random();
 
+    private final ExerciseOptionRepository exerciseOptionRepository;
+
     public Exercise getRandomExercise() {
-        String name = exerciseNames[random.nextInt(exerciseNames.length)];
-        int repCount = random.nextInt(repCountUpperBound + 1 - repCountLowerBound) + repCountLowerBound;
-        return new Exercise(name, repCount);
+        List<ExerciseOption> options = exerciseOptionRepository.findAll();
+        ExerciseOption option = options.get(random.nextInt(options.size()));
+        return new Exercise(option.getName(),
+                random.nextInt(option.getRepCountUpperBound() + 1 - option.getRepCountLowerBound()) +
+                        option.getRepCountLowerBound());
     }
 }
