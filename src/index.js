@@ -17,13 +17,18 @@ var currentExercise;
 
 document.onreadystatechange = function () {
     if (document.readyState === 'complete') {
-        loadListeners();
-        if (storageAvailable()) {
-            loadStorage();
-            displayExercise();
-        } else {
-            displayStartBtn();
-        }
+        load();
+    }
+};
+
+var load = function () {
+    loadListeners();
+    if (storageAvailable()) {
+        loadStorage();
+        displayExercise();
+    } else {
+        resetForm();
+        displayForm();
     }
 };
 
@@ -34,9 +39,11 @@ var loadListeners = function () {
             next();
         }
     };
-    document.getElementById('startBtn').onclick = next;
+    document.getElementById('startBtn').onclick = start;
     document.getElementById('nextBtn').onclick = next;
     document.getElementById('resetBtn').onclick = reset;
+    document.getElementById('addGroup').onclick = addGroup;
+    document.getElementById('resetFormBtn').onclick = reset;
 };
 
 var next = function () {
@@ -71,25 +78,27 @@ var incrementCurrentGroupIndex = function () {
 };
 
 var displayExercise = function () {
-    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById(formId).style.display = 'none';
     document.getElementById('exerciseDisplay').style.display = null;
     document.getElementById('exerciseName').value = currentExercise.name;
     document.getElementById('repCount').value = currentExercise.repCount;
     document.getElementById('setCount').innerText = setCount;
 };
 
-var displayStartBtn = function () {
+var displayForm = function () {
     document.getElementById('exerciseDisplay').style.display = 'none';
-    document.getElementById('startBtn').style.display = null;
+    document.getElementById(formId).style.display = null;
 };
 
 var reset = function () {
     currentGroupIndex = 0;
     setCount = 0;
     localStorage.clear();
-    displayStartBtn();
+    resetForm();
+    displayForm();
 };
 
+var storageRoutineName = 'routine';
 var storageGroupIndexName = 'groupIndex';
 var storageSetCountName = 'setCount';
 var storageExerciseName = 'exercise';
@@ -99,6 +108,10 @@ var storageAvailable = function () {
 };
 
 var loadStorage = function () {
+    var storageRoutine = localStorage.getItem(storageRoutineName);
+    if (storageRoutine) {
+        routine = JSON.parse(storageRoutine);
+    }
     var storageGroupIndex = localStorage.getItem(storageGroupIndexName);
     if (storageGroupIndex) {
         currentGroupIndex = parseInt(storageGroupIndex);
@@ -114,7 +127,123 @@ var loadStorage = function () {
 };
 
 var saveStorage = function () {
+    localStorage.setItem(storageRoutineName, JSON.stringify(routine));
     localStorage.setItem(storageGroupIndexName, currentGroupIndex);
     localStorage.setItem(storageSetCountName, setCount);
     localStorage.setItem(storageExerciseName, JSON.stringify(currentExercise));
 };
+
+var formId = 'optionForm';
+var groupInputClassName = 'groupInput';
+var optionInputClassName = 'exerciseOptionInput';
+var deleteGroupClassName = 'deleteGroup';
+var deleteOptionClassName = 'deleteOption';
+var addOptionClassName = 'addOption';
+var optionsAfterClassName = 'optionsAfter';
+var exerciseNameInputClassName = 'exerciseNameInput';
+var repCountLowerInputClassName = 'repCountLowerBound';
+var repCountUpperInputClassName = 'repCountUpperBound';
+
+var start = function () {
+    routine = parseForm();
+    saveStorage();
+    next();
+};
+
+var parseForm = function () {
+    var routine = [];
+    var groups = getGroups();
+    for (var group of groups) {
+        routine.push(parseGroup(group));
+    }
+    return routine;
+};
+
+var parseGroup = function (groupNode) {
+    var group = [];
+    var options = getOptions(groupNode);
+    for (var option of options) {
+        group.push(parseOption(option));
+    }
+    return group;
+};
+
+var parseOption = function (optionNode) {
+    var name = optionNode.querySelector('input.' + exerciseNameInputClassName).value;
+    var repCountLowerBound = parseInt(optionNode.querySelector('input.' + repCountLowerInputClassName).value);
+    var repCountUpperBound = parseInt(optionNode.querySelector('input.' + repCountUpperInputClassName).value);
+    return {name: name, repCountLowerBound: repCountLowerBound, repCountUpperBound: repCountUpperBound};
+};
+
+var resetForm = function () {
+    var groups = getGroups();
+    for (var i = groups.length - 1; i >= 0; i--) {
+        groups[i].remove();
+    }
+    addGroup();
+};
+
+var addGroup = function () {
+    var groups = getGroups();
+    var bottomGroup = groups[groups.length - 1];
+    var formNode = document.getElementById(formId);
+    if (bottomGroup) {
+        formNode.insertBefore(getGroupNode(), bottomGroup.nextSibling);
+    } else {
+        formNode.prepend(getGroupNode());
+    }
+};
+
+var addOption = function (groupNode) {
+    var options = getOptions(groupNode);
+    var bottomOption = options[options.length - 1];
+    if (bottomOption) {
+        groupNode.insertBefore(getOptionNode(), bottomOption.nextSibling);
+    } else {
+        groupNode.insertBefore(getOptionNode(), groupNode.querySelector('.' + optionsAfterClassName).nextSibling);
+    }
+};
+
+var getOptions = function (groupNode) {
+    return groupNode.querySelectorAll('div.' + optionInputClassName);
+};
+
+var getGroups = function () {
+    return document.querySelectorAll('#' + formId + ' div.' + groupInputClassName);
+};
+
+var getGroupNode = function () {
+    var div = getNode(groupInputClassName, groupHtml, deleteGroupClassName);
+    div.append(getOptionNode());
+    var addOptionBtn = div.querySelector('button.' + addOptionClassName);
+    addOptionBtn.onclick = function () {
+        addOption(div);
+    };
+    return div;
+};
+
+var getOptionNode = function () {
+    return getNode(optionInputClassName, exerciseOptionHtml, deleteOptionClassName);
+};
+
+var getNode = function (inputClassName, html, deleteClassName) {
+    var div = document.createElement('div');
+    div.className = inputClassName;
+    div.innerHTML = html;
+    var deleteBtn = div.querySelector('button.' + deleteClassName);
+    deleteBtn.onclick = function () {
+        div.remove();
+    };
+    return div;
+};
+
+var exerciseOptionHtml =
+    '<p><label>exercise: <input class="' + exerciseNameInputClassName + '" type="text"/></label> ' +
+    '<label>lower bound: <input class="' + repCountLowerInputClassName + '" type="number" min="1"/></label> ' +
+    '<label>upper bound: <input class="' + repCountUpperInputClassName + '" type="number" min="1"/></label> ' +
+    '<button type="button" class="' + deleteOptionClassName + '">delete</button></p>';
+
+var groupHtml =
+    '<h1 class="' + optionsAfterClassName + '">group</h1>' +
+    '<button type="button" class="' + deleteGroupClassName + '">delete group</button> ' +
+    '<button type="button" class="' + addOptionClassName + '">add exercise</button>';
