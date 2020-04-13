@@ -11,6 +11,6 @@ public class Routine {
     @Id
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "routine")
     private List<Group> groups;
 }
