@@ -19,7 +19,7 @@ public class Group {
     @MapsId("routineName")
     private Routine routine;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<ExerciseOption> exerciseOptions;
 
     public Group(Routine routine, int index, List<ExerciseOption> exerciseOptions) {

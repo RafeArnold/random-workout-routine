@@ -11,6 +11,6 @@ public class Routine {
     @Id
     private String name;
 
-    @OneToMany(mappedBy = "routine")
+    @OneToMany(mappedBy = "routine", fetch = FetchType.EAGER)
     private List<Group> groups;
 }
