@@ -6,7 +6,7 @@ import net.ddns.rarnold.randomworkoutroutine.service.ExerciseOptionService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/group")
+@RequestMapping("/exercise")
 @RequiredArgsConstructor
 public class ExerciseOptionController {
 
