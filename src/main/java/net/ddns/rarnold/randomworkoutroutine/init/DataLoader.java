@@ -34,10 +34,13 @@ public class DataLoader implements ApplicationRunner {
         for (ExerciseOption option : options) {
             optionRepository.save(option);
         }
-        Routine routine = new Routine();
-        routine.setName("mix");
+        List<Group> groups = new ArrayList<>();
+        groups.add(new Group("A", Arrays.asList(options.get(0), options.get(1), options.get(2))));
+        groups.add(new Group("B", Arrays.asList(options.get(3), options.get(4), options.get(5))));
+        for (Group group : groups) {
+            groupRepository.save(group);
+        }
+        Routine routine = new Routine("mix", groups);
         routineRepository.save(routine);
-        groupRepository.save(new Group(routine, 0, Arrays.asList(options.get(0), options.get(1), options.get(2))));
-        groupRepository.save(new Group(routine, 1, Arrays.asList(options.get(3), options.get(4), options.get(5))));
     }
 }
