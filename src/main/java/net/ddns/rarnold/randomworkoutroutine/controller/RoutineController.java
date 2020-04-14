@@ -21,6 +21,11 @@ public class RoutineController {
         routineService.save(routine);
     }
 
+    @DeleteMapping("/delete/{name}")
+    public void delete(@PathVariable String name) {
+        routineService.delete(name);
+    }
+
     @PostMapping("/start/{name}")
     public Exercise start(HttpSession httpSession, @PathVariable String name) {
         httpSession.setAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME, new RoutineSession(routineService.getByName(name)));
