@@ -14,4 +14,8 @@ public class ExerciseOptionService {
     public void save(ExerciseOption option) {
         repository.save(option);
     }
+
+    public void delete(String name) {
+        repository.deleteById(name);
+    }
 }

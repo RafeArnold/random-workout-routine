@@ -24,4 +24,8 @@ public class RoutineService {
     public void save(Routine routine) {
         repository.save(routine);
     }
+
+    public void delete(String name) {
+        repository.deleteById(name);
+    }
 }

@@ -14,4 +14,8 @@ public class GroupService {
     public void save(Group group) {
         repository.save(group);
     }
+
+    public void delete(String name) {
+        repository.deleteById(name);
+    }
 }
