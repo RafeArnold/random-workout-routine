@@ -17,7 +17,7 @@ public class RoutineController {
     private final RoutineService routineService;
 
     @PostMapping("/save")
-    public void save(Routine routine) {
+    public void save(@RequestBody Routine routine) {
         routineService.save(routine);
     }
 
