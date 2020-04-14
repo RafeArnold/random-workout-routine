@@ -1,6 +1,6 @@
 import React from 'react';
 import Exercise from './Exercise';
-import getNextExercise from "../util/ExerciseUtils";
+import getNextExercise from "../util/RoutineUtils";
 
 class Routine extends React.Component {
     constructor(props) {
