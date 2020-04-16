@@ -1,11 +1,11 @@
 const path = require('path');
-const staticDirName = 'static';
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 module.exports = {
-    entry: './src/main/resources-preprocessed/' + staticDirName + '/index.js',
+    entry: './src/main/resources-preprocessed/static/index.js',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, '../resources/' + staticDirName)
+        path: path.resolve(__dirname, '../resources/static/bundle')
     },
     mode: 'none',
     module: {
@@ -19,5 +19,8 @@ module.exports = {
                 loader: 'babel-loader'
             }
         ]
-    }
+    },
+    plugins: [
+        new CleanWebpackPlugin()
+    ]
 };

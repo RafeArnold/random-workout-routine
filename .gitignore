@@ -34,5 +34,4 @@ out/
 ### Node.js ###
 node_modules/
 
-!src/main/resources/static/index.html
-src/main/resources/static/
+src/main/resources/static/bundle/
