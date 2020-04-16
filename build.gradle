@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.2.6.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'com.github.node-gradle.node' version '2.2.3'
 	id 'java'
 	id 'war'
 }
@@ -35,3 +36,11 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+
+npm_run_build {
+	inputs.files fileTree('src/main/resources-preprocessed')
+	inputs.file 'package.json'
+	outputs.dir 'src/main/resources/static'
+}
+
+processResources.dependsOn npm_run_build
