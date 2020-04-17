@@ -15,8 +15,12 @@ module.exports = {
                 use: ['style-loader', 'css-loader']
             },
             {
-                test: /\.js$/,
+                test: /\.js$/i,
                 loader: 'babel-loader'
+            },
+            {
+                test: /\.(eot|otf|svg|ttf|woff)$/i,
+                loader: 'file-loader'
             }
         ]
     },
