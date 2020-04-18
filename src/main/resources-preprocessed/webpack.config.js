@@ -5,7 +5,7 @@ module.exports = {
     entry: './src/main/resources-preprocessed/static/index.js',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, '../resources/static/bundle')
+        path: path.resolve(__dirname, '../resources/static')
     },
     mode: 'none',
     module: {
