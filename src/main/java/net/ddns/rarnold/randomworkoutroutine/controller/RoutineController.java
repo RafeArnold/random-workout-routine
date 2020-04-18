@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/routine")
+@RequestMapping("/api/routine")
 @RequiredArgsConstructor
 public class RoutineController {
 
