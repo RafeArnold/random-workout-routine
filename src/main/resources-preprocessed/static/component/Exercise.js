@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 class Exercise extends React.Component {
     render() {
