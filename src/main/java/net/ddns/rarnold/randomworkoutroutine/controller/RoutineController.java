@@ -26,6 +26,11 @@ public class RoutineController {
         routineService.delete(name);
     }
 
+    @GetMapping("/active")
+    public boolean isActive(HttpSession httpSession) {
+        return httpSession.getAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME) != null;
+    }
+
     @PostMapping("/start/{name}")
     public Exercise start(HttpSession httpSession, @PathVariable String name) {
         httpSession.setAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME, new RoutineSession(routineService.getByName(name)));
