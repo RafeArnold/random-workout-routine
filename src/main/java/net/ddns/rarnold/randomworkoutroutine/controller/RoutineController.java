@@ -44,6 +44,13 @@ public class RoutineController {
         return routineSession.nextExercise();
     }
 
+    @PostMapping("/current")
+    public Exercise getCurrentExercise(HttpSession httpSession) {
+        RoutineSession routineSession = getRoutineSession(httpSession);
+        Exercise current = routineSession.getCurrentExercise();
+        return current != null ? current : routineSession.nextExercise();
+    }
+
     @GetMapping("/set-count")
     public int getSetCount(HttpSession httpSession) {
         RoutineSession routineSession = getRoutineSession(httpSession);
