@@ -8,6 +8,7 @@ import net.ddns.rarnold.randomworkoutroutine.session.RoutineSession;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/routine")
@@ -52,6 +53,11 @@ public class RoutineController {
     @PostMapping("/stop")
     public void stop(HttpSession httpSession) {
         httpSession.removeAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME);
+    }
+
+    @GetMapping("/names")
+    public Set<String> getNames() {
+        return routineService.getNames();
     }
 
     private static RoutineSession getRoutineSession(HttpSession httpSession) {

@@ -6,6 +6,7 @@ import net.ddns.rarnold.randomworkoutroutine.repository.RoutineRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +28,9 @@ public class RoutineService {
 
     public void delete(String name) {
         repository.deleteById(name);
+    }
+
+    public Set<String> getNames() {
+        return repository.findAllNames();
     }
 }
