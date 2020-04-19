@@ -1,5 +1,5 @@
 import React from "react";
-import Exercise from "./Exercise";
+import Exercise from "../component/Exercise";
 import {getNextExercise} from "../util/RoutineUtils";
 
 class Routine extends React.Component {

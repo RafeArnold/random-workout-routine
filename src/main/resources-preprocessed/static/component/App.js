@@ -1,10 +1,10 @@
 import React from "react";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
-import Edit from "./Edit";
-import Home from "./Home";
+import Edit from "../page/Edit";
+import Home from "../page/Home";
 import NavBar from "./NavBar";
-import Routine from "./Routine";
-import RoutineSelect from "./RoutineSelect";
+import Routine from "../page/Routine";
+import RoutineSelect from "../page/RoutineSelect";
 import {continueRoutinePath, editRoutinePath, newRoutinePath} from "../util/RoutineUtils";
 
 class App extends React.Component {
