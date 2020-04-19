@@ -26,8 +26,8 @@ public class RoutineController {
         routineService.delete(name);
     }
 
-    @GetMapping("/active")
-    public boolean isActive(HttpSession httpSession) {
+    @GetMapping("/in-progress")
+    public boolean isInProgress(HttpSession httpSession) {
         return httpSession.getAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME) != null;
     }
 
