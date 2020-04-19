@@ -49,6 +49,11 @@ public class RoutineController {
         return routineSession.getSetCount();
     }
 
+    @PostMapping("/stop")
+    public void stop(HttpSession httpSession) {
+        httpSession.removeAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME);
+    }
+
     private static RoutineSession getRoutineSession(HttpSession httpSession) {
         return (RoutineSession) httpSession.getAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME);
     }
