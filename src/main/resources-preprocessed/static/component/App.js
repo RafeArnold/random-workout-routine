@@ -4,7 +4,8 @@ import Edit from "./Edit";
 import Home from "./Home";
 import NavBar from "./NavBar";
 import Routine from "./Routine";
-import {editRoutinePath, newRoutinePath} from "../util/RoutineUtils";
+import RoutineSelect from "./RoutineSelect";
+import {continueRoutinePath, editRoutinePath, newRoutinePath} from "../util/RoutineUtils";
 
 class App extends React.Component {
     render() {
@@ -12,11 +13,14 @@ class App extends React.Component {
             <BrowserRouter>
                 <NavBar/>
                 <Switch>
+                    <Route path={continueRoutinePath}>
+                        <Routine/>
+                    </Route>
                     <Route path={editRoutinePath}>
                         <Edit/>
                     </Route>
                     <Route path={newRoutinePath}>
-                        <Routine/>
+                        <RoutineSelect/>
                     </Route>
                     <Route path="/">
                         <Home/>
