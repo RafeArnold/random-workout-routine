@@ -4,6 +4,7 @@ import Edit from "./Edit";
 import Home from "./Home";
 import NavBar from "./NavBar";
 import Routine from "./Routine";
+import {editRoutinePath, newRoutinePath} from "../util/RoutineUtils";
 
 class App extends React.Component {
     render() {
@@ -11,10 +12,10 @@ class App extends React.Component {
             <BrowserRouter>
                 <NavBar/>
                 <Switch>
-                    <Route path="/edit">
+                    <Route path={editRoutinePath}>
                         <Edit/>
                     </Route>
-                    <Route path="/routine">
+                    <Route path={newRoutinePath}>
                         <Routine/>
                     </Route>
                     <Route path="/">

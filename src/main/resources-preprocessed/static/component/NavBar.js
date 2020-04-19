@@ -1,5 +1,6 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
+import {editRoutinePath, newRoutinePath} from "../util/RoutineUtils";
 
 class NavBar extends React.Component {
     render() {
@@ -11,10 +12,10 @@ class NavBar extends React.Component {
                         <NavLink to="/" className="nav-link" exact>Home</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink to="/routine" className="nav-link">Start a Routine</NavLink>
+                        <NavLink to={newRoutinePath} className="nav-link">Start a new Routine</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink to="/edit" className="nav-link">Edit a Routine</NavLink>
+                        <NavLink to={editRoutinePath} className="nav-link">Edit a Routine</NavLink>
                     </li>
                 </ul>
             </nav>
