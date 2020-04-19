@@ -12,20 +12,22 @@ class App extends React.Component {
         return (
             <BrowserRouter>
                 <NavBar/>
-                <Switch>
-                    <Route path={continueRoutinePath}>
-                        <Routine/>
-                    </Route>
-                    <Route path={editRoutinePath}>
-                        <Edit/>
-                    </Route>
-                    <Route path={newRoutinePath}>
-                        <RoutineSelect/>
-                    </Route>
-                    <Route path="/">
-                        <Home/>
-                    </Route>
-                </Switch>
+                <div className="container">
+                    <Switch>
+                        <Route path={continueRoutinePath}>
+                            <Routine/>
+                        </Route>
+                        <Route path={editRoutinePath}>
+                            <Edit/>
+                        </Route>
+                        <Route path={newRoutinePath}>
+                            <RoutineSelect/>
+                        </Route>
+                        <Route path="/">
+                            <Home/>
+                        </Route>
+                    </Switch>
+                </div>
             </BrowserRouter>
         );
     }
