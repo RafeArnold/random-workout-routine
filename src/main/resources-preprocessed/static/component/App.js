@@ -11,13 +11,13 @@ class App extends React.Component {
             <BrowserRouter>
                 <NavBar/>
                 <Switch>
-                    <Route path='/edit'>
+                    <Route path="/edit">
                         <Edit/>
                     </Route>
-                    <Route path='/routine'>
+                    <Route path="/routine">
                         <Routine/>
                     </Route>
-                    <Route path='/'>
+                    <Route path="/">
                         <Home/>
                     </Route>
                 </Switch>

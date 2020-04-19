@@ -5,7 +5,7 @@ import {getNextExercise} from "../util/RoutineUtils";
 class Routine extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {exercise: {name: '', repCount: ''}};
+        this.state = {exercise: {name: "", repCount: ""}};
         this.nextExercise = this.nextExercise.bind(this);
         this.updateExercise = this.updateExercise.bind(this);
     }
@@ -26,7 +26,7 @@ class Routine extends React.Component {
         return (
             <>
                 <Exercise name={this.state.exercise.name} repCount={this.state.exercise.repCount}/>
-                <button className='btn btn-primary' onClick={this.nextExercise}>Next</button>
+                <button className="btn btn-primary" onClick={this.nextExercise}>Next</button>
             </>
         );
     }
