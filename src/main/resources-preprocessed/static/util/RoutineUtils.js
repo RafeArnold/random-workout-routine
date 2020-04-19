@@ -30,3 +30,10 @@ export function getNextExercise(onSuccess) {
     xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
     xhr.send();
 }
+
+export function getCurrentExercise(onSuccess) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:8080" + apiRoutinePath + "/current");
+    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
+    xhr.send();
+}
