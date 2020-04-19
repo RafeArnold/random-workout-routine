@@ -33,9 +33,9 @@ public class RoutineController {
     }
 
     @PostMapping("/start/{name}")
-    public Exercise start(HttpSession httpSession, @PathVariable String name) {
-        httpSession.setAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME, new RoutineSession(routineService.getByName(name)));
-        return nextExercise(httpSession);
+    public void start(HttpSession httpSession, @PathVariable String name) {
+        httpSession.setAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME,
+                new RoutineSession(routineService.getByName(name)));
     }
 
     @PostMapping("/next")
