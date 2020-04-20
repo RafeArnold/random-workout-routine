@@ -1,5 +1,4 @@
 import React from "react";
-import Exercise from "../component/Exercise";
 import {getCurrentExercise, getNextExercise} from "../util/RoutineUtils";
 
 class Routine extends React.Component {
@@ -30,8 +29,9 @@ class Routine extends React.Component {
     render() {
         return (
             <>
-                <Exercise name={this.state.exercise.name} repCount={this.state.exercise.repCount}/>
-                <button className="btn btn-primary" onClick={this.next}>Next</button>
+                <h5 className="my-3">Current Exercise:</h5>
+                <h1>{this.state.exercise.repCount + " " + this.state.exercise.name}</h1>
+                <button className="mt-3 btn btn-dark" onClick={this.next}>Next</button>
             </>
         );
     }
