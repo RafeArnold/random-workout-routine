@@ -5,6 +5,8 @@ import net.ddns.rarnold.randomworkoutroutine.model.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.repository.ExerciseOptionRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class ExerciseOptionService {
@@ -17,5 +19,9 @@ public class ExerciseOptionService {
 
     public void delete(String name) {
         repository.deleteById(name);
+    }
+
+    public Set<String> getNames() {
+        return repository.findAllNames();
     }
 }

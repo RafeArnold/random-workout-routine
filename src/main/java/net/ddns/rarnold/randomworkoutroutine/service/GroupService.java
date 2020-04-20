@@ -5,6 +5,8 @@ import net.ddns.rarnold.randomworkoutroutine.model.Group;
 import net.ddns.rarnold.randomworkoutroutine.repository.GroupRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class GroupService {
@@ -17,5 +19,9 @@ public class GroupService {
 
     public void delete(String name) {
         repository.deleteById(name);
+    }
+
+    public Set<String> getNames() {
+        return repository.findAllNames();
     }
 }

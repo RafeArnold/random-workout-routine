@@ -5,6 +5,8 @@ import net.ddns.rarnold.randomworkoutroutine.model.Group;
 import net.ddns.rarnold.randomworkoutroutine.service.GroupService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping("/api/group")
 @RequiredArgsConstructor
@@ -20,5 +22,10 @@ public class GroupController {
     @DeleteMapping("/delete/{name}")
     public void delete(@PathVariable String name) {
         groupService.delete(name);
+    }
+
+    @GetMapping("/names")
+    public Set<String> getNames() {
+        return groupService.getNames();
     }
 }

@@ -5,6 +5,8 @@ import net.ddns.rarnold.randomworkoutroutine.model.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.service.ExerciseOptionService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping("/api/exercise")
 @RequiredArgsConstructor
@@ -20,5 +22,10 @@ public class ExerciseOptionController {
     @DeleteMapping("/delete/{name}")
     public void delete(@PathVariable String name) {
         exerciseOptionService.delete(name);
+    }
+
+    @GetMapping("/names")
+    public Set<String> getNames() {
+        return exerciseOptionService.getNames();
     }
 }
