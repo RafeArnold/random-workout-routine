@@ -1,7 +1,23 @@
+export const apiExercisePath = "/api/exercise";
+export const apiGroupPath = "/api/group";
 export const apiRoutinePath = "/api/routine";
 export const editRoutinePath = "/edit";
 export const newRoutinePath = "/new-routine";
 export const continueRoutinePath = "/routine";
+
+export function getExerciseNames(onSuccess) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:8080" + apiExercisePath + "/names");
+    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
+    xhr.send();
+}
+
+export function getGroupNames(onSuccess) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:8080" + apiGroupPath + "/names");
+    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
+    xhr.send();
+}
 
 export function getRoutineNames(onSuccess) {
     const xhr = new XMLHttpRequest();
