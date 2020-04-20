@@ -37,3 +37,10 @@ export function getCurrentExercise(onSuccess) {
     xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
     xhr.send();
 }
+
+export function stopRoutine(onSuccess) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:8080" + apiRoutinePath + "/stop");
+    xhr.onload = onSuccess;
+    xhr.send();
+}
