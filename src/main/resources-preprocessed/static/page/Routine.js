@@ -6,20 +6,20 @@ class Routine extends React.Component {
     constructor(props) {
         super(props);
         this.state = {exercise: {name: "", repCount: ""}};
-        this.getCurrentExercise = this.getCurrentExercise.bind(this);
-        this.nextExercise = this.nextExercise.bind(this);
+        this.getCurrent = this.getCurrent.bind(this);
+        this.next = this.next.bind(this);
         this.updateExercise = this.updateExercise.bind(this);
     }
 
     componentDidMount() {
-        this.getCurrentExercise();
+        this.getCurrent();
     }
 
-    getCurrentExercise() {
+    getCurrent() {
         getCurrentExercise(this.updateExercise);
     }
 
-    nextExercise() {
+    next() {
         getNextExercise(this.updateExercise);
     }
 
@@ -31,7 +31,7 @@ class Routine extends React.Component {
         return (
             <>
                 <Exercise name={this.state.exercise.name} repCount={this.state.exercise.repCount}/>
-                <button className="btn btn-primary" onClick={this.nextExercise}>Next</button>
+                <button className="btn btn-primary" onClick={this.next}>Next</button>
             </>
         );
     }
