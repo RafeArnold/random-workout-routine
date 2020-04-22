@@ -1,7 +1,7 @@
 export const apiExercisePath = "/api/exercise";
 export const apiGroupPath = "/api/group";
 export const apiRoutinePath = "/api/routine";
-export const editRoutinePath = "/edit";
+export const editPath = "/edit";
 export const newRoutinePath = "/new-routine";
 export const continueRoutinePath = "/routine";
 

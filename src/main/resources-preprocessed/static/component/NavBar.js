@@ -1,5 +1,5 @@
 import React from "react";
-import {continueRoutinePath, editRoutinePath, newRoutinePath, routineIsActive} from "../util/RoutineUtils";
+import {continueRoutinePath, editPath, newRoutinePath, routineIsActive} from "../util/RoutineUtils";
 import NavBarItem from "./NavBarItem";
 
 class NavBar extends React.Component {
@@ -24,7 +24,7 @@ class NavBar extends React.Component {
                 <ul className="navbar-nav">
                     <NavBarItem to="/" exact>Home</NavBarItem>
                     <NavBarItem to={newRoutinePath}>Start a new Routine</NavBarItem>
-                    <NavBarItem to={editRoutinePath}>Edit a Routine</NavBarItem>
+                    <NavBarItem to={editPath}>Edit a Routine</NavBarItem>
                     {this.state.routineIsActive ?
                         <NavBarItem to={continueRoutinePath}>Continue your Routine</NavBarItem> : null}
                 </ul>
