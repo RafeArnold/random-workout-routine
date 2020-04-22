@@ -77,8 +77,8 @@ class Edit extends React.Component {
     render() {
         return (
             <>
-                <h1 className="my-3">Select Something to Edit</h1>
-                <table className="table">
+                <h1 className="my-3">Select an Item to Edit</h1>
+                <table className="table table-cell-hover">
                     <thead className="thead-dark">
                         <tr>
                             <th>Exercise</th>
