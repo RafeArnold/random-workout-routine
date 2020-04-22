@@ -48,20 +48,26 @@ class Edit extends React.Component {
     }
 
     setSelected(x, y) {
-        let namesList;
-        switch (x) {
-            case 0:
-                namesList = this.state.exerciseNames;
-                break;
-            case 1:
-                namesList = this.state.groupNames;
-                break;
-            case 2:
-                namesList = this.state.routineNames;
+        let newSelected = this.state.selected;
+        if (newSelected && newSelected.x === x && newSelected.y === y) {
+            newSelected = null;
+        } else {
+            let namesList;
+            switch (x) {
+                case 0:
+                    namesList = this.state.exerciseNames;
+                    break;
+                case 1:
+                    namesList = this.state.groupNames;
+                    break;
+                case 2:
+                    namesList = this.state.routineNames;
+            }
+            if (namesList && namesList.length > y) {
+                newSelected = {x: x, y: y};
+            }
         }
-        if (namesList && namesList.length > y) {
-            this.setState({selected: {x: x, y: y}});
-        }
+        this.setState({selected: newSelected});
     }
 
     edit() {
