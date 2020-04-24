@@ -1,23 +1,29 @@
 package net.ddns.rarnold.randomworkoutroutine.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "grouping")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Group {
+
     @Id
+    @GeneratedValue
+    private UUID id;
+
+    @Column(unique = true, nullable = false)
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<ExerciseOption> exerciseOptions;
+
+    public Group(String name, List<ExerciseOption> exerciseOptions) {
+        this.name = name;
+        this.exerciseOptions = exerciseOptions;
+    }
 }
