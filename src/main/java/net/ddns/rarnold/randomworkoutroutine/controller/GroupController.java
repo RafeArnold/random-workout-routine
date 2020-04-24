@@ -6,6 +6,7 @@ import net.ddns.rarnold.randomworkoutroutine.service.GroupService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/group")
@@ -19,9 +20,9 @@ public class GroupController {
         groupService.save(group);
     }
 
-    @DeleteMapping("/delete/{name}")
-    public void delete(@PathVariable String name) {
-        groupService.delete(name);
+    @DeleteMapping("/delete/{id}")
+    public void delete(@PathVariable UUID id) {
+        groupService.delete(id);
     }
 
     @GetMapping("/names")

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/routine")
@@ -22,9 +23,9 @@ public class RoutineController {
         routineService.save(routine);
     }
 
-    @DeleteMapping("/delete/{name}")
-    public void delete(@PathVariable String name) {
-        routineService.delete(name);
+    @DeleteMapping("/delete/{id}")
+    public void delete(@PathVariable UUID id) {
+        routineService.delete(id);
     }
 
     @GetMapping("/in-progress")
@@ -32,10 +33,10 @@ public class RoutineController {
         return httpSession.getAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME) != null;
     }
 
-    @PostMapping("/start/{name}")
-    public void start(HttpSession httpSession, @PathVariable String name) {
+    @PostMapping("/start/{id}")
+    public void start(HttpSession httpSession, @PathVariable UUID id) {
         httpSession.setAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME,
-                new RoutineSession(routineService.getByName(name)));
+                new RoutineSession(routineService.getById(id)));
     }
 
     @PostMapping("/next")

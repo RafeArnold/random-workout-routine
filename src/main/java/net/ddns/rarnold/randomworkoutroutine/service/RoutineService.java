@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -14,10 +15,10 @@ public class RoutineService {
 
     private final RoutineRepository repository;
 
-    public Routine getByName(String name) {
-        Optional<Routine> routine = repository.findById(name);
+    public Routine getById(UUID id) {
+        Optional<Routine> routine = repository.findById(id);
         if (!routine.isPresent()) {
-            throw new IllegalArgumentException("No routine by the name '" + name + "' exists");
+            throw new IllegalArgumentException("No routine with the ID '" + id + "' exists");
         }
         return routine.get();
     }
@@ -26,8 +27,8 @@ public class RoutineService {
         repository.save(routine);
     }
 
-    public void delete(String name) {
-        repository.deleteById(name);
+    public void delete(UUID id) {
+        repository.deleteById(id);
     }
 
     public Set<String> getNames() {

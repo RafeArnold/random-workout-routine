@@ -6,6 +6,7 @@ import net.ddns.rarnold.randomworkoutroutine.service.ExerciseOptionService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/exercise")
@@ -19,9 +20,9 @@ public class ExerciseOptionController {
         exerciseOptionService.save(option);
     }
 
-    @DeleteMapping("/delete/{name}")
-    public void delete(@PathVariable String name) {
-        exerciseOptionService.delete(name);
+    @DeleteMapping("/delete/{id}")
+    public void delete(@PathVariable UUID id) {
+        exerciseOptionService.delete(id);
     }
 
     @GetMapping("/names")

@@ -6,6 +6,7 @@ import net.ddns.rarnold.randomworkoutroutine.repository.GroupRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,8 +18,8 @@ public class GroupService {
         repository.save(group);
     }
 
-    public void delete(String name) {
-        repository.deleteById(name);
+    public void delete(UUID id) {
+        repository.deleteById(id);
     }
 
     public Set<String> getNames() {
