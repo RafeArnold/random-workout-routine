@@ -86,7 +86,6 @@ class Edit extends React.Component {
                 url = editRoutinePath;
         }
         url += "/" + id;
-        console.log(url);
         return url;
     }
 
