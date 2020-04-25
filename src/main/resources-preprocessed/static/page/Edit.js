@@ -1,38 +1,49 @@
 import React from "react";
-import {getExerciseNames, getGroupNames, getRoutineNames} from "../util/RoutineUtils";
+import {
+    editExercisePath,
+    editGroupPath,
+    editRoutinePath,
+    getExerciseNames,
+    getGroupNames,
+    getRoutineNames
+} from "../util/RoutineUtils";
+
+const exerciseTypeName = "exercise";
+const groupTypeName = "group";
+const routineTypeName = "routine";
 
 class Edit extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {exerciseNames: null, groupNames: null, routineNames: null, selected: null};
-        this.mapNamesToRows = this.mapNamesToRows.bind(this);
+        this.state = {exercises: null, groups: null, routines: null, selected: null};
+        this.mapItemsToRows = this.mapItemsToRows.bind(this);
         this.tableRow = this.tableRow.bind(this);
         this.setSelected = this.setSelected.bind(this);
-        this.edit = this.edit.bind(this);
+        this.getUrl = this.getUrl.bind(this);
     }
 
     componentDidMount() {
-        getExerciseNames((names) => this.setState({exerciseNames: names}));
-        getGroupNames((names) => this.setState({groupNames: names}));
-        getRoutineNames((names) => this.setState({routineNames: names}));
+        getExerciseNames((exercises) => this.setState({exercises: exercises}));
+        getGroupNames((groups) => this.setState({groups: groups}));
+        getRoutineNames((routines) => this.setState({routines: routines}));
     }
 
-    mapNamesToRows() {
-        const exerciseNames = this.state.exerciseNames;
-        const groupNames = this.state.groupNames;
-        const routineNames = this.state.routineNames;
-        if (exerciseNames && groupNames && routineNames) {
-            const rowCount = Math.max(exerciseNames.length, groupNames.length, routineNames.length);
+    mapItemsToRows() {
+        const exercises = this.state.exercises;
+        const groups = this.state.groups;
+        const routines = this.state.routines;
+        if (exercises && groups && routines) {
+            const rowCount = Math.max(exercises.length, groups.length, routines.length);
             const rows = [];
             for (let i = 0; i < rowCount; i++) {
-                const exerciseName = i < exerciseNames.length ? exerciseNames[i] : null;
-                const groupName = i < groupNames.length ? groupNames[i] : null;
-                const routineName = i < routineNames.length ? routineNames[i] : null;
+                const exercise = i < exercises.length ? exercises[i] : null;
+                const group = i < groups.length ? groups[i] : null;
+                const routine = i < routines.length ? routines[i] : null;
                 rows.push(
-                    <tr key={exerciseName + "|" + groupName + "|" + routineName}>
-                        {this.tableRow(0, i, exerciseName)}
-                        {this.tableRow(1, i, groupName)}
-                        {this.tableRow(2, i, routineName)}
+                    <tr key={exercise?.id + "|" + group?.id + "|" + routine?.id}>
+                        {this.tableRow(exerciseTypeName, exercise)}
+                        {this.tableRow(groupTypeName, group)}
+                        {this.tableRow(routineTypeName, routine)}
                     </tr>
                 );
             }
@@ -40,45 +51,51 @@ class Edit extends React.Component {
         }
     }
 
-    tableRow(x, y, name) {
-        const selected = this.state.selected;
-        return <td
-            className={selected && selected.x === x && selected.y === y ? "bg-secondary text-light" : ""}
-            onClick={() => this.setSelected(x, y)}>{name}</td>;
+    tableRow(type, item) {
+        if (item) {
+            const selected = this.state.selected;
+            const id = item.id;
+            const name = item.name;
+            return <td
+                className={selected && selected.id === id ? "bg-secondary text-light" : ""}
+                onClick={() => this.setSelected(type, id)}>{name}</td>;
+        }
     }
 
-    setSelected(x, y) {
-        let newSelected = this.state.selected;
-        if (newSelected && newSelected.x === x && newSelected.y === y) {
+    setSelected(type, id) {
+        const selected = this.state.selected;
+        let newSelected;
+        if (selected && selected.id === id) {
             newSelected = null;
         } else {
-            let namesList;
-            switch (x) {
-                case 0:
-                    namesList = this.state.exerciseNames;
-                    break;
-                case 1:
-                    namesList = this.state.groupNames;
-                    break;
-                case 2:
-                    namesList = this.state.routineNames;
-            }
-            if (namesList && namesList.length > y) {
-                newSelected = {x: x, y: y};
-            }
+            newSelected = {type: type, id: id};
         }
         this.setState({selected: newSelected});
     }
 
-    edit() {
-        console.log("edit");
+    getUrl(type, id) {
+        let url;
+        switch (type) {
+            case exerciseTypeName:
+                url = editExercisePath;
+                break;
+            case groupTypeName:
+                url = editGroupPath;
+                break;
+            case routineTypeName:
+                url = editRoutinePath;
+        }
+        url += "/" + id;
+        console.log(url);
+        return url;
     }
 
     render() {
+        const selected = this.state.selected;
         return (
-            <>
+            <form method="GET" action={selected ? this.getUrl(selected.type, selected.id) : null}>
                 <h1 className="my-3">Select an Item to Edit</h1>
-                <table className="table table-cell-hover">
+                <table className="table table-bordered table-cell-hover">
                     <thead className="thead-dark">
                         <tr>
                             <th>Exercise</th>
@@ -87,11 +104,11 @@ class Edit extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.mapNamesToRows()}
+                        {this.mapItemsToRows()}
                     </tbody>
                 </table>
-                <button className="btn btn-dark" disabled={!this.state.selected} onClick={this.edit}>Edit</button>
-            </>
+                <button className="btn btn-dark" disabled={!selected} type="submit">Edit</button>
+            </form>
         );
     }
 }

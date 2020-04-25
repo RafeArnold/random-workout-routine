@@ -12,19 +12,19 @@ class RoutineSelect extends React.Component {
     }
 
     componentDidMount() {
-        getRoutineNames((names) => this.setState({options: this.mapNamesToOptions(names)}));
+        getRoutineNames((routines) => this.setState({options: this.mapNamesToOptions(routines)}));
     }
 
-    mapNamesToOptions(routineNames) {
-        return routineNames.map((name) => (
-            <option key={name} value={name}>{name}</option>
+    mapNamesToOptions(routines) {
+        return routines.map((routine) => (
+            <option key={routine.id} value={routine.id}>{routine.name}</option>
         ));
     }
 
     start() {
-        const routineName = document.getElementById(selectId).value;
-        if (routineName) {
-            startRoutine(routineName, () => window.location.href = continueRoutinePath);
+        const routineId = document.getElementById(selectId).value;
+        if (routineId) {
+            startRoutine(routineId, () => window.location.href = continueRoutinePath);
         }
     }
 

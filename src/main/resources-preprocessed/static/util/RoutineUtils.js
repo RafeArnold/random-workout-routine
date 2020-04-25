@@ -2,6 +2,9 @@ export const apiExercisePath = "/api/exercise";
 export const apiGroupPath = "/api/group";
 export const apiRoutinePath = "/api/routine";
 export const editPath = "/edit";
+export const editExercisePath = "/edit/exercise";
+export const editGroupPath = "/edit/group";
+export const editRoutinePath = "/edit/routine";
 export const newRoutinePath = "/new-routine";
 export const continueRoutinePath = "/routine";
 
@@ -33,9 +36,9 @@ export function routineIsActive(onSuccess) {
     xhr.send();
 }
 
-export function startRoutine(routineName, onSuccess) {
+export function startRoutine(routineId, onSuccess) {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8080" + apiRoutinePath + "/start/" + routineName);
+    xhr.open("POST", "http://localhost:8080" + apiRoutinePath + "/start/" + routineId);
     xhr.onload = onSuccess;
     xhr.send();
 }
