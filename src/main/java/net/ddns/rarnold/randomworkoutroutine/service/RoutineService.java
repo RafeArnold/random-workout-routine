@@ -5,9 +5,10 @@ import net.ddns.rarnold.randomworkoutroutine.model.Routine;
 import net.ddns.rarnold.randomworkoutroutine.repository.RoutineRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,15 @@ public class RoutineService {
         repository.deleteById(id);
     }
 
-    public Set<String> getNames() {
-        return repository.findAllNames();
+    public List<Routine> getNames() {
+        List<Object[]> routines = repository.findAllIdsAndNames();
+        return routines.stream()
+                .map(objects -> {
+                    Routine routine = new Routine();
+                    routine.setId((UUID) objects[0]);
+                    routine.setName((String) objects[1]);
+                    return routine;
+                })
+                .collect(Collectors.toList());
     }
 }

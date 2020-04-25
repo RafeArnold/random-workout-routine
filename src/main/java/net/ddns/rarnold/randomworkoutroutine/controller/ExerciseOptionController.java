@@ -5,7 +5,7 @@ import net.ddns.rarnold.randomworkoutroutine.model.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.service.ExerciseOptionService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,7 +26,7 @@ public class ExerciseOptionController {
     }
 
     @GetMapping("/names")
-    public Set<String> getNames() {
+    public List<ExerciseOption> getNames() {
         return exerciseOptionService.getNames();
     }
 }

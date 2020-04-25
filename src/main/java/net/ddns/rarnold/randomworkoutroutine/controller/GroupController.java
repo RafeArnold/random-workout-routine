@@ -5,7 +5,7 @@ import net.ddns.rarnold.randomworkoutroutine.model.Group;
 import net.ddns.rarnold.randomworkoutroutine.service.GroupService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,7 +26,7 @@ public class GroupController {
     }
 
     @GetMapping("/names")
-    public Set<String> getNames() {
+    public List<Group> getNames() {
         return groupService.getNames();
     }
 }

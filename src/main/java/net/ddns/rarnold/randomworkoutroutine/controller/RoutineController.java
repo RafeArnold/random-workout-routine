@@ -8,7 +8,7 @@ import net.ddns.rarnold.randomworkoutroutine.session.RoutineSession;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -64,7 +64,7 @@ public class RoutineController {
     }
 
     @GetMapping("/names")
-    public Set<String> getNames() {
+    public List<Routine> getIdsAndNames() {
         return routineService.getNames();
     }
 

@@ -5,8 +5,9 @@ import net.ddns.rarnold.randomworkoutroutine.model.Group;
 import net.ddns.rarnold.randomworkoutroutine.repository.GroupRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,15 @@ public class GroupService {
         repository.deleteById(id);
     }
 
-    public Set<String> getNames() {
-        return repository.findAllNames();
+    public List<Group> getNames() {
+        List<Object[]> groups = repository.findAllIdsAndNames();
+        return groups.stream()
+                .map(objects -> {
+                    Group group = new Group();
+                    group.setId((UUID) objects[0]);
+                    group.setName((String) objects[1]);
+                    return group;
+                })
+                .collect(Collectors.toList());
     }
 }

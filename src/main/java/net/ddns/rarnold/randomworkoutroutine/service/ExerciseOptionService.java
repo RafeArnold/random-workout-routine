@@ -5,8 +5,9 @@ import net.ddns.rarnold.randomworkoutroutine.model.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.repository.ExerciseOptionRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,15 @@ public class ExerciseOptionService {
         repository.deleteById(id);
     }
 
-    public Set<String> getNames() {
-        return repository.findAllNames();
+    public List<ExerciseOption> getNames() {
+        List<Object[]> options = repository.findAllIdsAndNames();
+        return options.stream()
+                .map(objects -> {
+                    ExerciseOption option = new ExerciseOption();
+                    option.setId((UUID) objects[0]);
+                    option.setName((String) objects[1]);
+                    return option;
+                })
+                .collect(Collectors.toList());
     }
 }
