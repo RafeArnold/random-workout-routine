@@ -1,5 +1,6 @@
 package net.ddns.rarnold.randomworkoutroutine.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.ddns.rarnold.randomworkoutroutine.util.RandomUtils;
@@ -34,6 +35,7 @@ public class ExerciseOption {
         this.repCountUpperBound = repCountUpperBound;
     }
 
+    @JsonIgnore
     public Exercise getExercise() {
         return new Exercise(name, RandomUtils.nextInt(repCountLowerBound, repCountUpperBound));
     }
