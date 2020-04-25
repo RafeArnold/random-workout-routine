@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface GroupRepository extends CrudRepository<Group, UUID> {
-    @Query("SELECT e.id, e.name FROM #{#entityName} e")
+    @Query("SELECT e.id, e.name FROM grouping e")
     List<Object[]> findAllIdsAndNames();
 }

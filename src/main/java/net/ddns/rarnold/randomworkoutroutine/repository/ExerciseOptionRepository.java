@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface ExerciseOptionRepository extends CrudRepository<ExerciseOption, UUID> {
-    @Query("SELECT e.id, e.name FROM #{#entityName} e")
+    @Query("SELECT e.id, e.name FROM ExerciseOption e")
     List<Object[]> findAllIdsAndNames();
 }

@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface RoutineRepository extends CrudRepository<Routine, UUID> {
-    @Query("SELECT e.id, e.name FROM #{#entityName} e")
+    @Query("SELECT e.id, e.name FROM Routine e")
     List<Object[]> findAllIdsAndNames();
 }
