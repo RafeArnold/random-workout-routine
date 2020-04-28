@@ -33,7 +33,7 @@ class RoutineSelect extends React.Component {
         const selectSize = options ? Math.min(options.length, 5) : 1;
         return (
             <>
-                <h1 className="my-3">Select a Routine</h1>
+                <h1>Select a Routine</h1>
                 <div className="row">
                     <div className="col-8 col-md-6 col-lg-5 form-group">
                         <select id={selectId} className="form-control" size={selectSize}>{options}</select>

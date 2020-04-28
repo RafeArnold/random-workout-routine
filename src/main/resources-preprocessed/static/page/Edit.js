@@ -93,7 +93,7 @@ class Edit extends React.Component {
         const selected = this.state.selected;
         return (
             <form method="GET" action={selected ? this.getUrl(selected.type, selected.id) : null}>
-                <h1 className="my-3">Select an Item to Edit</h1>
+                <h1>Select an Item to Edit</h1>
                 <table className="table table-bordered table-cell-hover">
                     <thead className="thead-dark">
                         <tr>

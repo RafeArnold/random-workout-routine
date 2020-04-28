@@ -34,7 +34,7 @@ class Routine extends React.Component {
     render() {
         return (
             <>
-                <h5 className="my-3">Current Exercise:</h5>
+                <h5>Current Exercise:</h5>
                 <h1>{this.state.exercise.repCount + " " + this.state.exercise.name}</h1>
                 <div className="row mt-4">
                     <div className="col-auto">
