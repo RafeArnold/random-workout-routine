@@ -6,7 +6,7 @@ import net.ddns.rarnold.randomworkoutroutine.repository.RoutineRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -17,11 +17,8 @@ public class RoutineService {
     private final RoutineRepository repository;
 
     public Routine getById(UUID id) {
-        Optional<Routine> routine = repository.findById(id);
-        if (!routine.isPresent()) {
-            throw new IllegalArgumentException("No routine with the ID '" + id + "' exists");
-        }
-        return routine.get();
+        return repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No routine with the ID '" + id + "' exists"));
     }
 
     public void save(Routine routine) {

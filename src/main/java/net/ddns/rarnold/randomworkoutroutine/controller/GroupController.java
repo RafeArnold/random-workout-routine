@@ -15,6 +15,11 @@ public class GroupController {
 
     private final GroupService groupService;
 
+    @GetMapping("/{id}")
+    public Group getById(@PathVariable UUID id) {
+        return groupService.getById(id);
+    }
+
     @PostMapping("/save")
     public void save(@RequestBody Group group) {
         groupService.save(group);

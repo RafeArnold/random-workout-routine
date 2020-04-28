@@ -6,6 +6,7 @@ import net.ddns.rarnold.randomworkoutroutine.repository.GroupRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,11 @@ import java.util.stream.Collectors;
 public class GroupService {
 
     private final GroupRepository repository;
+
+    public Group getById(UUID id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No group with the ID '" + id + "' exists"));
+    }
 
     public void save(Group group) {
         repository.save(group);

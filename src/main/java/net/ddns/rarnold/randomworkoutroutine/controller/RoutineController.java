@@ -18,6 +18,11 @@ public class RoutineController {
 
     private final RoutineService routineService;
 
+    @GetMapping("/{id}")
+    public Routine getByDetailsId(@PathVariable UUID id) {
+        return routineService.getById(id);
+    }
+
     @PostMapping("/save")
     public void save(@RequestBody Routine routine) {
         routineService.save(routine);

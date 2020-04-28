@@ -15,6 +15,11 @@ public class ExerciseOptionController {
 
     private final ExerciseOptionService exerciseOptionService;
 
+    @GetMapping("/{id}")
+    public ExerciseOption getById(@PathVariable UUID id) {
+        return exerciseOptionService.getById(id);
+    }
+
     @PostMapping("/save")
     public void save(@RequestBody ExerciseOption option) {
         exerciseOptionService.save(option);
