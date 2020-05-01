@@ -30,8 +30,15 @@ public class ExerciseOptionService {
     }
 
     public List<ExerciseOption> getNames() {
-        List<Object[]> options = repository.findAllIdsAndNames();
-        return options.stream()
+        return transformIdAndNameToOption(repository.findAllIdsAndNames());
+    }
+
+    public List<ExerciseOption> searchNames(String filter) {
+        return transformIdAndNameToOption(repository.findAllWithNameContainingIgnoreCase(filter));
+    }
+
+    private List<ExerciseOption> transformIdAndNameToOption(List<Object[]> idsAndNames) {
+        return idsAndNames.stream()
                 .map(objects -> {
                     ExerciseOption option = new ExerciseOption();
                     option.setId((UUID) objects[0]);

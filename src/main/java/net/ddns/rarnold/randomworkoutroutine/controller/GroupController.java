@@ -34,4 +34,9 @@ public class GroupController {
     public List<Group> getNames() {
         return groupService.getNames();
     }
+
+    @GetMapping("/search")
+    public List<Group> searchNames(@RequestBody String filter) {
+        return groupService.searchNames(filter);
+    }
 }

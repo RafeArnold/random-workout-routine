@@ -30,8 +30,15 @@ public class GroupService {
     }
 
     public List<Group> getNames() {
-        List<Object[]> groups = repository.findAllIdsAndNames();
-        return groups.stream()
+        return transformIdAndNameToGroup(repository.findAllIdsAndNames());
+    }
+
+    public List<Group> searchNames(String filter) {
+        return transformIdAndNameToGroup(repository.findAllWithNameContainingIgnoreCase(filter));
+    }
+
+    private List<Group> transformIdAndNameToGroup(List<Object[]> idsAndNames) {
+        return idsAndNames.stream()
                 .map(objects -> {
                     Group group = new Group();
                     group.setId((UUID) objects[0]);

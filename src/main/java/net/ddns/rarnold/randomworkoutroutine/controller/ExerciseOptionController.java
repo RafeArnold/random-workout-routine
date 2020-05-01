@@ -34,4 +34,9 @@ public class ExerciseOptionController {
     public List<ExerciseOption> getNames() {
         return exerciseOptionService.getNames();
     }
+
+    @GetMapping("/search")
+    public List<ExerciseOption> searchNames(@RequestBody String filter) {
+        return exerciseOptionService.searchNames(filter);
+    }
 }
