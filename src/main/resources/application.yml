@@ -5,4 +5,4 @@ spring:
     username: random-workout-routine
     password: random-workout-routine
     initialization-mode: always
-  jpa.hibernate.ddl-auto: create-drop
+  jpa.hibernate.ddl-auto: update
