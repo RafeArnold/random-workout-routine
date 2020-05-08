@@ -1,4 +1,4 @@
-package net.ddns.rarnold.randomworkoutroutine.model;
+package net.ddns.rarnold.randomworkoutroutine.model.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

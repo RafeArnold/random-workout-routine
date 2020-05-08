@@ -1,7 +1,7 @@
 package net.ddns.rarnold.randomworkoutroutine.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.ddns.rarnold.randomworkoutroutine.model.Group;
+import net.ddns.rarnold.randomworkoutroutine.model.entity.Group;
 import net.ddns.rarnold.randomworkoutroutine.service.GroupService;
 import org.springframework.web.bind.annotation.*;
 

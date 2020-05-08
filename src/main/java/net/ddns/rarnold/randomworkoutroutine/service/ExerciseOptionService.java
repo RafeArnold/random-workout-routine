@@ -1,7 +1,7 @@
 package net.ddns.rarnold.randomworkoutroutine.service;
 
 import lombok.RequiredArgsConstructor;
-import net.ddns.rarnold.randomworkoutroutine.model.ExerciseOption;
+import net.ddns.rarnold.randomworkoutroutine.model.entity.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.repository.ExerciseOptionRepository;
 import org.springframework.stereotype.Service;
 

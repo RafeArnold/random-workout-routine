@@ -1,8 +1,9 @@
-package net.ddns.rarnold.randomworkoutroutine.model;
+package net.ddns.rarnold.randomworkoutroutine.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.ddns.rarnold.randomworkoutroutine.model.Exercise;
 import net.ddns.rarnold.randomworkoutroutine.util.RandomUtils;
 
 import javax.persistence.Column;

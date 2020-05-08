@@ -1,6 +1,6 @@
 package net.ddns.rarnold.randomworkoutroutine.repository;
 
-import net.ddns.rarnold.randomworkoutroutine.model.ExerciseOption;
+import net.ddns.rarnold.randomworkoutroutine.model.entity.ExerciseOption;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

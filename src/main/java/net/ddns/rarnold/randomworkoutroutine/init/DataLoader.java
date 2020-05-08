@@ -1,9 +1,9 @@
 package net.ddns.rarnold.randomworkoutroutine.init;
 
 import lombok.RequiredArgsConstructor;
-import net.ddns.rarnold.randomworkoutroutine.model.ExerciseOption;
-import net.ddns.rarnold.randomworkoutroutine.model.Group;
-import net.ddns.rarnold.randomworkoutroutine.model.Routine;
+import net.ddns.rarnold.randomworkoutroutine.model.entity.ExerciseOption;
+import net.ddns.rarnold.randomworkoutroutine.model.entity.Group;
+import net.ddns.rarnold.randomworkoutroutine.model.entity.Routine;
 import net.ddns.rarnold.randomworkoutroutine.repository.ExerciseOptionRepository;
 import net.ddns.rarnold.randomworkoutroutine.repository.GroupRepository;
 import net.ddns.rarnold.randomworkoutroutine.repository.RoutineRepository;

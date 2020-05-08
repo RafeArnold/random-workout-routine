@@ -3,8 +3,8 @@ package net.ddns.rarnold.randomworkoutroutine.session;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.ddns.rarnold.randomworkoutroutine.model.Exercise;
-import net.ddns.rarnold.randomworkoutroutine.model.ExerciseOption;
-import net.ddns.rarnold.randomworkoutroutine.model.Routine;
+import net.ddns.rarnold.randomworkoutroutine.model.entity.ExerciseOption;
+import net.ddns.rarnold.randomworkoutroutine.model.entity.Routine;
 import net.ddns.rarnold.randomworkoutroutine.util.RandomUtils;
 
 import java.util.List;
