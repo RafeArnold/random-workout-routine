@@ -20,7 +20,10 @@ module.exports = {
             },
             {
                 test: /\.(eot|otf|svg|ttf|woff)$/i,
-                loader: 'file-loader'
+                loader: 'file-loader',
+                options: {
+                    publicPath: '/'
+                }
             }
         ]
     },
