@@ -1,13 +1,12 @@
 package net.ddns.rarnold.randomworkoutroutine.service;
 
 import lombok.RequiredArgsConstructor;
+import net.ddns.rarnold.randomworkoutroutine.model.Filter;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.Group;
 import net.ddns.rarnold.randomworkoutroutine.repository.GroupRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,8 +32,18 @@ public class GroupService {
         return transformIdAndNameToGroup(repository.findAllIdsAndNames());
     }
 
-    public List<Group> searchNames(String filter) {
-        return transformIdAndNameToGroup(repository.findAllWithNameContainingIgnoreCase(filter));
+    public List<Group> searchNames(Filter filter) {
+        String searchTerm = "";
+        Set<String> excludedTerms = Collections.singleton("");
+        if (filter != null) {
+            if (filter.getSearchTerm() != null) {
+                searchTerm = filter.getSearchTerm();
+            }
+            if (filter.getExcludedTerms() != null && !filter.getExcludedTerms().isEmpty()) {
+                excludedTerms = filter.getExcludedTerms();
+            }
+        }
+        return transformIdAndNameToGroup(repository.findAllIdsAndNamesWithNameContainingIgnoreCase(searchTerm, excludedTerms));
     }
 
     private List<Group> transformIdAndNameToGroup(List<Object[]> idsAndNames) {

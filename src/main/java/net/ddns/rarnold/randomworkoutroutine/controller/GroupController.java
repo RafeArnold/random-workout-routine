@@ -1,6 +1,7 @@
 package net.ddns.rarnold.randomworkoutroutine.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.ddns.rarnold.randomworkoutroutine.model.Filter;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.Group;
 import net.ddns.rarnold.randomworkoutroutine.service.GroupService;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,8 @@ public class GroupController {
         return groupService.getNames();
     }
 
-    @GetMapping("/search")
-    public List<Group> searchNames(@RequestBody String filter) {
+    @PostMapping("/search")
+    public List<Group> searchNames(@RequestBody(required = false) Filter filter) {
         return groupService.searchNames(filter);
     }
 }

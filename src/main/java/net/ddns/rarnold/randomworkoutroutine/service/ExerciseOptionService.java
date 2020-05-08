@@ -1,13 +1,12 @@
 package net.ddns.rarnold.randomworkoutroutine.service;
 
 import lombok.RequiredArgsConstructor;
+import net.ddns.rarnold.randomworkoutroutine.model.Filter;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.repository.ExerciseOptionRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,8 +32,18 @@ public class ExerciseOptionService {
         return transformIdAndNameToOption(repository.findAllIdsAndNames());
     }
 
-    public List<ExerciseOption> searchNames(String filter) {
-        return transformIdAndNameToOption(repository.findAllWithNameContainingIgnoreCase(filter));
+    public List<ExerciseOption> searchNames(Filter filter) {
+        String searchTerm = "";
+        Set<String> excludedTerms = Collections.singleton("");
+        if (filter != null) {
+            if (filter.getSearchTerm() != null) {
+                searchTerm = filter.getSearchTerm();
+            }
+            if (filter.getExcludedTerms() != null && !filter.getExcludedTerms().isEmpty()) {
+                excludedTerms = filter.getExcludedTerms();
+            }
+        }
+        return transformIdAndNameToOption(repository.findAllIdsAndNamesWithNameContainingIgnoreCase(searchTerm, excludedTerms));
     }
 
     private List<ExerciseOption> transformIdAndNameToOption(List<Object[]> idsAndNames) {

@@ -1,6 +1,7 @@
 package net.ddns.rarnold.randomworkoutroutine.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.ddns.rarnold.randomworkoutroutine.model.Filter;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.service.ExerciseOptionService;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,8 @@ public class ExerciseOptionController {
         return exerciseOptionService.getNames();
     }
 
-    @GetMapping("/search")
-    public List<ExerciseOption> searchNames(@RequestBody String filter) {
+    @PostMapping("/search")
+    public List<ExerciseOption> searchNames(@RequestBody(required = false) Filter filter) {
         return exerciseOptionService.searchNames(filter);
     }
 }
