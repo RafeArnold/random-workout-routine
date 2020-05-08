@@ -92,7 +92,7 @@ class Edit extends React.Component {
     render() {
         const selected = this.state.selected;
         return (
-            <form method="GET" action={selected ? this.getUrl(selected.type, selected.id) : null}>
+            <>
                 <h1>Select an Item to Edit</h1>
                 <table className="table table-bordered table-cell-hover">
                     <thead className="thead-dark">
@@ -106,8 +106,8 @@ class Edit extends React.Component {
                         {this.mapItemsToRows()}
                     </tbody>
                 </table>
-                <button className="btn btn-dark" disabled={!selected} type="submit">Edit</button>
-            </form>
+                {selected ? <a className="btn btn-dark" href={this.getUrl(selected.type, selected.id)}>Edit</a> : null}
+            </>
         );
     }
 }
