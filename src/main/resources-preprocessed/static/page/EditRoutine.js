@@ -79,7 +79,7 @@ class EditRoutine extends React.Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        saveRoutine(this.state.routine, () => window.location.href = editPath)
+        saveRoutine(this.state.routine, () => window.location.href = editPath);
     }
 
     render() {
