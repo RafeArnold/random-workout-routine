@@ -27,13 +27,13 @@ class App extends React.Component {
                         <Route path={continueRoutinePath}>
                             <Routine/>
                         </Route>
-                        <Route path={editExercisePath + "/:name"}>
+                        <Route path={editExercisePath + "/:id"}>
                             <EditExercise/>
                         </Route>
-                        <Route path={editGroupPath + "/:name"}>
+                        <Route path={editGroupPath + "/:id"}>
                             <EditGroup/>
                         </Route>
-                        <Route path={editRoutinePath + "/:name"}>
+                        <Route path={editRoutinePath + "/:id"}>
                             <EditRoutine/>
                         </Route>
                         <Route path={editPath}>
