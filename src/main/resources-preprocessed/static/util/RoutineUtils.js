@@ -9,78 +9,76 @@ export const newRoutinePath = "/new-routine";
 export const continueRoutinePath = "/routine";
 
 export function getExercise(id, onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8080" + apiExercisePath + "/" + id);
-    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
-    xhr.send();
+    get(apiExercisePath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)));
 }
 
 export function getGroup(id, onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8080" + apiGroupPath + "/" + id);
-    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
-    xhr.send();
+    get(apiGroupPath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)));
 }
 
 export function getRoutine(id, onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8080" + apiRoutinePath + "/" + id);
-    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
-    xhr.send();
+    get(apiRoutinePath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)));
 }
 
 export function getExerciseNames(onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8080" + apiExercisePath + "/names");
-    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
-    xhr.send();
+    get(apiExercisePath + "/names", (responseText) => onSuccess(JSON.parse(responseText)));
 }
 
 export function getGroupNames(onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8080" + apiGroupPath + "/names");
-    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
-    xhr.send();
+    get(apiGroupPath + "/names", (responseText) => onSuccess(JSON.parse(responseText)));
 }
 
 export function getRoutineNames(onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8080" + apiRoutinePath + "/names");
-    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
-    xhr.send();
+    get(apiRoutinePath + "/names", (responseText) => onSuccess(JSON.parse(responseText)));
 }
 
 export function routineIsActive(onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8080" + apiRoutinePath + "/in-progress");
-    xhr.onload = () => onSuccess(xhr.responseText === "true");
-    xhr.send();
+    get(apiRoutinePath + "/in-progress", (responseText) => onSuccess(responseText === "true"));
 }
 
 export function startRoutine(routineId, onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8080" + apiRoutinePath + "/start/" + routineId);
-    xhr.onload = onSuccess;
-    xhr.send();
+    post(apiRoutinePath + "/start/" + routineId, onSuccess);
 }
 
 export function getNextExercise(onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8080" + apiRoutinePath + "/next");
-    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
-    xhr.send();
+    post(apiRoutinePath + "/next", (responseText) => onSuccess(JSON.parse(responseText)));
 }
 
 export function getCurrentExercise(onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8080" + apiRoutinePath + "/current");
-    xhr.onload = () => onSuccess(JSON.parse(xhr.responseText));
-    xhr.send();
+    post(apiRoutinePath + "/current", (responseText) => onSuccess(JSON.parse(responseText)));
 }
 
 export function stopRoutine(onSuccess) {
+    post(apiRoutinePath + "/stop", onSuccess);
+}
+
+export function searchExerciseNames(filter, onSuccess) {
+    post(apiExercisePath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), filter);
+}
+
+export function searchGroupNames(filter, onSuccess) {
+    post(apiGroupPath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), filter);
+}
+
+export function saveRoutine(routine, onSuccess) {
+    post(apiRoutinePath + "/save", onSuccess, routine);
+}
+
+function get(url, onSuccess) {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8080" + apiRoutinePath + "/stop");
-    xhr.onload = onSuccess;
+    xhr.open("GET", "http://localhost:8080" + url);
+    xhr.onload = () => onSuccess(xhr.responseText);
     xhr.send();
+}
+
+function post(url, onSuccess, body) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:8080" + url);
+    xhr.onload = () => onSuccess(xhr.responseText);
+    if (body) {
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.send(JSON.stringify(body));
+    } else {
+        xhr.send();
+    }
 }
