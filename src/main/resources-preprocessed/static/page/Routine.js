@@ -11,6 +11,10 @@ class Routine extends React.Component {
         this.updateExercise = this.updateExercise.bind(this);
     }
 
+    componentDidMount() {
+        this.getCurrent();
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.routineIsActive !== prevProps.routineIsActive && this.props.routineIsActive) {
             this.getCurrent();
