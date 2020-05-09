@@ -10,6 +10,8 @@ public class WebConfiguration implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/{x:[\\w\\-]+}")
                 .setViewName("forward:/");
+        registry.addViewController("/{x:[\\w\\-]+}/")
+                .setViewName("forward:/");
         registry.addViewController("/{x:^(?!api$).*$}/**/{y:[\\w\\-]+}")
                 .setViewName("forward:/");
     }
