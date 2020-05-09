@@ -14,18 +14,33 @@ import {
     editGroupPath,
     editPath,
     editRoutinePath,
-    newRoutinePath
+    newRoutinePath,
+    routineIsActive
 } from "../util/RoutineUtils";
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {routineIsActive: false};
+        this.setRoutineIsActive = this.setRoutineIsActive.bind(this);
+    }
+
+    componentDidMount() {
+        this.setRoutineIsActive();
+    }
+
+    setRoutineIsActive() {
+        routineIsActive((isActive) => this.setState({routineIsActive: isActive}));
+    }
+
     render() {
         return (
             <BrowserRouter>
-                <NavBar/>
+                <NavBar routineIsActive={this.state.routineIsActive}/>
                 <div className="container">
                     <Switch>
                         <Route path={continueRoutinePath}>
-                            <Routine/>
+                            <Routine routineIsActive={this.state.routineIsActive}/>
                         </Route>
                         <Route path={editExercisePath + "/:id"}>
                             <EditExercise/>

@@ -11,8 +11,10 @@ class Routine extends React.Component {
         this.updateExercise = this.updateExercise.bind(this);
     }
 
-    componentDidMount() {
-        this.getCurrent();
+    componentDidUpdate(prevProps) {
+        if (this.props.routineIsActive !== prevProps.routineIsActive && this.props.routineIsActive) {
+            this.getCurrent();
+        }
     }
 
     getCurrent() {
@@ -32,20 +34,24 @@ class Routine extends React.Component {
     }
 
     render() {
-        return (
-            <>
-                <h5>Current Exercise:</h5>
-                <h1>{this.state.exercise.repCount + " " + this.state.exercise.name}</h1>
-                <div className="row mt-4">
-                    <div className="col-auto">
-                        <button className="btn btn-dark" onClick={this.next}>Next</button>
+        if (this.props.routineIsActive) {
+            return (
+                <>
+                    <h5>Current Exercise:</h5>
+                    <h1>{this.state.exercise.repCount + " " + this.state.exercise.name}</h1>
+                    <div className="row mt-4">
+                        <div className="col-auto">
+                            <button className="btn btn-dark" onClick={this.next}>Next</button>
+                        </div>
+                        <div className="col">
+                            <button className="btn btn-danger" onClick={this.stop}>Stop</button>
+                        </div>
                     </div>
-                    <div className="col">
-                        <button className="btn btn-danger" onClick={this.stop}>Stop</button>
-                    </div>
-                </div>
-            </>
-        );
+                </>
+            );
+        } else {
+            return <h1>No Routine is Active</h1>;
+        }
     }
 }
 
