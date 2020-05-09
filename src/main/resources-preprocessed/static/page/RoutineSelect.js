@@ -1,42 +1,44 @@
 import React from "react";
 import {continueRoutinePath, getRoutineNames, startRoutine} from "../util/RoutineUtils";
 
-const selectId = "routineSelect";
-
 class RoutineSelect extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {options: null};
-        this.mapNamesToOptions = this.mapNamesToOptions.bind(this);
+        this.state = {routines: null, selectedRoutineId: ""};
         this.start = this.start.bind(this);
     }
 
     componentDidMount() {
-        getRoutineNames((routines) => this.setState({options: this.mapNamesToOptions(routines)}));
+        getRoutineNames((routines) => this.setState({
+            routines: routines,
+            selectedRoutineId: routines?.length > 0 ? routines[0].id : ""
+        }));
     }
 
-    mapNamesToOptions(routines) {
-        return routines.map((routine) => (
-            <option key={routine.id} value={routine.id}>{routine.name}</option>
-        ));
+    handleSelectChange(event) {
+        const routineId = event.target.value;
+        this.setState({selectedRoutineId: routineId});
     }
 
     start() {
-        const routineId = document.getElementById(selectId).value;
+        const routineId = this.state.selectedRoutineId;
         if (routineId) {
             startRoutine(routineId, () => window.location.href = continueRoutinePath);
         }
     }
 
     render() {
-        const options = this.state.options;
+        const options = this.state.routines?.map((routine) => (
+            <option key={routine.id} value={routine.id}>{routine.name}</option>
+        ));
         const selectSize = options ? Math.min(options.length, 5) : 1;
         return (
             <>
                 <h1>Select a Routine</h1>
                 <div className="row">
                     <div className="col-8 col-md-6 col-lg-5 form-group">
-                        <select id={selectId} className="form-control" size={selectSize}>{options}</select>
+                        <select className="form-control" size={selectSize} value={this.state.selectedRoutineId}
+                                onChange={this.handleSelectChange}>{options}</select>
                     </div>
                 </div>
                 <button className="btn btn-dark" onClick={this.start}>Start</button>
