@@ -60,6 +60,10 @@ export function searchGroupNames(filter, onSuccess) {
     post(apiGroupPath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), filter);
 }
 
+export function saveExercise(exercise, onSuccess) {
+    post(apiExercisePath + "/save", onSuccess, exercise);
+}
+
 export function saveGroup(group, onSuccess) {
     post(apiGroupPath + "/save", onSuccess, group);
 }
