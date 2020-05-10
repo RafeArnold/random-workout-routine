@@ -6,3 +6,7 @@ spring:
     password: random-workout-routine
     initialization-mode: always
   jpa.hibernate.ddl-auto: update
+---
+spring:
+  profiles: prod
+  datasource.url: jdbc:postgresql://10.0.2.15:5432/random-workout-routine
