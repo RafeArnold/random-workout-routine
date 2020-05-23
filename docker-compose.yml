@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  rwr:
+    image: random-workout-routine:1.0
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: random-workout-routine
+      POSTGRES_PASSWORD: random-workout-routine
+      POSTGRES_DB: random-workout-routine
+    ports:
+      - "5432:5432"
+    volumes:
+      - "dbdata:/var/lib/postgresql/data"
+volumes:
+  dbdata:
