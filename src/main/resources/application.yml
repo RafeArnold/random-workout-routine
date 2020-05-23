@@ -7,6 +7,7 @@ spring:
     initialization-mode: always
   jpa.hibernate.ddl-auto: update
 ---
+server.servlet.context-path: /rwr
 spring:
   profiles: prod
   datasource:

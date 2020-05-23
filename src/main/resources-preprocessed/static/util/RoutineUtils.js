@@ -1,12 +1,13 @@
-export const apiExercisePath = "/api/exercise";
-export const apiGroupPath = "/api/group";
-export const apiRoutinePath = "/api/routine";
-export const editPath = "/edit";
-export const editExercisePath = "/edit/exercise";
-export const editGroupPath = "/edit/group";
-export const editRoutinePath = "/edit/routine";
-export const newRoutinePath = "/new-routine";
-export const continueRoutinePath = "/routine";
+export const contextPath = document.getElementById("contextPath").innerText;
+export const apiExercisePath = contextPath + "api/exercise";
+export const apiGroupPath = contextPath + "api/group";
+export const apiRoutinePath = contextPath + "api/routine";
+export const editPath = contextPath + "edit";
+export const editExercisePath = contextPath + "edit/exercise";
+export const editGroupPath = contextPath + "edit/group";
+export const editRoutinePath = contextPath + "edit/routine";
+export const newRoutinePath = contextPath + "new-routine";
+export const continueRoutinePath = contextPath + "routine";
 
 export function getExercise(id, onSuccess) {
     get(apiExercisePath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)));
@@ -74,14 +75,14 @@ export function saveRoutine(routine, onSuccess) {
 
 function get(url, onSuccess) {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8080" + url);
+    xhr.open("GET", window.location.origin + url);
     xhr.onload = () => onSuccess(xhr.responseText);
     xhr.send();
 }
 
 function post(url, onSuccess, body) {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8080" + url);
+    xhr.open("POST", window.location.origin + url);
     xhr.onload = () => onSuccess(xhr.responseText);
     if (body) {
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");

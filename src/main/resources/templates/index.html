@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
         <title>Random Workout Routine</title>
     </head>
     <body>
+        <div hidden id="contextPath" th:text="@{/}"></div>
         <div id="app"></div>
-        <script src="/bundle.js"></script>
+        <script th:src="@{/bundle.js}"></script>
     </body>
 </html>

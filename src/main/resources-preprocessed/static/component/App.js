@@ -9,6 +9,7 @@ import NavBar from "./NavBar";
 import Routine from "../page/Routine";
 import RoutineSelect from "../page/RoutineSelect";
 import {
+    contextPath,
     continueRoutinePath,
     editExercisePath,
     editGroupPath,
@@ -57,7 +58,7 @@ class App extends React.Component {
                         <Route path={newRoutinePath}>
                             <RoutineSelect/>
                         </Route>
-                        <Route path="/">
+                        <Route path={contextPath}>
                             <Home/>
                         </Route>
                     </Switch>

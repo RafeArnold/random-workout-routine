@@ -7,7 +7,6 @@ module.exports = {
         filename: 'bundle.js',
         path: path.resolve(__dirname, '../resources/static')
     },
-    mode: 'none',
     module: {
         rules: [
             {
@@ -17,13 +16,6 @@ module.exports = {
             {
                 test: /\.js$/i,
                 loader: 'babel-loader'
-            },
-            {
-                test: /\.(eot|otf|svg|ttf|woff)$/i,
-                loader: 'file-loader',
-                options: {
-                    publicPath: '/'
-                }
             }
         ]
     },
