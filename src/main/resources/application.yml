@@ -9,7 +9,9 @@ spring:
 ---
 spring:
   profiles: prod
-  datasource.url: jdbc:postgresql://db:5432/random-workout-routine
+  datasource:
+    url: jdbc:postgresql://db:5432/random-workout-routine
+    password: j5NEo9*xrG&*
 ---
 spring:
   profiles: test

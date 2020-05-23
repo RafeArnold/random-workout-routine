@@ -10,7 +10,7 @@ services:
     image: postgres:12
     environment:
       POSTGRES_USER: random-workout-routine
-      POSTGRES_PASSWORD: random-workout-routine
+      POSTGRES_PASSWORD: j5NEo9*xrG&*
       POSTGRES_DB: random-workout-routine
     ports:
       - "5432:5432"
