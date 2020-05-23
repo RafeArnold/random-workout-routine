@@ -1,5 +1,6 @@
 import React from "react";
 import {continueRoutinePath, getRoutineNames, startRoutine} from "../util/RoutineUtils";
+import {Redirect} from "react-router-dom";
 
 class RoutineSelect extends React.Component {
     constructor(props) {
@@ -23,11 +24,14 @@ class RoutineSelect extends React.Component {
     start() {
         const routineId = this.state.selectedRoutineId;
         if (routineId) {
-            startRoutine(routineId, () => window.location.href = continueRoutinePath);
+            startRoutine(routineId, () => this.props.setRoutineIsActive(true));
         }
     }
 
     render() {
+        if (this.props.routineIsActive) {
+            return <Redirect to={continueRoutinePath}/>;
+        }
         const options = this.state.routines?.map((routine) => (
             <option key={routine.id} value={routine.id}>{routine.name}</option>
         ));

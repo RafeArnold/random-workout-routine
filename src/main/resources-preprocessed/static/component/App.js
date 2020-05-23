@@ -27,11 +27,11 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.setRoutineIsActive();
+        routineIsActive((isActive) => this.setRoutineIsActive(isActive));
     }
 
-    setRoutineIsActive() {
-        routineIsActive((isActive) => this.setState({routineIsActive: isActive}));
+    setRoutineIsActive(isActive) {
+        this.setState({routineIsActive: isActive});
     }
 
     render() {
@@ -41,7 +41,8 @@ class App extends React.Component {
                 <div className="container">
                     <Switch>
                         <Route path={continueRoutinePath}>
-                            <Routine routineIsActive={this.state.routineIsActive}/>
+                            <Routine routineIsActive={this.state.routineIsActive}
+                                     setRoutineIsActive={this.setRoutineIsActive}/>
                         </Route>
                         <Route path={editExercisePath + "/:id"}>
                             <EditExercise/>
@@ -56,7 +57,8 @@ class App extends React.Component {
                             <Edit/>
                         </Route>
                         <Route path={newRoutinePath}>
-                            <RoutineSelect/>
+                            <RoutineSelect routineIsActive={this.state.routineIsActive}
+                                           setRoutineIsActive={this.setRoutineIsActive}/>
                         </Route>
                         <Route path={contextPath}>
                             <Home/>

@@ -1,12 +1,12 @@
 import React from "react";
-import {withRouter} from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
 import {editPath, getRoutine, saveRoutine, searchGroupNames} from "../util/RoutineUtils";
 import update from "immutability-helper";
 
 class EditRoutine extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {routine: null, groupSearchResults: null, groupSearchInputValue: ""};
+        this.state = {routine: null, groupSearchResults: null, groupSearchInputValue: "", redirectToEdit: false};
         this.setRoutine = this.setRoutine.bind(this);
         this.updateName = this.updateName.bind(this);
         this.addGroup = this.addGroup.bind(this);
@@ -79,10 +79,13 @@ class EditRoutine extends React.Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        saveRoutine(this.state.routine, () => window.location.href = editPath);
+        saveRoutine(this.state.routine, () => this.setState({redirectToEdit: true}));
     }
 
     render() {
+        if (this.state.redirectToEdit) {
+            return <Redirect to={editPath}/>;
+        }
         const routine = this.state.routine;
         const groupListItems = routine?.groups?.map(group =>
             <li key={group.id} className="list-group-item d-flex align-items-center justify-content-between">

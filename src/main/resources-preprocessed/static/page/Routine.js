@@ -1,5 +1,11 @@
 import React from "react";
-import {contextPath, getCurrentExercise, getNextExercise, stopRoutine} from "../util/RoutineUtils";
+import {
+    getCurrentExercise,
+    getNextExercise,
+    newRoutinePath,
+    stopRoutine
+} from "../util/RoutineUtils";
+import {Redirect} from "react-router-dom";
 
 class Routine extends React.Component {
     constructor(props) {
@@ -12,11 +18,7 @@ class Routine extends React.Component {
     }
 
     componentDidMount() {
-        this.getCurrent();
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.routineIsActive !== prevProps.routineIsActive && this.props.routineIsActive) {
+        if (this.props.routineIsActive) {
             this.getCurrent();
         }
     }
@@ -30,7 +32,7 @@ class Routine extends React.Component {
     }
 
     stop() {
-        stopRoutine(() => window.location.href = contextPath);
+        stopRoutine(() => this.props.setRoutineIsActive(false));
     }
 
     updateExercise(exercise) {
@@ -38,24 +40,23 @@ class Routine extends React.Component {
     }
 
     render() {
-        if (this.props.routineIsActive) {
-            return (
-                <>
-                    <h5>Current Exercise:</h5>
-                    <h1>{this.state.exercise.repCount + " " + this.state.exercise.name}</h1>
-                    <div className="row mt-4">
-                        <div className="col-auto">
-                            <button className="btn btn-dark" onClick={this.next}>Next</button>
-                        </div>
-                        <div className="col">
-                            <button className="btn btn-danger" onClick={this.stop}>Stop</button>
-                        </div>
-                    </div>
-                </>
-            );
-        } else {
-            return <h1>No Routine is Active</h1>;
+        if (!this.props.routineIsActive) {
+            return <Redirect to={newRoutinePath}/>;
         }
+        return (
+            <>
+                <h5>Current Exercise:</h5>
+                <h1>{this.state.exercise.repCount + " " + this.state.exercise.name}</h1>
+                <div className="row mt-4">
+                    <div className="col-auto">
+                        <button className="btn btn-dark" onClick={this.next}>Next</button>
+                    </div>
+                    <div className="col">
+                        <button className="btn btn-danger" onClick={this.stop}>Stop</button>
+                    </div>
+                </div>
+            </>
+        );
     }
 }
 

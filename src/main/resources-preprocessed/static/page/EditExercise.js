@@ -1,12 +1,12 @@
 import React from "react";
-import {withRouter} from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
 import {editPath, getExercise, saveExercise} from "../util/RoutineUtils";
 import update from "immutability-helper";
 
 class EditExercise extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {exercise: null};
+        this.state = {exercise: null, redirectToEdit: false};
         this.setExercise = this.setExercise.bind(this);
         this.updateName = this.updateName.bind(this);
         this.updateRepCountLowerBound = this.updateRepCountLowerBound.bind(this);
@@ -46,10 +46,13 @@ class EditExercise extends React.Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        saveExercise(this.state.exercise, () => window.location.href = editPath);
+        saveExercise(this.state.exercise, () => this.setState({redirectToEdit: true}));
     }
 
     render() {
+        if (this.state.redirectToEdit) {
+            return <Redirect to={editPath}/>;
+        }
         const exercise = this.state.exercise;
         return (
             <>

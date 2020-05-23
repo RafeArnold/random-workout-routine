@@ -1,12 +1,12 @@
 import React from "react";
-import {withRouter} from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
 import {editPath, getGroup, saveGroup, searchExerciseNames} from "../util/RoutineUtils";
 import update from "immutability-helper";
 
 class EditGroup extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {group: null, exerciseSearchResults: null, exerciseSearchInputValue: ""};
+        this.state = {group: null, exerciseSearchResults: null, exerciseSearchInputValue: "", redirectToEdit: false};
         this.setGroup = this.setGroup.bind(this);
         this.updateName = this.updateName.bind(this);
         this.addExercise = this.addExercise.bind(this);
@@ -79,10 +79,13 @@ class EditGroup extends React.Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        saveGroup(this.state.group, () => window.location.href = editPath);
+        saveGroup(this.state.group, () => this.setState({redirectToEdit: true}));
     }
 
     render() {
+        if (this.state.redirectToEdit) {
+            return <Redirect to={editPath}/>;
+        }
         const group = this.state.group;
         const exerciseListItems = group?.exerciseOptions?.map(exercise =>
             <li key={exercise.id} className="list-group-item d-flex align-items-center justify-content-between">

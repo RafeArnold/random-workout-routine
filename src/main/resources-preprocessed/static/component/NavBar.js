@@ -9,10 +9,10 @@ class NavBar extends React.Component {
                 <div className="navbar-brand">RWR</div>
                 <ul className="navbar-nav">
                     <NavBarItem to={contextPath} exact>Home</NavBarItem>
-                    <NavBarItem to={newRoutinePath}>Start</NavBarItem>
+                    {!this.props.routineIsActive ?
+                        <NavBarItem to={newRoutinePath}>Start</NavBarItem> :
+                        <NavBarItem to={continueRoutinePath}>Continue</NavBarItem>}
                     <NavBarItem to={editPath}>Edit</NavBarItem>
-                    {this.props.routineIsActive ?
-                        <NavBarItem to={continueRoutinePath}>Continue</NavBarItem> : null}
                 </ul>
             </nav>
         );
