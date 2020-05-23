@@ -1,5 +1,5 @@
 import React from "react";
-import {getCurrentExercise, getNextExercise, stopRoutine} from "../util/RoutineUtils";
+import {contextPath, getCurrentExercise, getNextExercise, stopRoutine} from "../util/RoutineUtils";
 
 class Routine extends React.Component {
     constructor(props) {
@@ -30,7 +30,7 @@ class Routine extends React.Component {
     }
 
     stop() {
-        stopRoutine(() => window.location.href = "/");
+        stopRoutine(() => window.location.href = contextPath);
     }
 
     updateExercise(exercise) {
