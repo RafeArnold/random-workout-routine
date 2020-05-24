@@ -6,6 +6,7 @@ class RoutineSelect extends React.Component {
     constructor(props) {
         super(props);
         this.state = {routines: null, selectedRoutineId: ""};
+        this.handleSelectChange = this.handleSelectChange.bind(this);
         this.start = this.start.bind(this);
     }
 
