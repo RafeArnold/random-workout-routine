@@ -1,22 +1,28 @@
 import React from "react";
 import {Redirect, withRouter} from "react-router-dom";
-import {editPath, getExercise, saveExercise} from "../util/RoutineUtils";
+import {deleteExercise, editPath, getExercise, saveExercise} from "../util/RoutineUtils";
 import update from "immutability-helper";
 
 class EditExercise extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {exercise: null, redirectToEdit: false};
+        this.state = {exercise: null, redirectToEdit: false, deleting: false};
         this.setExercise = this.setExercise.bind(this);
         this.updateName = this.updateName.bind(this);
         this.updateRepCountLowerBound = this.updateRepCountLowerBound.bind(this);
         this.updateRepCountUpperBound = this.updateRepCountUpperBound.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.delete = this.delete.bind(this);
+        this.redirect = this.redirect.bind(this);
     }
 
     componentDidMount() {
         const id = this.props.match.params.id;
-        getExercise(id, this.setExercise);
+        if (id) {
+            getExercise(id, this.setExercise);
+        } else {
+            this.setState({exercise: {name: "", repCountLowerBound: 0, repCountUpperBound: 0}});
+        }
     }
 
     setExercise(exercise) {
@@ -46,7 +52,15 @@ class EditExercise extends React.Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        saveExercise(this.state.exercise, () => this.setState({redirectToEdit: true}));
+        saveExercise(this.state.exercise, this.redirect);
+    }
+
+    delete() {
+        deleteExercise(this.state.exercise.id, this.redirect);
+    }
+
+    redirect() {
+        this.setState({redirectToEdit: true});
     }
 
     render() {
@@ -56,7 +70,25 @@ class EditExercise extends React.Component {
         const exercise = this.state.exercise;
         return (
             <>
-                <h1>Edit Exercise {exercise?.name}</h1>
+                <div className="row justify-content-between align-items-center">
+                    <div className="col">
+                        <h1>Edit Exercise {exercise?.name}</h1>
+                    </div>
+                    {exercise?.id ?
+                        <div className="col-auto">
+                            {this.state.deleting ?
+                                <>
+                                    <span>Are you sure?</span>
+                                    <button className="btn btn-danger mx-3" onClick={this.delete}>Yes</button>
+                                    <button className="btn btn-dark"
+                                            onClick={() => this.setState({deleting: false})}>No
+                                    </button>
+                                </> :
+                                <button className="btn btn-danger"
+                                        onClick={() => this.setState({deleting: true})}>Delete</button>
+                            }
+                        </div> : null}
+                </div>
                 {exercise ?
                     <form onSubmit={this.handleFormSubmit}>
                         <input name="id" value={exercise.id} readOnly hidden/>
@@ -77,7 +109,9 @@ class EditExercise extends React.Component {
                         </div>
                         <div className="d-flex justify-content-between">
                             <button type="submit" className="btn btn-dark">Save</button>
-                            <a href={editPath} type="button" className="btn btn-danger">Cancel</a>
+                            <button type="button" className="btn btn-outline-dark"
+                                    onClick={this.redirect}>Cancel
+                            </button>
                         </div>
                     </form>
                     : null}

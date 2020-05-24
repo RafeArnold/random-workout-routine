@@ -1,12 +1,18 @@
 import React from "react";
 import {Redirect, withRouter} from "react-router-dom";
-import {editPath, getGroup, saveGroup, searchExerciseNames} from "../util/RoutineUtils";
+import {deleteGroup, editPath, getGroup, saveGroup, searchExerciseNames} from "../util/RoutineUtils";
 import update from "immutability-helper";
 
 class EditGroup extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {group: null, exerciseSearchResults: null, exerciseSearchInputValue: "", redirectToEdit: false};
+        this.state = {
+            group: null,
+            exerciseSearchResults: null,
+            exerciseSearchInputValue: "",
+            redirectToEdit: false,
+            deleting: false
+        };
         this.setGroup = this.setGroup.bind(this);
         this.updateName = this.updateName.bind(this);
         this.addExercise = this.addExercise.bind(this);
@@ -15,11 +21,17 @@ class EditGroup extends React.Component {
         this.searchExercise = this.searchExercise.bind(this);
         this.setExerciseSearchResults = this.setExerciseSearchResults.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.delete = this.delete.bind(this);
+        this.redirect = this.redirect.bind(this);
     }
 
     componentDidMount() {
         const id = this.props.match.params.id;
-        getGroup(id, this.setGroup);
+        if (id) {
+            getGroup(id, this.setGroup);
+        } else {
+            this.setState({group: {name: "", exerciseOptions: []}});
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -79,7 +91,15 @@ class EditGroup extends React.Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        saveGroup(this.state.group, () => this.setState({redirectToEdit: true}));
+        saveGroup(this.state.group, this.redirect);
+    }
+
+    delete() {
+        deleteGroup(this.state.group.id, this.redirect);
+    }
+
+    redirect() {
+        this.setState({redirectToEdit: true});
     }
 
     render() {
@@ -100,7 +120,25 @@ class EditGroup extends React.Component {
                 className="list-group-item list-group-item-action">{exercise.name}</li>);
         return (
             <>
-                <h1>Edit Group {group?.name}</h1>
+                <div className="row justify-content-between align-items-center">
+                    <div className="col">
+                        <h1>Edit Group {group?.name}</h1>
+                    </div>
+                    {group?.id ?
+                        <div className="col-auto">
+                            {this.state.deleting ?
+                                <>
+                                    <span>Are you sure?</span>
+                                    <button className="btn btn-danger mx-3" onClick={this.delete}>Yes</button>
+                                    <button className="btn btn-dark"
+                                            onClick={() => this.setState({deleting: false})}>No
+                                    </button>
+                                </> :
+                                <button className="btn btn-danger"
+                                        onClick={() => this.setState({deleting: true})}>Delete</button>
+                            }
+                        </div> : null}
+                </div>
                 {group ?
                     <form onSubmit={this.handleFormSubmit}>
                         <input name="id" value={group.id} readOnly hidden/>
@@ -126,7 +164,9 @@ class EditGroup extends React.Component {
                         </div>
                         <div className="d-flex justify-content-between">
                             <button type="submit" className="btn btn-dark">Save</button>
-                            <a href={editPath} type="button" className="btn btn-danger">Cancel</a>
+                            <button type="button" className="btn btn-outline-dark"
+                                    onClick={this.redirect}>Cancel
+                            </button>
                         </div>
                     </form>
                     : null}

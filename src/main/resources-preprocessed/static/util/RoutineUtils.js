@@ -10,79 +10,84 @@ export const newRoutinePath = contextPath + "new-routine";
 export const continueRoutinePath = contextPath + "routine";
 
 export function getExercise(id, onSuccess) {
-    get(apiExercisePath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)));
+    request(apiExercisePath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)), "GET");
 }
 
 export function getGroup(id, onSuccess) {
-    get(apiGroupPath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)));
+    request(apiGroupPath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)), "GET");
 }
 
 export function getRoutine(id, onSuccess) {
-    get(apiRoutinePath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)));
+    request(apiRoutinePath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)), "GET");
 }
 
 export function getExerciseNames(onSuccess) {
-    get(apiExercisePath + "/names", (responseText) => onSuccess(JSON.parse(responseText)));
+    request(apiExercisePath + "/names", (responseText) => onSuccess(JSON.parse(responseText)), "GET");
 }
 
 export function getGroupNames(onSuccess) {
-    get(apiGroupPath + "/names", (responseText) => onSuccess(JSON.parse(responseText)));
+    request(apiGroupPath + "/names", (responseText) => onSuccess(JSON.parse(responseText)), "GET");
 }
 
 export function getRoutineNames(onSuccess) {
-    get(apiRoutinePath + "/names", (responseText) => onSuccess(JSON.parse(responseText)));
+    request(apiRoutinePath + "/names", (responseText) => onSuccess(JSON.parse(responseText)), "GET");
 }
 
 export function routineIsActive(onSuccess) {
-    get(apiRoutinePath + "/in-progress", (responseText) => onSuccess(responseText === "true"));
+    request(apiRoutinePath + "/in-progress", (responseText) => onSuccess(responseText === "true"), "GET");
 }
 
 export function startRoutine(routineId, onSuccess) {
-    post(apiRoutinePath + "/start/" + routineId, onSuccess);
+    request(apiRoutinePath + "/start/" + routineId, onSuccess, "POST");
 }
 
 export function getNextExercise(onSuccess) {
-    post(apiRoutinePath + "/next", (responseText) => onSuccess(JSON.parse(responseText)));
+    request(apiRoutinePath + "/next", (responseText) => onSuccess(JSON.parse(responseText)), "POST");
 }
 
 export function getCurrentExercise(onSuccess) {
-    post(apiRoutinePath + "/current", (responseText) => onSuccess(JSON.parse(responseText)));
+    request(apiRoutinePath + "/current", (responseText) => onSuccess(JSON.parse(responseText)), "POST");
 }
 
 export function stopRoutine(onSuccess) {
-    post(apiRoutinePath + "/stop", onSuccess);
+    request(apiRoutinePath + "/stop", onSuccess, "POST");
 }
 
 export function searchExerciseNames(filter, onSuccess) {
-    post(apiExercisePath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), filter);
+    request(apiExercisePath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), "POST", filter);
 }
 
 export function searchGroupNames(filter, onSuccess) {
-    post(apiGroupPath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), filter);
+    request(apiGroupPath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), "POST", filter);
 }
 
 export function saveExercise(exercise, onSuccess) {
-    post(apiExercisePath + "/save", onSuccess, exercise);
+    request(apiExercisePath + "/save", onSuccess, "POST", exercise);
 }
 
 export function saveGroup(group, onSuccess) {
-    post(apiGroupPath + "/save", onSuccess, group);
+    request(apiGroupPath + "/save", onSuccess, "POST", group);
 }
 
 export function saveRoutine(routine, onSuccess) {
-    post(apiRoutinePath + "/save", onSuccess, routine);
+    request(apiRoutinePath + "/save", onSuccess, "POST", routine);
 }
 
-function get(url, onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", window.location.origin + url);
-    xhr.onload = () => onSuccess(xhr.responseText);
-    xhr.send();
+export function deleteExercise(id, onSuccess) {
+    request(apiExercisePath + "/delete/" + id, onSuccess, "DELETE");
 }
 
-function post(url, onSuccess, body) {
+export function deleteGroup(id, onSuccess) {
+    request(apiGroupPath + "/delete/" + id, onSuccess, "DELETE");
+}
+
+export function deleteRoutine(id, onSuccess) {
+    request(apiRoutinePath + "/delete/" + id, onSuccess, "DELETE");
+}
+
+function request(url, onSuccess, method, body) {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", window.location.origin + url);
+    xhr.open(method, window.location.origin + url);
     xhr.onload = () => onSuccess(xhr.responseText);
     if (body) {
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");

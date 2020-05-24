@@ -7,6 +7,7 @@ import {
     getGroupNames,
     getRoutineNames
 } from "../util/RoutineUtils";
+import {Redirect} from "react-router-dom";
 
 const exerciseTypeName = "exercise";
 const groupTypeName = "group";
@@ -15,11 +16,12 @@ const routineTypeName = "routine";
 class Edit extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {exercises: null, groups: null, routines: null, selected: null};
-        this.mapItemsToRows = this.mapItemsToRows.bind(this);
-        this.tableRow = this.tableRow.bind(this);
+        this.state = {exercises: null, groups: null, routines: null, selected: null, redirectTo: null};
+        this.mapItemsToCol = this.mapItemsToCol.bind(this);
         this.setSelected = this.setSelected.bind(this);
         this.getUrl = this.getUrl.bind(this);
+        this.addItem = this.addItem.bind(this);
+        this.redirect = this.redirect.bind(this);
     }
 
     componentDidMount() {
@@ -28,38 +30,23 @@ class Edit extends React.Component {
         getRoutineNames((routines) => this.setState({routines: routines}));
     }
 
-    mapItemsToRows() {
-        const exercises = this.state.exercises;
-        const groups = this.state.groups;
-        const routines = this.state.routines;
-        if (exercises && groups && routines) {
-            const rowCount = Math.max(exercises.length, groups.length, routines.length);
-            const rows = [];
-            for (let i = 0; i < rowCount; i++) {
-                const exercise = i < exercises.length ? exercises[i] : null;
-                const group = i < groups.length ? groups[i] : null;
-                const routine = i < routines.length ? routines[i] : null;
-                rows.push(
-                    <tr key={exercise?.id + "|" + group?.id + "|" + routine?.id}>
-                        {this.tableRow(exerciseTypeName, exercise)}
-                        {this.tableRow(groupTypeName, group)}
-                        {this.tableRow(routineTypeName, routine)}
-                    </tr>
-                );
-            }
-            return rows;
-        }
-    }
-
-    tableRow(type, item) {
-        if (item) {
-            const selected = this.state.selected;
-            const id = item.id;
-            const name = item.name;
-            return <td
-                className={selected && selected.id === id ? "bg-secondary text-light" : ""}
-                onClick={() => this.setSelected(type, id)}>{name}</td>;
-        }
+    mapItemsToCol(items, itemTypeName, itemDisplayName) {
+        const selected = this.state.selected;
+        return (
+            <div className="col">
+                <h4 className="text-center">{itemDisplayName}</h4>
+                {items ? <ul className="list-group">
+                    {items.map(item =>
+                        <li key={item.id}
+                            className={"list-group-item list-group-item-action" +
+                            (selected && selected.id === item.id ? " bg-secondary text-light" : "")}
+                            onClick={() => this.setSelected(itemTypeName, item.id)}>{item.name}</li>)}
+                    {<li className="list-group-item list-group-item-success list-group-item-action"
+                         onClick={() => this.addItem(itemTypeName)}>
+                        <i className="oi oi-plus"/></li>}
+                </ul> : null}
+            </div>
+        );
     }
 
     setSelected(type, id) {
@@ -89,24 +76,39 @@ class Edit extends React.Component {
         return url;
     }
 
+    addItem(itemTypeName) {
+        switch (itemTypeName) {
+            case exerciseTypeName:
+                this.redirect(editExercisePath);
+                break;
+            case groupTypeName:
+                this.redirect(editGroupPath);
+                break;
+            case routineTypeName:
+                this.redirect(editRoutinePath);
+        }
+    }
+
+    redirect(to) {
+        this.setState({redirectTo: to});
+    }
+
     render() {
+        const redirectTo = this.state.redirectTo;
+        if (redirectTo) {
+            return <Redirect to={redirectTo}/>;
+        }
         const selected = this.state.selected;
         return (
             <>
                 <h1>Select an Item to Edit</h1>
-                <table className="table table-bordered table-cell-hover">
-                    <thead className="thead-dark">
-                        <tr>
-                            <th>Exercise</th>
-                            <th>Group</th>
-                            <th>Routine</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.mapItemsToRows()}
-                    </tbody>
-                </table>
-                {selected ? <a className="btn btn-dark" href={this.getUrl(selected.type, selected.id)}>Edit</a> : null}
+                <div className="row my-4">
+                    {this.mapItemsToCol(this.state.exercises, exerciseTypeName, "Exercises")}
+                    {this.mapItemsToCol(this.state.groups, groupTypeName, "Groups")}
+                    {this.mapItemsToCol(this.state.routines, routineTypeName, "Routines")}
+                </div>
+                {selected ? <button className="btn btn-dark"
+                                    onClick={() => this.redirect(this.getUrl(selected.type, selected.id))}>Edit</button> : null}
             </>
         );
     }

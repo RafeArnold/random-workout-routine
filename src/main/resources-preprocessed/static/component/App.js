@@ -44,13 +44,13 @@ class App extends React.Component {
                             <Routine routineIsActive={this.state.routineIsActive}
                                      setRoutineIsActive={this.setRoutineIsActive}/>
                         </Route>
-                        <Route path={editExercisePath + "/:id"}>
+                        <Route path={[editExercisePath + "/:id", editExercisePath]}>
                             <EditExercise/>
                         </Route>
-                        <Route path={editGroupPath + "/:id"}>
+                        <Route path={[editGroupPath + "/:id", editGroupPath]}>
                             <EditGroup/>
                         </Route>
-                        <Route path={editRoutinePath + "/:id"}>
+                        <Route path={[editRoutinePath + "/:id", editRoutinePath]}>
                             <EditRoutine/>
                         </Route>
                         <Route path={editPath}>
