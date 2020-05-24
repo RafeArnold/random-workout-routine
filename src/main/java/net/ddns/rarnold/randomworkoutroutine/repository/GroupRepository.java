@@ -1,5 +1,6 @@
 package net.ddns.rarnold.randomworkoutroutine.repository;
 
+import net.ddns.rarnold.randomworkoutroutine.model.entity.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.Group;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -27,4 +28,6 @@ public interface GroupRepository extends CrudRepository<Group, UUID> {
      */
     @Query("SELECT g.id, g.name FROM grouping g WHERE LOWER(g.name) LIKE :#{'%' + #searchTerm.toLowerCase() + '%'} AND g.name NOT IN :excludedNames")
     List<Object[]> findAllIdsAndNamesWithNameContainingIgnoreCase(@Param("searchTerm") String searchTerm, @Param("excludedNames") Collection<String> excludedNames);
+
+    List<Group> findAllByExerciseOptionsContaining(ExerciseOption exercise);
 }

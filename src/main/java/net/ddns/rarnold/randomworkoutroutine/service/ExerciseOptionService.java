@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class ExerciseOptionService {
 
     private final ExerciseOptionRepository repository;
+    private final GroupService groupService;
 
     public ExerciseOption getById(UUID id) {
         return repository.findById(id)
@@ -25,6 +26,7 @@ public class ExerciseOptionService {
     }
 
     public void delete(UUID id) {
+        groupService.removeExerciseFromAll(getById(id));
         repository.deleteById(id);
     }
 

@@ -2,6 +2,7 @@ package net.ddns.rarnold.randomworkoutroutine.service;
 
 import lombok.RequiredArgsConstructor;
 import net.ddns.rarnold.randomworkoutroutine.model.Filter;
+import net.ddns.rarnold.randomworkoutroutine.model.entity.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.Group;
 import net.ddns.rarnold.randomworkoutroutine.repository.GroupRepository;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 public class GroupService {
 
     private final GroupRepository repository;
+    private final RoutineService routineService;
 
     public Group getById(UUID id) {
         return repository.findById(id)
@@ -25,11 +27,22 @@ public class GroupService {
     }
 
     public void delete(UUID id) {
+        routineService.removeGroupFromAll(getById(id));
         repository.deleteById(id);
     }
 
     public List<Group> getNames() {
         return transformIdAndNameToGroup(repository.findAllIdsAndNames());
+    }
+
+    public void removeExerciseFromAll(ExerciseOption exercise) {
+        List<Group> groups = repository.findAllByExerciseOptionsContaining(exercise);
+        for (Group group : groups) {
+            group.setExerciseOptions(group.getExerciseOptions().stream()
+                    .filter(e -> e.getId() != exercise.getId())
+                    .collect(Collectors.toList()));
+            repository.save(group);
+        }
     }
 
     public List<Group> searchNames(Filter filter) {

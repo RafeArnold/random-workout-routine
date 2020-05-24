@@ -1,6 +1,7 @@
 package net.ddns.rarnold.randomworkoutroutine.service;
 
 import lombok.RequiredArgsConstructor;
+import net.ddns.rarnold.randomworkoutroutine.model.entity.Group;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.Routine;
 import net.ddns.rarnold.randomworkoutroutine.repository.RoutineRepository;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,15 @@ public class RoutineService {
                     return routine;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public void removeGroupFromAll(Group group) {
+        List<Routine> routines = repository.findAllByGroupsContaining(group);
+        for (Routine routine : routines) {
+            routine.setGroups(routine.getGroups().stream()
+                    .filter(g -> g.getId() != group.getId())
+                    .collect(Collectors.toList()));
+            repository.save(routine);
+        }
     }
 }

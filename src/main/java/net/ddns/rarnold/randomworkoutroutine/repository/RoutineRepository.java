@@ -1,5 +1,6 @@
 package net.ddns.rarnold.randomworkoutroutine.repository;
 
+import net.ddns.rarnold.randomworkoutroutine.model.entity.Group;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.Routine;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -12,4 +13,6 @@ import java.util.UUID;
 public interface RoutineRepository extends CrudRepository<Routine, UUID> {
     @Query("SELECT r.id, r.name FROM Routine r")
     List<Object[]> findAllIdsAndNames();
+
+    List<Routine> findAllByGroupsContaining(Group group);
 }
