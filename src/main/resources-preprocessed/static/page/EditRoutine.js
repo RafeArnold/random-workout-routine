@@ -1,7 +1,7 @@
 import React from "react";
 import {withRouter} from "react-router-dom";
 import EditParentItem from "./EditParentItem";
-import {deleteRoutine, getRoutine, saveRoutine, searchGroupNames} from "../util/RoutineUtils";
+import {deleteRoutine, getRoutine, saveRoutine, searchGroupNames} from "../util/apiUtils";
 
 class EditRoutine extends EditParentItem {
     constructor(props) {

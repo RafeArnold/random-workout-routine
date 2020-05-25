@@ -1,7 +1,7 @@
 import React from "react";
 import update from "immutability-helper";
 import {Redirect} from "react-router-dom";
-import {editPath} from "../util/RoutineUtils";
+import {editPath} from "../util/apiUtils";
 
 class EditItem extends React.Component {
     constructor(props) {

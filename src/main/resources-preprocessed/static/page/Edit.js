@@ -6,7 +6,7 @@ import {
     getExerciseNames,
     getGroupNames,
     getRoutineNames
-} from "../util/RoutineUtils";
+} from "../util/apiUtils";
 import {Redirect} from "react-router-dom";
 
 const exerciseTypeName = "exercise";

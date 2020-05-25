@@ -1,7 +1,7 @@
 import React from "react";
 import {withRouter} from "react-router-dom";
 import EditItem from "./EditItem";
-import {deleteExercise, getExercise, saveExercise} from "../util/RoutineUtils";
+import {deleteExercise, getExercise, saveExercise} from "../util/apiUtils";
 import update from "immutability-helper";
 
 class EditExercise extends EditItem {

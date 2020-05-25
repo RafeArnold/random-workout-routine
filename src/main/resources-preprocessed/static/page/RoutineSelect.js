@@ -1,5 +1,5 @@
 import React from "react";
-import {continueRoutinePath, getRoutineNames, startRoutine} from "../util/RoutineUtils";
+import {continueRoutinePath, getRoutineNames, startRoutine} from "../util/apiUtils";
 import {Redirect} from "react-router-dom";
 
 class RoutineSelect extends React.Component {

@@ -4,7 +4,7 @@ import {
     getNextExercise,
     newRoutinePath,
     stopRoutine
-} from "../util/RoutineUtils";
+} from "../util/apiUtils";
 import {Redirect} from "react-router-dom";
 
 class Routine extends React.Component {

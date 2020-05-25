@@ -17,7 +17,7 @@ import {
     editRoutinePath,
     newRoutinePath,
     routineIsActive
-} from "../util/RoutineUtils";
+} from "../util/apiUtils";
 
 class App extends React.Component {
     constructor(props) {

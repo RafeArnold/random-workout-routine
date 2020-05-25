@@ -1,5 +1,5 @@
 import React from "react";
-import {contextPath, continueRoutinePath, editPath, newRoutinePath} from "../util/RoutineUtils";
+import {contextPath, continueRoutinePath, editPath, newRoutinePath} from "../util/apiUtils";
 import NavBarItem from "./NavBarItem";
 
 class NavBar extends React.Component {
