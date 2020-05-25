@@ -38,10 +38,12 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: jar
+    - name: Set image tag variable
+      run: echo '::set-env name=IMAGE_TAG::rwr:'$(date +%s)
     - name: Build the image
-      run: docker build . --file Dockerfile --tag rwr:$(date +%s)
+      run: docker build . --file Dockerfile --tag $IMAGE_TAG
     - name: Save the image
-      run: docker save rwr:$(date +%s) > rwr.tar
+      run: docker save $IMAGE_TAG > rwr.tar
     - name: Upload image artifact
       uses: actions/upload-artifact@v1
       with:
