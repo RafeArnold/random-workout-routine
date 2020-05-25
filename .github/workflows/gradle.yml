@@ -10,10 +10,9 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  build_jar:
+    name: Build JAR
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
@@ -24,7 +23,20 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - uses: actions/upload-artifact@v1
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v1
       with:
-        name: Package
+        name: jar
         path: build/libs
+  build_image:
+    name: Build Docker Image
+    needs: [build_jar]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download JAR artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: jar
+    - name: Build the image
+      run: docker build . --file Dockerfile --tag rwr:$(date +%s)
