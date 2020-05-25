@@ -40,3 +40,10 @@ jobs:
         name: jar
     - name: Build the image
       run: docker build . --file Dockerfile --tag rwr:$(date +%s)
+    - name: Save the image
+      run: docker save rwr:$(date +%s) > rwr.tar
+    - name: Upload image artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: image
+        path: rwr.tar
