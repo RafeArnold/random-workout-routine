@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   rwr:
-    image: rwr:1.0
+    image: rwr
     ports:
       - "8080:8080"
     depends_on:
