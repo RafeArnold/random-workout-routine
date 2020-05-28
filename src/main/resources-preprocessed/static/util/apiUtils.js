@@ -49,6 +49,10 @@ export function getCurrentExercise(onSuccess) {
     request(apiRoutinePath + "/current", (responseText) => onSuccess(JSON.parse(responseText)), "POST");
 }
 
+export function getSetCount(onSuccess) {
+    request(apiRoutinePath + "/set-count", (responseText) => onSuccess(parseInt(responseText)), "GET");
+}
+
 export function stopRoutine(onSuccess) {
     request(apiRoutinePath + "/stop", onSuccess, "POST");
 }
