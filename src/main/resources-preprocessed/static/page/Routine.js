@@ -22,14 +22,10 @@ class Routine extends React.Component {
 
     getCurrent() {
         getCurrentExercise(this.updateExercise);
-        this.getCount();
     }
 
     next() {
-        getNextExercise((exercise) => {
-            this.updateExercise(exercise);
-            this.getCount();
-        });
+        getNextExercise(this.updateExercise);
     }
 
     stop() {
@@ -38,6 +34,7 @@ class Routine extends React.Component {
 
     updateExercise(exercise) {
         this.setState({exercise: exercise});
+        this.getCount();
     }
 
     getCount() {
