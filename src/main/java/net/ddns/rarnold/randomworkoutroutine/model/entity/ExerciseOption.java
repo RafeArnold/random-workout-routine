@@ -30,12 +30,6 @@ public class ExerciseOption {
     @Column(nullable = false)
     private int repCountUpperBound;
 
-    public ExerciseOption(String name, int repCountLowerBound, int repCountUpperBound) {
-        this.name = name;
-        this.repCountLowerBound = repCountLowerBound;
-        this.repCountUpperBound = repCountUpperBound;
-    }
-
     @JsonIgnore
     public Exercise getExercise() {
         return new Exercise(name, RandomUtils.nextInt(repCountLowerBound, repCountUpperBound));

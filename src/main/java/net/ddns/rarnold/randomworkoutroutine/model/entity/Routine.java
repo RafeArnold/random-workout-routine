@@ -22,9 +22,4 @@ public class Routine {
     @ManyToMany(fetch = FetchType.EAGER)
     @OrderColumn
     private List<Group> groups;
-
-    public Routine(String name, List<Group> groups) {
-        this.name = name;
-        this.groups = groups;
-    }
 }

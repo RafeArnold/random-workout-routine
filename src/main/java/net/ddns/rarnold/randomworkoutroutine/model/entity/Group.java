@@ -21,9 +21,4 @@ public class Group {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<ExerciseOption> exerciseOptions;
-
-    public Group(String name, List<ExerciseOption> exerciseOptions) {
-        this.name = name;
-        this.exerciseOptions = exerciseOptions;
-    }
 }
