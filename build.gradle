@@ -43,7 +43,7 @@ test {
 npm_run_build {
 	inputs.files fileTree('src/main/resources-preprocessed')
 	inputs.file 'package.json'
-	outputs.dir 'src/main/resources/static/bundle'
+	outputs.dir 'src/main/resources/static'
 }
 
 processResources.dependsOn npm_run_build
