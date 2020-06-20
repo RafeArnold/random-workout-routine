@@ -46,4 +46,5 @@ npm_run_build {
 	outputs.dir 'src/main/resources/static'
 }
 
-processResources.dependsOn npm_run_build
+processResources.shouldRunAfter npm_run_build
+build.dependsOn npm_run_build
