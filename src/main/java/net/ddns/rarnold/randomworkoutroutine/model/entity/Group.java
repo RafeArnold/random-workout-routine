@@ -1,5 +1,6 @@
 package net.ddns.rarnold.randomworkoutroutine.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,4 +20,8 @@ public class Group {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<ExerciseOption> exerciseOptions;
+
+    @Transient
+    @JsonIgnore
+    private double[] optionWeights;
 }
