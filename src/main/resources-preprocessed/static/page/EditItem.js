@@ -82,7 +82,7 @@ class EditItem extends React.Component {
                                    onChange={this.updateName}/>
                         </div>
                         {this.extraInputs()}
-                        <div className="d-flex justify-content-between">
+                        <div className="d-flex justify-content-between mb-3">
                             <button type="submit" className="btn btn-dark">Save</button>
                             <button type="button" className="btn btn-outline-dark"
                                     onClick={this.redirect}>Cancel
