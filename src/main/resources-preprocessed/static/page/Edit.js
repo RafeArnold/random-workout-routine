@@ -16,9 +16,8 @@ const routineTypeName = "routine";
 class Edit extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {exercises: null, groups: null, routines: null, selected: null, redirectTo: null};
+        this.state = {exercises: null, groups: null, routines: null, redirectTo: null};
         this.mapItemsToCol = this.mapItemsToCol.bind(this);
-        this.setSelected = this.setSelected.bind(this);
         this.getUrl = this.getUrl.bind(this);
         this.addItem = this.addItem.bind(this);
         this.redirect = this.redirect.bind(this);
@@ -31,7 +30,6 @@ class Edit extends React.Component {
     }
 
     mapItemsToCol(items, itemTypeName, itemDisplayName) {
-        const selected = this.state.selected;
         return (
             <div className="col">
                 <h4 className="text-center">{itemDisplayName}</h4>
@@ -41,23 +39,12 @@ class Edit extends React.Component {
                         <i className="oi oi-plus"/></li>}
                     {items.map(item =>
                         <li key={item.id}
-                            className={"list-group-item list-group-item-action" +
-                            (selected && selected.id === item.id ? " bg-secondary text-light" : "")}
-                            onClick={() => this.setSelected(itemTypeName, item.id)}>{item.name}</li>)}
+                            className={"list-group-item list-group-item-action"}
+                            style={{cursor: "pointer"}}
+                            onClick={() => this.redirect(this.getUrl(itemTypeName, item.id))}>{item.name}</li>)}
                 </ul> : null}
             </div>
         );
-    }
-
-    setSelected(type, id) {
-        const selected = this.state.selected;
-        let newSelected;
-        if (selected && selected.id === id) {
-            newSelected = null;
-        } else {
-            newSelected = {type: type, id: id};
-        }
-        this.setState({selected: newSelected});
     }
 
     getUrl(type, id) {
@@ -98,7 +85,6 @@ class Edit extends React.Component {
         if (redirectTo) {
             return <Redirect to={redirectTo}/>;
         }
-        const selected = this.state.selected;
         return (
             <>
                 <h1>Select an Item to Edit</h1>
@@ -107,8 +93,6 @@ class Edit extends React.Component {
                     {this.mapItemsToCol(this.state.groups, groupTypeName, "Groups")}
                     {this.mapItemsToCol(this.state.routines, routineTypeName, "Routines")}
                 </div>
-                {selected ? <button className="btn btn-dark"
-                                    onClick={() => this.redirect(this.getUrl(selected.type, selected.id))}>Edit</button> : null}
             </>
         );
     }
