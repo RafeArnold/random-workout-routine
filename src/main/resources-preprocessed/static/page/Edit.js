@@ -36,14 +36,14 @@ class Edit extends React.Component {
             <div className="col">
                 <h4 className="text-center">{itemDisplayName}</h4>
                 {items ? <ul className="list-group">
+                    {<li className="list-group-item list-group-item-success list-group-item-action"
+                         onClick={() => this.addItem(itemTypeName)} style={{cursor: "pointer"}}>
+                        <i className="oi oi-plus"/></li>}
                     {items.map(item =>
                         <li key={item.id}
                             className={"list-group-item list-group-item-action" +
                             (selected && selected.id === item.id ? " bg-secondary text-light" : "")}
                             onClick={() => this.setSelected(itemTypeName, item.id)}>{item.name}</li>)}
-                    {<li className="list-group-item list-group-item-success list-group-item-action"
-                         onClick={() => this.addItem(itemTypeName)}>
-                        <i className="oi oi-plus"/></li>}
                 </ul> : null}
             </div>
         );
