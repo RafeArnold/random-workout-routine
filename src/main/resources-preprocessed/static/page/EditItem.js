@@ -98,7 +98,7 @@ class EditItem extends React.Component {
                         </div>
                         {this.extraInputs()}
                         <div className="form-group">
-                            <label htmlFor="tags">Tags</label>
+                            <label htmlFor="tags">Tags <small>(separate with commas)</small></label>
                             <input className="form-control" id="tags" name="tags"
                                    value={this.state.tags} onChange={this.handleTagsInputChange}/>
                         </div>
