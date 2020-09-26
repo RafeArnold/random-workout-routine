@@ -2,21 +2,18 @@ package net.ddns.rarnold.randomworkoutroutine.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import java.util.List;
-import java.util.UUID;
 
 @Entity(name = "grouping")
 @Data
-public class Group {
-
-    @Id
-    @GeneratedValue
-    private UUID id;
-
-    @Column(unique = true, nullable = false)
-    private String name;
+@EqualsAndHashCode(callSuper = true)
+public class Group extends Item {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<ExerciseOption> exerciseOptions;
