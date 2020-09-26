@@ -25,6 +25,6 @@ public interface ItemRepository<T extends Item> extends CrudRepository<T, UUID> 
      * @return A collection of {@link Item} projections whose names match the given filter
      * parameters.
      */
-    @Query("SELECT e.id, e.name FROM #{#entityName} e WHERE LOWER(e.name) LIKE ?#{'%' + #searchTerm.toLowerCase() + '%'} AND e.name NOT IN :excludedNames")
+    @Query("SELECT e.id, e.name FROM #{#entityName} e WHERE (LOWER(e.name) LIKE ?#{'%' + #searchTerm.toLowerCase() + '%'} OR ?#{#searchTerm.toLowerCase()} MEMBER OF e.tags) AND e.name NOT IN :excludedNames")
     List<Object[]> findAllIdsAndNames(@Param("searchTerm") String searchTerm, @Param("excludedNames") Collection<String> excludedNames);
 }
