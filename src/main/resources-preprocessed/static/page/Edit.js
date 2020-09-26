@@ -23,9 +23,9 @@ class Edit extends React.Component {
             exercises: null,
             groups: null,
             routines: null,
-            [exerciseTypeName + "SearchInputValue"]: "",
-            [groupTypeName + "SearchInputValue"]: "",
-            [routineTypeName + "SearchInputValue"]: "",
+            exerciseSearchInputValue: "",
+            groupSearchInputValue: "",
+            routineSearchInputValue: "",
             redirectTo: null
         };
         this.mapItemsToCol = this.mapItemsToCol.bind(this);
@@ -67,15 +67,17 @@ class Edit extends React.Component {
 
     handleSearchInputChange(event, type) {
         const searchTerm = event.target.value
-        this.setState({[type + "SearchInputValue"]: searchTerm})
         switch (type) {
             case exerciseTypeName:
+                this.setState({exerciseSearchInputValue: searchTerm})
                 searchExerciseNames({searchTerm: searchTerm}, (exercises) => this.setState({exercises: exercises}))
                 break;
             case groupTypeName:
+                this.setState({groupSearchInputValue: searchTerm})
                 searchGroupNames({searchTerm: searchTerm}, (groups) => this.setState({groups: groups}))
                 break;
             case routineTypeName:
+                this.setState({routineSearchInputValue: searchTerm})
                 searchRoutineNames({searchTerm: searchTerm}, (routines) => this.setState({routines: routines}))
         }
     }
