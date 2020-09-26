@@ -30,18 +30,18 @@ public abstract class ItemService<T extends Item> {
         return transformIdAndNameToItem(repository.findAllIdsAndNames());
     }
 
-    public List<T> searchNames(Filter filter) {
+    public List<T> search(Filter filter) {
         String searchTerm = "";
-        Set<String> excludedTerms = Set.of("");
+        Set<String> excludedNames = Set.of("");
         if (filter != null) {
             if (filter.getSearchTerm() != null) {
                 searchTerm = filter.getSearchTerm();
             }
             if (filter.getExcludedTerms() != null && !filter.getExcludedTerms().isEmpty()) {
-                excludedTerms = filter.getExcludedTerms();
+                excludedNames = filter.getExcludedTerms();
             }
         }
-        return transformIdAndNameToItem(repository.findAllIdsAndNamesWithNameContainingIgnoreCase(searchTerm, excludedTerms));
+        return transformIdAndNameToItem(repository.findAllIdsAndNames(searchTerm, excludedNames));
     }
 
     protected List<T> transformIdAndNameToItem(List<Object[]> idsAndNames) {

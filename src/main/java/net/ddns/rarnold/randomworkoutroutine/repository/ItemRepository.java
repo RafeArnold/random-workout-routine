@@ -26,5 +26,5 @@ public interface ItemRepository<T extends Item> extends CrudRepository<T, UUID> 
      * parameters.
      */
     @Query("SELECT e.id, e.name FROM #{#entityName} e WHERE LOWER(e.name) LIKE ?#{'%' + #searchTerm.toLowerCase() + '%'} AND e.name NOT IN :excludedNames")
-    List<Object[]> findAllIdsAndNamesWithNameContainingIgnoreCase(@Param("searchTerm") String searchTerm, @Param("excludedNames") Collection<String> excludedNames);
+    List<Object[]> findAllIdsAndNames(@Param("searchTerm") String searchTerm, @Param("excludedNames") Collection<String> excludedNames);
 }

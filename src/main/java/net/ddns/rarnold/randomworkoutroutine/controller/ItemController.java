@@ -36,6 +36,6 @@ public abstract class ItemController<T extends Item> {
 
     @PostMapping("/search")
     public List<T> searchNames(@RequestBody(required = false) Filter filter) {
-        return service.searchNames(filter);
+        return service.search(filter);
     }
 }
