@@ -11,7 +11,8 @@ class EditExercise extends EditItem {
         this.getItem = getExercise;
         this.saveItem = saveExercise;
         this.deleteItem = deleteExercise;
-        this.emptyItem = {name: "", repCountLowerBound: 0, repCountUpperBound: 0};
+        this.emptyItem.repCountLowerBound = 0;
+        this.emptyItem.repCountUpperBound = 0;
         this.updateRepCountLowerBound = this.updateRepCountLowerBound.bind(this);
         this.updateRepCountUpperBound = this.updateRepCountUpperBound.bind(this);
     }

@@ -65,6 +65,10 @@ export function searchGroupNames(filter, onSuccess) {
     request(apiGroupPath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), "POST", filter);
 }
 
+export function searchRoutineNames(filter, onSuccess) {
+    request(apiRoutinePath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), "POST", filter);
+}
+
 export function saveExercise(exercise, onSuccess) {
     request(apiExercisePath + "/save", onSuccess, "POST", exercise);
 }

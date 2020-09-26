@@ -1,43 +1,15 @@
 package net.ddns.rarnold.randomworkoutroutine.controller;
 
-import lombok.RequiredArgsConstructor;
-import net.ddns.rarnold.randomworkoutroutine.model.Filter;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.service.ExerciseOptionService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/exercise")
-@RequiredArgsConstructor
-public class ExerciseOptionController {
+public class ExerciseOptionController extends ItemController<ExerciseOption> {
 
-    private final ExerciseOptionService exerciseOptionService;
-
-    @GetMapping("/{id}")
-    public ExerciseOption getById(@PathVariable UUID id) {
-        return exerciseOptionService.getById(id);
-    }
-
-    @PostMapping("/save")
-    public void save(@RequestBody ExerciseOption option) {
-        exerciseOptionService.save(option);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable UUID id) {
-        exerciseOptionService.delete(id);
-    }
-
-    @GetMapping("/names")
-    public List<ExerciseOption> getNames() {
-        return exerciseOptionService.getNames();
-    }
-
-    @PostMapping("/search")
-    public List<ExerciseOption> searchNames(@RequestBody(required = false) Filter filter) {
-        return exerciseOptionService.searchNames(filter);
+    public ExerciseOptionController(ExerciseOptionService service) {
+        super(service);
     }
 }

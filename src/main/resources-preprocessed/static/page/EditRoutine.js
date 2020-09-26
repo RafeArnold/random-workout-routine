@@ -11,7 +11,7 @@ class EditRoutine extends EditParentItem {
         this.saveItem = saveRoutine;
         this.deleteItem = deleteRoutine;
         this.childItemPropertyName = "groups";
-        this.emptyItem = {name: "", [this.childItemPropertyName]: []};
+        this.emptyItem[this.childItemPropertyName] = [];
         this.searchChildItemNames = searchGroupNames;
         this.childItemDisplayNamePlural = "Groups";
     }

@@ -6,9 +6,12 @@ import {editPath} from "../util/apiUtils";
 class EditItem extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {item: null, redirectToEdit: false, deleting: false};
+        this.state = {item: null, tags: "", redirectToEdit: false, deleting: false};
+        this.emptyItem = {name: "", tags: []}
         this.setItem = this.setItem.bind(this);
         this.updateName = this.updateName.bind(this);
+        this.updateTags = this.updateTags.bind(this);
+        this.handleTagsInputChange = this.handleTagsInputChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.delete = this.delete.bind(this);
         this.redirect = this.redirect.bind(this);
@@ -25,6 +28,7 @@ class EditItem extends React.Component {
 
     setItem(item) {
         this.setState({item: item});
+        this.updateTags(item?.tags?.join(", ") || "");
     }
 
     updateName(event) {
@@ -34,9 +38,20 @@ class EditItem extends React.Component {
         });
     }
 
+    updateTags(tags) {
+        this.setState({tags: tags});
+    }
+
+    handleTagsInputChange(event) {
+        const tags = event.target.value;
+        this.updateTags(tags);
+    }
+
     handleFormSubmit(event) {
         event.preventDefault();
-        this.saveItem(this.state.item, this.redirect);
+        const item = this.state.item;
+        item.tags = this.state.tags.split(",");
+        this.saveItem(item, this.redirect);
     }
 
     delete() {
@@ -82,6 +97,11 @@ class EditItem extends React.Component {
                                    onChange={this.updateName}/>
                         </div>
                         {this.extraInputs()}
+                        <div className="form-group">
+                            <label htmlFor="tags">Tags</label>
+                            <input className="form-control" id="tags" name="tags"
+                                   value={this.state.tags} onChange={this.handleTagsInputChange}/>
+                        </div>
                         <div className="d-flex justify-content-between mb-3">
                             <button type="submit" className="btn btn-dark">Save</button>
                             <button type="button" className="btn btn-outline-dark"

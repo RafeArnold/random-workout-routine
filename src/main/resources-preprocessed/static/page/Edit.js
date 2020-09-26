@@ -5,7 +5,10 @@ import {
     editRoutinePath,
     getExerciseNames,
     getGroupNames,
-    getRoutineNames
+    getRoutineNames,
+    searchExerciseNames,
+    searchGroupNames,
+    searchRoutineNames
 } from "../util/apiUtils";
 import {Redirect} from "react-router-dom";
 
@@ -16,8 +19,17 @@ const routineTypeName = "routine";
 class Edit extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {exercises: null, groups: null, routines: null, redirectTo: null};
+        this.state = {
+            exercises: null,
+            groups: null,
+            routines: null,
+            exerciseSearchInputValue: "",
+            groupSearchInputValue: "",
+            routineSearchInputValue: "",
+            redirectTo: null
+        };
         this.mapItemsToCol = this.mapItemsToCol.bind(this);
+        this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
         this.getUrl = this.getUrl.bind(this);
         this.addItem = this.addItem.bind(this);
         this.redirect = this.redirect.bind(this);
@@ -33,6 +45,12 @@ class Edit extends React.Component {
         return (
             <div className="col">
                 <h4 className="text-center">{itemDisplayName}</h4>
+                <div>
+                    <input className="form-control my-3" id={itemTypeName + "-search"}
+                           placeholder="Search"
+                           value={this.state[itemTypeName + "SearchInputValue"]}
+                           onChange={(event) => this.handleSearchInputChange(event, itemTypeName)}/>
+                </div>
                 {items ? <ul className="list-group">
                     {<li className="list-group-item list-group-item-success list-group-item-action"
                          onClick={() => this.addItem(itemTypeName)} style={{cursor: "pointer"}}>
@@ -45,6 +63,23 @@ class Edit extends React.Component {
                 </ul> : null}
             </div>
         );
+    }
+
+    handleSearchInputChange(event, type) {
+        const searchTerm = event.target.value
+        switch (type) {
+            case exerciseTypeName:
+                this.setState({exerciseSearchInputValue: searchTerm})
+                searchExerciseNames({searchTerm: searchTerm}, (exercises) => this.setState({exercises: exercises}))
+                break;
+            case groupTypeName:
+                this.setState({groupSearchInputValue: searchTerm})
+                searchGroupNames({searchTerm: searchTerm}, (groups) => this.setState({groups: groups}))
+                break;
+            case routineTypeName:
+                this.setState({routineSearchInputValue: searchTerm})
+                searchRoutineNames({searchTerm: searchTerm}, (routines) => this.setState({routines: routines}))
+        }
     }
 
     getUrl(type, id) {

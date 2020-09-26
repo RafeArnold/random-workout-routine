@@ -1,6 +1,5 @@
 package net.ddns.rarnold.randomworkoutroutine.controller;
 
-import lombok.RequiredArgsConstructor;
 import net.ddns.rarnold.randomworkoutroutine.model.Exercise;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.Routine;
 import net.ddns.rarnold.randomworkoutroutine.service.RoutineService;
@@ -8,29 +7,14 @@ import net.ddns.rarnold.randomworkoutroutine.session.RoutineSession;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/routine")
-@RequiredArgsConstructor
-public class RoutineController {
+public class RoutineController extends ItemController<Routine> {
 
-    private final RoutineService routineService;
-
-    @GetMapping("/{id}")
-    public Routine getByDetailsId(@PathVariable UUID id) {
-        return routineService.getById(id);
-    }
-
-    @PostMapping("/save")
-    public void save(@RequestBody Routine routine) {
-        routineService.save(routine);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable UUID id) {
-        routineService.delete(id);
+    public RoutineController(RoutineService service) {
+        super(service);
     }
 
     @GetMapping("/in-progress")
@@ -41,7 +25,7 @@ public class RoutineController {
     @PostMapping("/start/{id}")
     public void start(HttpSession httpSession, @PathVariable UUID id) {
         httpSession.setAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME,
-                new RoutineSession(routineService.getById(id)));
+                new RoutineSession(service.getById(id)));
     }
 
     @PostMapping("/next")
@@ -66,11 +50,6 @@ public class RoutineController {
     @PostMapping("/stop")
     public void stop(HttpSession httpSession) {
         httpSession.removeAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME);
-    }
-
-    @GetMapping("/names")
-    public List<Routine> getIdsAndNames() {
-        return routineService.getNames();
     }
 
     private static RoutineSession getRoutineSession(HttpSession httpSession) {

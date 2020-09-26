@@ -1,7 +1,5 @@
 package net.ddns.rarnold.randomworkoutroutine.service;
 
-import lombok.RequiredArgsConstructor;
-import net.ddns.rarnold.randomworkoutroutine.model.Filter;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.ExerciseOption;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.Group;
 import net.ddns.rarnold.randomworkoutroutine.repository.GroupRepository;
@@ -11,32 +9,22 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-public class GroupService {
+public class GroupService extends ItemService<Group> {
 
-    private final GroupRepository repository;
     private final RoutineService routineService;
 
-    public Group getById(UUID id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No group with the ID '" + id + "' exists"));
-    }
-
-    public void save(Group group) {
-        repository.save(group);
+    public GroupService(GroupRepository repository, RoutineService routineService) {
+        super(repository);
+        this.routineService = routineService;
     }
 
     public void delete(UUID id) {
         routineService.removeGroupFromAll(getById(id));
-        repository.deleteById(id);
-    }
-
-    public List<Group> getNames() {
-        return transformIdAndNameToGroup(repository.findAllIdsAndNames());
+        super.delete(id);
     }
 
     public void removeExerciseFromAll(ExerciseOption exercise) {
-        List<Group> groups = repository.findAllByExerciseOptionsContaining(exercise);
+        List<Group> groups = ((GroupRepository) repository).findAllByExerciseOptionsContaining(exercise);
         for (Group group : groups) {
             group.setExerciseOptions(group.getExerciseOptions().stream()
                     .filter(e -> e.getId() != exercise.getId())
@@ -45,28 +33,11 @@ public class GroupService {
         }
     }
 
-    public List<Group> searchNames(Filter filter) {
-        String searchTerm = "";
-        Set<String> excludedTerms = Collections.singleton("");
-        if (filter != null) {
-            if (filter.getSearchTerm() != null) {
-                searchTerm = filter.getSearchTerm();
-            }
-            if (filter.getExcludedTerms() != null && !filter.getExcludedTerms().isEmpty()) {
-                excludedTerms = filter.getExcludedTerms();
-            }
-        }
-        return transformIdAndNameToGroup(repository.findAllIdsAndNamesWithNameContainingIgnoreCase(searchTerm, excludedTerms));
-    }
-
-    private List<Group> transformIdAndNameToGroup(List<Object[]> idsAndNames) {
-        return idsAndNames.stream()
-                .map(objects -> {
-                    Group group = new Group();
-                    group.setId((UUID) objects[0]);
-                    group.setName((String) objects[1]);
-                    return group;
-                })
-                .collect(Collectors.toList());
+    @Override
+    protected Group createItem(UUID id, String name) {
+        Group group = new Group();
+        group.setId(id);
+        group.setName(name);
+        return group;
     }
 }

@@ -11,7 +11,7 @@ class EditGroup extends EditParentItem {
         this.saveItem = saveGroup;
         this.deleteItem = deleteGroup;
         this.childItemPropertyName = "exerciseOptions";
-        this.emptyItem = {name: "", [this.childItemPropertyName]: []};
+        this.emptyItem[this.childItemPropertyName] = [];
         this.searchChildItemNames = searchExerciseNames;
         this.childItemDisplayNamePlural = "Exercises";
     }
