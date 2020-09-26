@@ -32,7 +32,7 @@ public abstract class ItemService<T extends Item> {
 
     public List<T> searchNames(Filter filter) {
         String searchTerm = "";
-        Set<String> excludedTerms = Collections.singleton("");
+        Set<String> excludedTerms = Set.of("");
         if (filter != null) {
             if (filter.getSearchTerm() != null) {
                 searchTerm = filter.getSearchTerm();
