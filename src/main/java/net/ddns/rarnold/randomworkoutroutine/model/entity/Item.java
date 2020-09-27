@@ -28,10 +28,14 @@ public abstract class Item {
      * and converts to an unmodifiable set.
      */
     public void setTags(Collection<String> tags) {
-        this.tags = tags.stream()
-                .filter(tag -> !tag.isBlank())
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .collect(Collectors.toUnmodifiableSet());
+        if (tags == null) {
+            this.tags = Set.of();
+        } else {
+            this.tags = tags.stream()
+                    .filter(tag -> !tag.isBlank())
+                    .map(String::trim)
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toUnmodifiableSet());
+        }
     }
 }
