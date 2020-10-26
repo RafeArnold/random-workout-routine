@@ -1,7 +1,4 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.6.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'com.github.node-gradle.node' version '2.2.3'
 	id 'java'
 }
 
@@ -9,42 +6,26 @@ group = 'uk.co.rafearnold'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-bootJar {
-	archiveFileName = 'app.jar'
-}
+allprojects {
+	apply plugin: 'java'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+	configurations {
+		compileOnly {
+			extendsFrom annotationProcessor
+		}
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+		testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+	}
+
+	test {
+		useJUnitPlatform()
 	}
 }
-
-repositories {
-	mavenCentral()
-}
-
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-}
-
-test {
-	useJUnitPlatform()
-}
-
-npm_run_build {
-	inputs.files fileTree('src/main/resources-preprocessed')
-	inputs.file 'package.json'
-	outputs.dir 'src/main/resources/static'
-}
-
-processResources.shouldRunAfter npm_run_build
-build.dependsOn npm_run_build

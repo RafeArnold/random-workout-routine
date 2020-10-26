@@ -24,7 +24,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: jar
-        path: build/libs
+        path: web/build/libs
   build_image:
     name: Build Docker Image
     needs: [build_jar]

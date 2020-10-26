@@ -34,4 +34,4 @@ out/
 ### Node.js ###
 node_modules/
 
-src/main/resources/static/
+web/src/main/resources/static/
