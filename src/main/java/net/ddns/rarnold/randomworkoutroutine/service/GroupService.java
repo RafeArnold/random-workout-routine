@@ -18,9 +18,9 @@ public class GroupService extends ItemService<Group> {
         this.routineService = routineService;
     }
 
-    public void delete(UUID id) {
-        routineService.removeGroupFromAll(getById(id));
-        super.delete(id);
+    public void delete(Group item) {
+        routineService.removeGroupFromAll(item);
+        super.delete(item);
     }
 
     public void removeExerciseFromAll(ExerciseOption exercise) {

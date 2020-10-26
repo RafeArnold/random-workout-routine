@@ -3,6 +3,8 @@ package net.ddns.rarnold.randomworkoutroutine;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+// TODO: Documentation.
+// TODO: Convert to kotlin.
 @SpringBootApplication
 public class RandomWorkoutRoutineApplication {
 

@@ -13,17 +13,19 @@ public abstract class ItemService<T extends Item> {
 
     protected final ItemRepository<T> repository;
 
-    public T getById(UUID id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No item with the ID '" + id + "' exists"));
+    public Optional<T> getById(UUID id) {
+        return repository.findById(id);
     }
 
+    // TODO: Don't allow saving of routines and groups with no children. This is a problem when the
+    //  user deletes a group or exercise that is the only child of a routine or group. Maybe just
+    //  stop the user starting sessions if the routine or a group in the routine has no children.
     public void save(T item) {
         repository.save(item);
     }
 
-    public void delete(UUID id) {
-        repository.deleteById(id);
+    public void delete(T item) {
+        repository.delete(item);
     }
 
     public List<T> getNames() {

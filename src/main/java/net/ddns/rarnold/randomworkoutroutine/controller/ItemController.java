@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import net.ddns.rarnold.randomworkoutroutine.model.Filter;
 import net.ddns.rarnold.randomworkoutroutine.model.entity.Item;
 import net.ddns.rarnold.randomworkoutroutine.service.ItemService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -14,19 +16,24 @@ public abstract class ItemController<T extends Item> {
 
     protected final ItemService<T> service;
 
+    // TODO: 404 when item doesn't exist.
     @GetMapping("/{id}")
-    public T getById(@PathVariable UUID id) {
-        return service.getById(id);
+    public ResponseEntity<T> getById(@PathVariable UUID id) {
+        return ResponseEntity.of(service.getById(id));
     }
 
+    // TODO: Better response status when an existing item is provided without its ID.
+    // TODO: Don't allow items with blank names.
     @PostMapping("/save")
     public void save(@RequestBody T option) {
         service.save(option);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable UUID id) {
-        service.delete(id);
+    public ResponseEntity<?> delete(@PathVariable UUID id) {
+        Optional<T> itemOptional = service.getById(id);
+        itemOptional.ifPresent(service::delete);
+        return itemOptional.map(item -> ResponseEntity.ok().build()).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/names")

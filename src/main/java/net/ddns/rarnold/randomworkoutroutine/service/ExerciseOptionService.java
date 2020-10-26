@@ -16,9 +16,9 @@ public class ExerciseOptionService extends ItemService<ExerciseOption> {
         this.groupService = groupService;
     }
 
-    public void delete(UUID id) {
-        groupService.removeExerciseFromAll(getById(id));
-        super.delete(id);
+    public void delete(ExerciseOption item) {
+        groupService.removeExerciseFromAll(item);
+        super.delete(item);
     }
 
     @Override
