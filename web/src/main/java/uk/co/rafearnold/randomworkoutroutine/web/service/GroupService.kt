@@ -1,43 +1,29 @@
-package uk.co.rafearnold.randomworkoutroutine.web.service;
+package uk.co.rafearnold.randomworkoutroutine.web.service
 
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption;
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group;
-import uk.co.rafearnold.randomworkoutroutine.web.repository.GroupRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Service
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
+import uk.co.rafearnold.randomworkoutroutine.web.repository.GroupRepository
+import java.util.*
+import java.util.stream.Collectors
 
 @Service
-public class GroupService extends ItemService<Group> {
+class GroupService(repository: GroupRepository, private val routineService: RoutineService) : ItemService<Group>(repository) {
 
-    private final RoutineService routineService;
-
-    public GroupService(GroupRepository repository, RoutineService routineService) {
-        super(repository);
-        this.routineService = routineService;
+    override fun delete(item: Group) {
+        routineService.removeGroupFromAll(item)
+        super.delete(item)
     }
 
-    public void delete(Group item) {
-        routineService.removeGroupFromAll(item);
-        super.delete(item);
-    }
-
-    public void removeExerciseFromAll(ExerciseOption exercise) {
-        List<Group> groups = ((GroupRepository) repository).findAllByExerciseOptionsContaining(exercise);
-        for (Group group : groups) {
-            group.setExerciseOptions(group.getExerciseOptions().stream()
-                    .filter(e -> e.getId() != exercise.getId())
-                    .collect(Collectors.toList()));
-            repository.save(group);
+    fun removeExerciseFromAll(exercise: ExerciseOption) {
+        val groups = (repository as GroupRepository).findAllByExerciseOptionsContaining(exercise)
+        for (group in groups) {
+            group.exerciseOptions = group.exerciseOptions.stream()
+                    .filter { e: ExerciseOption -> e.id !== exercise.id }
+                    .collect(Collectors.toList())
+            repository.save(group)
         }
     }
 
-    @Override
-    protected Group createItem(UUID id, String name) {
-        Group group = new Group();
-        group.setId(id);
-        group.setName(name);
-        return group;
-    }
+    override fun createItem(id: UUID, name: String): Group = Group(id, name)
 }

@@ -1,8 +1,7 @@
-package uk.co.rafearnold.randomworkoutroutine.web.repository;
+package uk.co.rafearnold.randomworkoutroutine.web.repository
 
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Repository
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption
 
 @Repository
-public interface ExerciseOptionRepository extends ItemRepository<ExerciseOption> {
-}
+interface ExerciseOptionRepository : ItemRepository<ExerciseOption>

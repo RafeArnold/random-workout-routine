@@ -1,24 +1,18 @@
-package uk.co.rafearnold.randomworkoutroutine.web.model.entity;
+package uk.co.rafearnold.randomworkoutroutine.web.model.entity
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import javax.persistence.Transient;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore
+import java.util.*
+import javax.persistence.*
 
 @Entity(name = "grouping")
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class Group extends Item {
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<ExerciseOption> exerciseOptions;
+class Group(
+        id: UUID = UUID.randomUUID(),
+        name: String = "",
+        tags: MutableSet<String> = mutableSetOf(),
+        @ManyToMany(fetch = FetchType.EAGER) var exerciseOptions: MutableList<ExerciseOption> = mutableListOf()
+) : Item(id, name, tags) {
 
     @Transient
     @JsonIgnore
-    private double[] optionWeights;
+    var optionWeights: DoubleArray = DoubleArray(0)
 }

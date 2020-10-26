@@ -1,61 +1,59 @@
-package uk.co.rafearnold.randomworkoutroutine.web.session;
+package uk.co.rafearnold.randomworkoutroutine.web.session
 
-import lombok.Getter;
-import uk.co.rafearnold.randomworkoutroutine.web.model.Exercise;
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption;
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group;
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine;
-import uk.co.rafearnold.randomworkoutroutine.web.util.RandomUtils;
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Exercise
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.getExercise
+import uk.co.rafearnold.randomworkoutroutine.web.util.nextWeightedInt
+import java.util.*
 
-import java.util.Arrays;
+class RoutineSession(private val routine: Routine) {
 
-public class RoutineSession {
-
-    public static final String ROUTINE_SESSION_ATTRIBUTE_NAME = "routineSession";
-
-    private final Routine routine;
-    @Getter
-    private Exercise currentExercise;
-    private int currentGroupIndex = -1;
-    @Getter
-    private int setCount;
-
-    public RoutineSession(Routine routine) {
-        initialiseWeights(routine);
-        this.routine = routine;
+    init {
+        initialiseWeights(routine)
     }
 
-    private void initialiseWeights(Routine routine) {
-        for (Group group : routine.getGroups()) {
-            double[] weights = new double[group.getExerciseOptions().size()];
-            Arrays.fill(weights, 1);
-            group.setOptionWeights(weights);
+    var currentExercise: Exercise? = null
+        private set
+    private var currentGroupIndex = -1
+
+    var setCount = 0
+        private set
+
+    private fun initialiseWeights(routine: Routine) {
+        for (group in routine.groups) {
+            val weights = DoubleArray(group.exerciseOptions.size)
+            Arrays.fill(weights, 1.0)
+            group.optionWeights = weights
         }
     }
 
-    public Exercise nextExercise() {
-        setCount++;
-        currentGroupIndex++;
-        currentGroupIndex %= routine.getGroups().size();
-        Group currentGroup = routine.getGroups().get(currentGroupIndex);
-        double[] optionWeights = currentGroup.getOptionWeights();
-        int nextOptionIndex = RandomUtils.nextWeightedInt(optionWeights);
-        ExerciseOption option = currentGroup.getExerciseOptions().get(nextOptionIndex);
-        currentExercise = option.getExercise();
-        adjustWeight(optionWeights, nextOptionIndex);
-        normaliseWeights(optionWeights);
-        return currentExercise;
+    fun nextExercise(): Exercise {
+        setCount++
+        currentGroupIndex++
+        currentGroupIndex %= routine.groups.size
+        val currentGroup = routine.groups[currentGroupIndex]
+        val optionWeights = currentGroup.optionWeights
+        val nextOptionIndex: Int = nextWeightedInt(optionWeights)
+        val option = currentGroup.exerciseOptions[nextOptionIndex]
+        currentExercise = option.getExercise()
+        adjustWeight(optionWeights, nextOptionIndex)
+        normaliseWeights(optionWeights)
+        return currentExercise!!
     }
 
-    private void adjustWeight(double[] weights, int index) {
-        weights[index] /= 2;
+    private fun adjustWeight(weights: DoubleArray, index: Int) {
+        weights[index] = weights[index] / 2
     }
 
-    private void normaliseWeights(double[] weights) {
-        double weightSum = Arrays.stream(weights).sum();
-        double factor = weights.length / weightSum;
-        for (int i = 0; i < weights.length; i++) {
-            weights[i] *= factor;
+    private fun normaliseWeights(weights: DoubleArray) {
+        val weightSum = Arrays.stream(weights).sum()
+        val factor = weights.size / weightSum
+        for (i in weights.indices) {
+            weights[i] *= factor
         }
+    }
+
+    companion object {
+        const val ROUTINE_SESSION_ATTRIBUTE_NAME = "routineSession"
     }
 }

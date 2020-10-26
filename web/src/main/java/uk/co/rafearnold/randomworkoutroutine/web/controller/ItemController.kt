@@ -1,48 +1,37 @@
-package uk.co.rafearnold.randomworkoutroutine.web.controller;
+package uk.co.rafearnold.randomworkoutroutine.web.controller
 
-import lombok.RequiredArgsConstructor;
-import uk.co.rafearnold.randomworkoutroutine.web.model.Filter;
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Item;
-import uk.co.rafearnold.randomworkoutroutine.web.service.ItemService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import uk.co.rafearnold.randomworkoutroutine.web.model.Filter
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Item
+import uk.co.rafearnold.randomworkoutroutine.web.service.ItemService
+import java.util.*
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-@RequiredArgsConstructor
-public abstract class ItemController<T extends Item> {
-
-    protected final ItemService<T> service;
+abstract class ItemController<T : Item>(protected val service: ItemService<T>) {
 
     // TODO: 404 when item doesn't exist.
     @GetMapping("/{id}")
-    public ResponseEntity<T> getById(@PathVariable UUID id) {
-        return ResponseEntity.of(service.getById(id));
+    fun getById(@PathVariable id: UUID): ResponseEntity<T> {
+        return ResponseEntity.of(service.getById(id))
     }
 
     // TODO: Better response status when an existing item is provided without its ID.
     // TODO: Don't allow items with blank names.
     @PostMapping("/save")
-    public void save(@RequestBody T option) {
-        service.save(option);
+    fun save(@RequestBody option: T) {
+        service.save(option)
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable UUID id) {
-        Optional<T> itemOptional = service.getById(id);
-        itemOptional.ifPresent(service::delete);
-        return itemOptional.map(item -> ResponseEntity.ok().build()).orElse(ResponseEntity.notFound().build());
+    fun delete(@PathVariable id: UUID): ResponseEntity<*> {
+        val itemOptional = service.getById(id)
+        itemOptional.ifPresent { item: T -> service.delete(item) }
+        return itemOptional.map { ResponseEntity.ok().build<Any>() }.orElse(ResponseEntity.notFound().build())
     }
 
     @GetMapping("/names")
-    public List<T> getNames() {
-        return service.getNames();
-    }
+    fun getNames(): List<T> = service.getNames()
 
     @PostMapping("/search")
-    public List<T> searchNames(@RequestBody(required = false) Filter filter) {
-        return service.search(filter);
-    }
+    fun searchNames(@RequestBody(required = false) filter: Filter): List<T> = service.search(filter)
 }

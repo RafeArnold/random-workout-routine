@@ -1,31 +1,17 @@
-package uk.co.rafearnold.randomworkoutroutine.web.service;
+package uk.co.rafearnold.randomworkoutroutine.web.service
 
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption;
-import uk.co.rafearnold.randomworkoutroutine.web.repository.ExerciseOptionRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.UUID;
+import org.springframework.stereotype.Service
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption
+import uk.co.rafearnold.randomworkoutroutine.web.repository.ExerciseOptionRepository
+import java.util.*
 
 @Service
-public class ExerciseOptionService extends ItemService<ExerciseOption> {
+class ExerciseOptionService(repository: ExerciseOptionRepository, private val groupService: GroupService) : ItemService<ExerciseOption>(repository) {
 
-    private final GroupService groupService;
-
-    public ExerciseOptionService(ExerciseOptionRepository repository, GroupService groupService) {
-        super(repository);
-        this.groupService = groupService;
+    override fun delete(item: ExerciseOption) {
+        groupService.removeExerciseFromAll(item)
+        super.delete(item)
     }
 
-    public void delete(ExerciseOption item) {
-        groupService.removeExerciseFromAll(item);
-        super.delete(item);
-    }
-
-    @Override
-    protected ExerciseOption createItem(UUID id, String name) {
-        ExerciseOption option = new ExerciseOption();
-        option.setId(id);
-        option.setName(name);
-        return option;
-    }
+    override fun createItem(id: UUID, name: String): ExerciseOption = ExerciseOption(id, name)
 }

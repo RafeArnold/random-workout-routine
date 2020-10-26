@@ -1,56 +1,41 @@
-package uk.co.rafearnold.randomworkoutroutine.web.service;
+package uk.co.rafearnold.randomworkoutroutine.web.service
 
-import lombok.RequiredArgsConstructor;
-import uk.co.rafearnold.randomworkoutroutine.web.model.Filter;
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Item;
-import uk.co.rafearnold.randomworkoutroutine.web.repository.ItemRepository;
+import uk.co.rafearnold.randomworkoutroutine.web.model.Filter
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Item
+import uk.co.rafearnold.randomworkoutroutine.web.repository.ItemRepository
+import java.util.*
+import java.util.stream.Collectors
 
-import java.util.*;
-import java.util.stream.Collectors;
+abstract class ItemService<T : Item>(protected val repository: ItemRepository<T>) {
 
-@RequiredArgsConstructor
-public abstract class ItemService<T extends Item> {
-
-    protected final ItemRepository<T> repository;
-
-    public Optional<T> getById(UUID id) {
-        return repository.findById(id);
-    }
+    fun getById(id: UUID): Optional<T> = repository.findById(id)
 
     // TODO: Don't allow saving of routines and groups with no children. This is a problem when the
     //  user deletes a group or exercise that is the only child of a routine or group. Maybe just
     //  stop the user starting sessions if the routine or a group in the routine has no children.
-    public void save(T item) {
-        repository.save(item);
+    fun save(item: T) {
+        repository.save(item)
     }
 
-    public void delete(T item) {
-        repository.delete(item);
+    open fun delete(item: T) {
+        repository.delete(item)
     }
 
-    public List<T> getNames() {
-        return transformIdAndNameToItem(repository.findAllIdsAndNames());
-    }
+    fun getNames(): List<T> = transformIdAndNameToItem(repository.findAllIdsAndNames())
 
-    public List<T> search(Filter filter) {
-        String searchTerm = "";
-        Set<String> excludedNames = Set.of("");
-        if (filter != null) {
-            if (filter.getSearchTerm() != null) {
-                searchTerm = filter.getSearchTerm();
-            }
-            if (filter.getExcludedTerms() != null && !filter.getExcludedTerms().isEmpty()) {
-                excludedNames = filter.getExcludedTerms();
-            }
+    fun search(filter: Filter): List<T> {
+        var excludedNames = setOf("")
+        val searchTerm = filter.searchTerm
+        if (filter.excludedTerms.isNotEmpty()) {
+            excludedNames = filter.excludedTerms
         }
-        return transformIdAndNameToItem(repository.findAllIdsAndNames(searchTerm, excludedNames));
+        return transformIdAndNameToItem(repository.findAllIdsAndNames(searchTerm, excludedNames))
     }
 
-    protected List<T> transformIdAndNameToItem(List<Object[]> idsAndNames) {
-        return idsAndNames.stream()
-                .map(objects -> createItem((UUID) objects[0], (String) objects[1]))
-                .collect(Collectors.toList());
-    }
+    private fun transformIdAndNameToItem(idsAndNames: List<Array<Any>>): List<T> =
+            idsAndNames.stream()
+                    .map { objects: Array<Any> -> createItem(objects[0] as UUID, objects[1] as String) }
+                    .collect(Collectors.toList())
 
-    protected abstract T createItem(UUID id, String name);
+    protected abstract fun createItem(id: UUID, name: String): T
 }

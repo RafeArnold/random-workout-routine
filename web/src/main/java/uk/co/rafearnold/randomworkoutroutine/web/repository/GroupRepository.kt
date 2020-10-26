@@ -1,13 +1,10 @@
-package uk.co.rafearnold.randomworkoutroutine.web.repository;
+package uk.co.rafearnold.randomworkoutroutine.web.repository
 
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption;
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import org.springframework.stereotype.Repository
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
 
 @Repository
-public interface GroupRepository extends ItemRepository<Group> {
-
-    List<Group> findAllByExerciseOptionsContaining(ExerciseOption exercise);
+interface GroupRepository : ItemRepository<Group> {
+    fun findAllByExerciseOptionsContaining(exercise: ExerciseOption?): List<Group>
 }

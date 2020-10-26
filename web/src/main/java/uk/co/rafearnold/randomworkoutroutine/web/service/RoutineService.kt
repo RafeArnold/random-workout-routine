@@ -1,36 +1,24 @@
-package uk.co.rafearnold.randomworkoutroutine.web.service;
+package uk.co.rafearnold.randomworkoutroutine.web.service
 
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group;
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine;
-import uk.co.rafearnold.randomworkoutroutine.web.repository.RoutineRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Service
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
+import uk.co.rafearnold.randomworkoutroutine.web.repository.RoutineRepository
+import java.util.*
+import java.util.stream.Collectors
 
 @Service
-public class RoutineService extends ItemService<Routine> {
+class RoutineService(repository: RoutineRepository) : ItemService<Routine>(repository) {
 
-    public RoutineService(RoutineRepository repository) {
-        super(repository);
-    }
-
-    public void removeGroupFromAll(Group group) {
-        List<Routine> routines = ((RoutineRepository) repository).findAllByGroupsContaining(group);
-        for (Routine routine : routines) {
-            routine.setGroups(routine.getGroups().stream()
-                    .filter(g -> g.getId() != group.getId())
-                    .collect(Collectors.toList()));
-            repository.save(routine);
+    fun removeGroupFromAll(group: Group) {
+        val routines = (repository as RoutineRepository).findAllByGroupsContaining(group)
+        for (routine in routines) {
+            routine.groups = routine.groups.stream()
+                    .filter { g: Group -> g.id !== group.id }
+                    .collect(Collectors.toList())
+            repository.save(routine)
         }
     }
 
-    @Override
-    protected Routine createItem(UUID id, String name) {
-        Routine routine = new Routine();
-        routine.setId(id);
-        routine.setName(name);
-        return routine;
-    }
+    override fun createItem(id: UUID, name: String): Routine = Routine(id, name)
 }

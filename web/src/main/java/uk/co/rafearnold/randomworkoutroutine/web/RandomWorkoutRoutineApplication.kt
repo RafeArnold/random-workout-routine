@@ -1,15 +1,12 @@
-package uk.co.rafearnold.randomworkoutroutine.web;
+package uk.co.rafearnold.randomworkoutroutine.web
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 
 // TODO: Documentation.
-// TODO: Convert to kotlin.
 @SpringBootApplication
-public class RandomWorkoutRoutineApplication {
+open class RandomWorkoutRoutineApplication
 
-	public static void main(String[] args) {
-		SpringApplication.run(RandomWorkoutRoutineApplication.class, args);
-	}
-
+fun main(vararg args: String) {
+    runApplication<RandomWorkoutRoutineApplication>(*args)
 }

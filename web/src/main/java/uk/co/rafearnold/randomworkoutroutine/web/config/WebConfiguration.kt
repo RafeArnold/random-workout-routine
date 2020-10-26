@@ -1,18 +1,17 @@
-package uk.co.rafearnold.randomworkoutroutine.web.config;
+package uk.co.rafearnold.randomworkoutroutine.web.config
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.context.annotation.Configuration
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 
 @Configuration
-public class WebConfiguration implements WebMvcConfigurer {
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
+open class WebConfiguration : WebMvcConfigurer {
+    override fun addViewControllers(registry: ViewControllerRegistry) {
         registry.addViewController("/{x:[\\w\\-]+}")
-                .setViewName("forward:/");
+                .setViewName("forward:/")
         registry.addViewController("/{x:[\\w\\-]+}/")
-                .setViewName("forward:/");
+                .setViewName("forward:/")
         registry.addViewController("/{x:^(?!api$).*$}/**/{y:[\\w\\-]+}")
-                .setViewName("forward:/");
+                .setViewName("forward:/")
     }
 }
