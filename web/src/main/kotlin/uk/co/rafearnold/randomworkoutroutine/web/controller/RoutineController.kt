@@ -42,7 +42,7 @@ class RoutineController(service: RoutineService) : ItemController<Routine>(servi
             response.sendError(HttpStatus.CONFLICT.value(), "Routine does not contain any groups")
             return ResponseEntity.status(HttpStatus.CONFLICT).build()
         }
-        if (routine.groups.stream().anyMatch { group: Group -> group.exerciseOptions.isEmpty() }) {
+        if (routine.groups.stream().anyMatch { group: Group -> group.exercises.isEmpty() }) {
             // Routine contains a group that does not contain any exercises.
             response.sendError(HttpStatus.CONFLICT.value(), "Routine contains a group that does not contain any exercises")
             return ResponseEntity.status(HttpStatus.CONFLICT).build()

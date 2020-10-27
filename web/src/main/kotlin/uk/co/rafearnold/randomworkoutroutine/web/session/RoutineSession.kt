@@ -21,7 +21,7 @@ class RoutineSession(private val routine: Routine) {
 
     private fun initialiseWeights(routine: Routine) {
         for (group in routine.groups) {
-            val weights = DoubleArray(group.exerciseOptions.size)
+            val weights = DoubleArray(group.exercises.size)
             Arrays.fill(weights, 1.0)
             group.optionWeights = weights
         }
@@ -34,7 +34,7 @@ class RoutineSession(private val routine: Routine) {
         val currentGroup = routine.groups[currentGroupIndex]
         val optionWeights = currentGroup.optionWeights
         val nextOptionIndex: Int = nextWeightedInt(optionWeights)
-        val option = currentGroup.exerciseOptions[nextOptionIndex]
+        val option = currentGroup.exercises[nextOptionIndex]
         currentExercise = option.getExercise()
         adjustWeight(optionWeights, nextOptionIndex)
         normaliseWeights(optionWeights)
