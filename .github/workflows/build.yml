@@ -36,7 +36,7 @@ jobs:
       with:
         name: jar
     - name: Set image tag variable
-      run: echo '::set-env name=IMAGE_TAG::rwr:'$(date +%s)
+      run: echo "IMAGE_TAG=rwr:$(date +%s)" >> $GITHUB_ENV
     - name: Build the image
       run: docker build . --file Dockerfile --tag $IMAGE_TAG
     - name: Save the image
