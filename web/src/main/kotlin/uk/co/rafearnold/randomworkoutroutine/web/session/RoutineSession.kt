@@ -1,6 +1,6 @@
 package uk.co.rafearnold.randomworkoutroutine.web.session
 
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Exercise
+import uk.co.rafearnold.randomworkoutroutine.model.Exercise
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.getExercise
 import uk.co.rafearnold.randomworkoutroutine.web.util.nextWeightedInt

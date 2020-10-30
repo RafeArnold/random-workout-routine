@@ -8,32 +8,32 @@ interface Item {
     val tags: Set<String>
 }
 
-interface Exercise : Item {
+interface ExerciseOption : Item {
     val repCountLowerBound: Int
     val repCountUpperBound: Int
 }
 
 interface Group : Item {
-    val exercises: List<Exercise>
+    val exercises: List<ExerciseOption>
 }
 
 interface Routine : Item {
     val groups: List<Group>
 }
 
-data class ExerciseImpl(
+data class ExerciseOptionImpl(
     override val id: UUID,
     override val name: String,
     override val tags: Set<String>,
     override val repCountLowerBound: Int,
     override val repCountUpperBound: Int
-) : Exercise
+) : ExerciseOption
 
 data class GroupImpl(
     override val id: UUID,
     override val name: String,
     override val tags: Set<String>,
-    override val exercises: List<Exercise>
+    override val exercises: List<ExerciseOption>
 ) : Group
 
 data class RoutineImpl(

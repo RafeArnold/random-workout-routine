@@ -1,6 +1,8 @@
 package uk.co.rafearnold.randomworkoutroutine.web.model.entity
 
 import uk.co.rafearnold.randomworkoutroutine.model.Exercise
+import uk.co.rafearnold.randomworkoutroutine.model.ExerciseImpl
+import uk.co.rafearnold.randomworkoutroutine.model.ExerciseOption
 import java.util.*
 import javax.persistence.*
 import kotlin.random.Random
@@ -12,8 +14,6 @@ class ExerciseOption(
         tags: MutableSet<String> = mutableSetOf(),
         @Column(nullable = false) override var repCountLowerBound: Int = 0,
         @Column(nullable = false) override var repCountUpperBound: Int = 0
-) : Item(id, name, tags), Exercise
+) : Item(id, name, tags), ExerciseOption
 
-data class Exercise(val name: String, val repCount: Int)
-
-fun Exercise.getExercise() = Exercise(name, Random.nextInt(repCountLowerBound, repCountUpperBound))
+fun ExerciseOption.getExercise(): Exercise = ExerciseImpl(name, Random.nextInt(repCountLowerBound, repCountUpperBound))

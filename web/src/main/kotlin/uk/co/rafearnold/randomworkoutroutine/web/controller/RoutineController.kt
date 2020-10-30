@@ -3,7 +3,7 @@ package uk.co.rafearnold.randomworkoutroutine.web.controller
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Exercise
+import uk.co.rafearnold.randomworkoutroutine.model.Exercise
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
 import uk.co.rafearnold.randomworkoutroutine.web.service.RoutineService
