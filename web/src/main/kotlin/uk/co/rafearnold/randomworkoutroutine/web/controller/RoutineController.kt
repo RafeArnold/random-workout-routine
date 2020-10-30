@@ -24,7 +24,7 @@ class RoutineController(service: RoutineService) : ItemController<Routine>(servi
     @PostMapping("/start/{id}")
     fun start(httpSession: HttpSession,
               response: HttpServletResponse,
-              @PathVariable id: UUID): ResponseEntity<Any> {
+              @PathVariable id: UUID): ResponseEntity<Exercise> {
         if (isInProgress(httpSession)) {
             // Session already in progress.
             response.sendError(HttpStatus.CONFLICT.value(), "Session already in progress")
@@ -47,9 +47,10 @@ class RoutineController(service: RoutineService) : ItemController<Routine>(servi
             response.sendError(HttpStatus.CONFLICT.value(), "Routine contains a group that does not contain any exercises")
             return ResponseEntity.status(HttpStatus.CONFLICT).build()
         }
-        httpSession.setAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME, RoutineSession(routine))
+        val session = RoutineSession(routine)
+        httpSession.setAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME, session)
         // Return the session's first exercise.
-        return ResponseEntity.ok(nextExercise(httpSession))
+        return ResponseEntity.ok(session.currentExercise)
     }
 
     // TODO: Error code when user attempts to contact session endpoints when there is no active

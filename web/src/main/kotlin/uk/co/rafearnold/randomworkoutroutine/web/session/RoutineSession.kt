@@ -12,11 +12,11 @@ class RoutineSession(private val routine: Routine) {
         initialiseWeights(routine)
     }
 
-    var currentExercise: Exercise? = null
+    private var currentGroupIndex: Int = -1
+    var setCount: Int = 0
         private set
-    private var currentGroupIndex = -1
 
-    var setCount = 0
+    var currentExercise: Exercise = nextExercise()
         private set
 
     private fun initialiseWeights(routine: Routine) {
@@ -38,7 +38,7 @@ class RoutineSession(private val routine: Routine) {
         currentExercise = option.getExercise()
         adjustWeight(optionWeights, nextOptionIndex)
         normaliseWeights(optionWeights)
-        return currentExercise!!
+        return currentExercise
     }
 
     private fun adjustWeight(weights: DoubleArray, index: Int) {
