@@ -3,6 +3,7 @@ import update from "immutability-helper";
 import {Redirect} from "react-router-dom";
 import {editPath} from "../util/apiUtils";
 
+// TODO: Show a 404 screen if the item doesn't exist.
 class EditItem extends React.Component {
     constructor(props) {
         super(props);
