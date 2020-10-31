@@ -2,12 +2,13 @@ export const contextPath = document.getElementById("contextPath").innerText;
 export const apiExercisePath = contextPath + "api/exercise";
 export const apiGroupPath = contextPath + "api/group";
 export const apiRoutinePath = contextPath + "api/routine";
+export const apiSessionPath = contextPath + "api/session";
 export const editPath = contextPath + "edit";
 export const editExercisePath = contextPath + "edit/exercise";
 export const editGroupPath = contextPath + "edit/group";
 export const editRoutinePath = contextPath + "edit/routine";
-export const newRoutinePath = contextPath + "new-routine";
-export const continueRoutinePath = contextPath + "routine";
+export const newSessionPath = contextPath + "new-session";
+export const continueSessionPath = contextPath + "session";
 
 export function getExercise(id, onSuccess) {
     request(apiExercisePath + "/" + id, (responseText) => onSuccess(JSON.parse(responseText)), "GET");
@@ -33,28 +34,28 @@ export function getRoutineNames(onSuccess) {
     request(apiRoutinePath + "/names", (responseText) => onSuccess(JSON.parse(responseText)), "GET");
 }
 
-export function routineIsActive(onSuccess) {
-    request(apiRoutinePath + "/in-progress", (responseText) => onSuccess(responseText === "true"), "GET");
+export function sessionIsActive(onSuccess) {
+    request(apiSessionPath + "/in-progress", (responseText) => onSuccess(responseText === "true"), "GET");
 }
 
-export function startRoutine(routineId, onSuccess) {
-    request(apiRoutinePath + "/start/" + routineId, onSuccess, "POST");
+export function startSession(routineId, onSuccess) {
+    request(apiSessionPath + "/start/" + routineId, onSuccess, "POST");
 }
 
 export function getNextExercise(onSuccess) {
-    request(apiRoutinePath + "/next", (responseText) => onSuccess(JSON.parse(responseText)), "POST");
+    request(apiSessionPath + "/next", (responseText) => onSuccess(JSON.parse(responseText)), "POST");
 }
 
 export function getCurrentExercise(onSuccess) {
-    request(apiRoutinePath + "/current", (responseText) => onSuccess(JSON.parse(responseText)), "POST");
+    request(apiSessionPath + "/current", (responseText) => onSuccess(JSON.parse(responseText)), "POST");
 }
 
 export function getSetCount(onSuccess) {
-    request(apiRoutinePath + "/set-count", (responseText) => onSuccess(parseInt(responseText)), "GET");
+    request(apiSessionPath + "/set-count", (responseText) => onSuccess(parseInt(responseText)), "GET");
 }
 
-export function stopRoutine(onSuccess) {
-    request(apiRoutinePath + "/stop", onSuccess, "POST");
+export function stopSession(onSuccess) {
+    request(apiSessionPath + "/stop", onSuccess, "POST");
 }
 
 export function searchExerciseNames(filter, onSuccess) {

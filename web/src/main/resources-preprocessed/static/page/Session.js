@@ -1,8 +1,8 @@
 import React from "react";
-import {getCurrentExercise, getNextExercise, getSetCount, newRoutinePath, stopRoutine} from "../util/apiUtils";
+import {getCurrentExercise, getNextExercise, getSetCount, newSessionPath, stopSession} from "../util/apiUtils";
 import {Redirect} from "react-router-dom";
 
-class Routine extends React.Component {
+class Session extends React.Component {
     constructor(props) {
         super(props);
         this.state = {exercise: {name: "", repCount: ""}, setCount: 0};
@@ -15,7 +15,7 @@ class Routine extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.routineIsActive) {
+        if (this.props.sessionIsActive) {
             this.getCurrent();
         }
     }
@@ -29,7 +29,7 @@ class Routine extends React.Component {
     }
 
     stop() {
-        stopRoutine(() => this.props.setRoutineIsActive(false));
+        stopSession(() => this.props.setSessionIsActive(false));
     }
 
     updateExercise(exercise) {
@@ -46,8 +46,8 @@ class Routine extends React.Component {
     }
 
     render() {
-        if (!this.props.routineIsActive) {
-            return <Redirect to={newRoutinePath}/>;
+        if (!this.props.sessionIsActive) {
+            return <Redirect to={newSessionPath}/>;
         }
         return (
             <>
@@ -67,4 +67,4 @@ class Routine extends React.Component {
     }
 }
 
-export default Routine;
+export default Session;

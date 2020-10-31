@@ -6,43 +6,43 @@ import EditGroup from "../page/EditGroup";
 import EditRoutine from "../page/EditRoutine";
 import Home from "../page/Home";
 import NavBar from "./NavBar";
-import Routine from "../page/Routine";
+import Session from "../page/Session";
 import RoutineSelect from "../page/RoutineSelect";
 import {
     contextPath,
-    continueRoutinePath,
+    continueSessionPath,
     editExercisePath,
     editGroupPath,
     editPath,
     editRoutinePath,
-    newRoutinePath,
-    routineIsActive
+    newSessionPath,
+    sessionIsActive
 } from "../util/apiUtils";
 
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {routineIsActive: false};
-        this.setRoutineIsActive = this.setRoutineIsActive.bind(this);
+        this.state = {sessionIsActive: false};
+        this.setSessionIsActive = this.setSessionIsActive.bind(this);
     }
 
     componentDidMount() {
-        routineIsActive((isActive) => this.setRoutineIsActive(isActive));
+        sessionIsActive((isActive) => this.setSessionIsActive(isActive));
     }
 
-    setRoutineIsActive(isActive) {
-        this.setState({routineIsActive: isActive});
+    setSessionIsActive(isActive) {
+        this.setState({sessionIsActive: isActive});
     }
 
     render() {
         return (
             <BrowserRouter>
-                <NavBar routineIsActive={this.state.routineIsActive}/>
+                <NavBar sessionIsActive={this.state.sessionIsActive}/>
                 <div className="container">
                     <Switch>
-                        <Route path={continueRoutinePath}>
-                            <Routine routineIsActive={this.state.routineIsActive}
-                                     setRoutineIsActive={this.setRoutineIsActive}/>
+                        <Route path={continueSessionPath}>
+                            <Session sessionIsActive={this.state.sessionIsActive}
+                                     setSessionIsActive={this.setSessionIsActive}/>
                         </Route>
                         <Route path={[editExercisePath + "/:id", editExercisePath]}>
                             <EditExercise/>
@@ -56,9 +56,9 @@ class App extends React.Component {
                         <Route path={editPath}>
                             <Edit/>
                         </Route>
-                        <Route path={newRoutinePath}>
-                            <RoutineSelect routineIsActive={this.state.routineIsActive}
-                                           setRoutineIsActive={this.setRoutineIsActive}/>
+                        <Route path={newSessionPath}>
+                            <RoutineSelect sessionIsActive={this.state.sessionIsActive}
+                                           setSessionIsActive={this.setSessionIsActive}/>
                         </Route>
                         <Route path={contextPath}>
                             <Home/>
