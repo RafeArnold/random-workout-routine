@@ -23,6 +23,7 @@ abstract class ItemController<T : Item>(protected val service: ItemService<T>) {
     @GetMapping("/names")
     fun getNames(): List<T> = service.getNames()
 
+    // TODO: Filter fields should be query parameters, not the response body.
     @PostMapping("/search")
     fun searchNames(@RequestBody(required = false) filter: Filter): List<T> = service.search(filter)
 }
