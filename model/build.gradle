@@ -9,8 +9,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/rafearnold/random-workout-routine")
             credentials {
-                username = GITHUB_USERNAME ?: ""
-                password = GITHUB_TOKEN_PACKAGES ?: ""
+                username = findProperty("GITHUB_USERNAME") ?: ""
+                password = findProperty("GITHUB_TOKEN_PACKAGES") ?: ""
             }
         }
     }
