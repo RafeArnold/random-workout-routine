@@ -70,7 +70,7 @@ class Edit extends React.Component {
         switch (type) {
             case exerciseTypeName:
                 this.setState({exerciseSearchInputValue: searchTerm})
-                searchExerciseNames({searchTerm: searchTerm}, (exercises) => this.setState({exercises: exercises}))
+                searchExerciseNames(searchTerm, null, (exercises) => this.setState({exercises: exercises}))
                 break;
             case groupTypeName:
                 this.setState({groupSearchInputValue: searchTerm})

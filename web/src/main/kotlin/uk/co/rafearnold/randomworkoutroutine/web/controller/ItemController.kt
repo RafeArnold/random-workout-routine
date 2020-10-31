@@ -1,7 +1,6 @@
 package uk.co.rafearnold.randomworkoutroutine.web.controller
 
 import org.springframework.web.bind.annotation.*
-import uk.co.rafearnold.randomworkoutroutine.web.model.Filter
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Item
 import uk.co.rafearnold.randomworkoutroutine.web.service.ItemService
 import java.util.*
@@ -23,7 +22,9 @@ abstract class ItemController<T : Item>(protected val service: ItemService<T>) {
     @GetMapping("/names")
     fun getNames(): List<T> = service.getNames()
 
-    // TODO: Filter fields should be query parameters, not the response body.
-    @PostMapping("/search")
-    fun searchNames(@RequestBody(required = false) filter: Filter): List<T> = service.search(filter)
+    @GetMapping("/search")
+    fun searchNames(
+        @RequestParam(name = "term", required = false, defaultValue = "") searchTerm: String,
+        @RequestParam(name = "exclude", required = false, defaultValue = "") excludedNames: Set<String>
+    ): List<T> = service.search(searchTerm, excludedNames)
 }

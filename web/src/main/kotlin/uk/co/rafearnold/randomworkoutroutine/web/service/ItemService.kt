@@ -1,6 +1,5 @@
 package uk.co.rafearnold.randomworkoutroutine.web.service
 
-import uk.co.rafearnold.randomworkoutroutine.web.model.Filter
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Item
 import uk.co.rafearnold.randomworkoutroutine.web.repository.ItemRepository
 import java.util.*
@@ -23,19 +22,15 @@ abstract class ItemService<T : Item>(protected val repository: ItemRepository<T>
 
     fun getNames(): List<T> = transformIdAndNameToItem(repository.findAllIdsAndNames())
 
-    fun search(filter: Filter): List<T> {
-        var excludedNames = setOf("")
-        val searchTerm = filter.searchTerm
-        if (filter.excludedTerms.isNotEmpty()) {
-            excludedNames = filter.excludedTerms
-        }
-        return transformIdAndNameToItem(repository.findAllIdsAndNames(searchTerm, excludedNames))
-    }
+    fun search(searchTerm: String, excludedNames: Set<String>): List<T> =
+        transformIdAndNameToItem(
+            repository.findAllIdsAndNames(searchTerm, if (excludedNames.isEmpty()) setOf("") else excludedNames)
+        )
 
     private fun transformIdAndNameToItem(idsAndNames: List<Array<Any>>): List<T> =
-            idsAndNames.stream()
-                    .map { objects: Array<Any> -> createItem(objects[0] as UUID, objects[1] as String) }
-                    .collect(Collectors.toList())
+        idsAndNames.stream()
+            .map { objects: Array<Any> -> createItem(objects[0] as UUID, objects[1] as String) }
+            .collect(Collectors.toList())
 
     protected abstract fun createItem(id: UUID, name: String): T
 }

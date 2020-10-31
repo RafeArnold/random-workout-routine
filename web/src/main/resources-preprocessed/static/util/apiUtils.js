@@ -58,16 +58,26 @@ export function stopSession(onSuccess) {
     request(apiSessionPath + "/stop", onSuccess, "POST");
 }
 
-export function searchExerciseNames(filter, onSuccess) {
-    request(apiExercisePath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), "POST", filter);
+export function searchExerciseNames(searchTerm, excludedTerms, onSuccess) {
+    request(apiExercisePath + "/search" + getSearchQueryString(searchTerm, excludedTerms),
+        (responseText) => onSuccess(JSON.parse(responseText)), "GET");
 }
 
-export function searchGroupNames(filter, onSuccess) {
-    request(apiGroupPath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), "POST", filter);
+export function searchGroupNames(searchTerm, excludedTerms, onSuccess) {
+    request(apiGroupPath + "/search" + getSearchQueryString(searchTerm, excludedTerms),
+        (responseText) => onSuccess(JSON.parse(responseText)), "GET");
 }
 
-export function searchRoutineNames(filter, onSuccess) {
-    request(apiRoutinePath + "/search", (responseText) => onSuccess(JSON.parse(responseText)), "POST", filter);
+export function searchRoutineNames(searchTerm, excludedTerms, onSuccess) {
+    request(apiRoutinePath + "/search" + getSearchQueryString(searchTerm, excludedTerms),
+        (responseText) => onSuccess(JSON.parse(responseText)), "GET");
+}
+
+export function getSearchQueryString(searchTerm, excludedTerms) {
+    let queryParameters = new Map();
+    if (searchTerm) queryParameters.set("term", searchTerm);
+    if (excludedTerms) queryParameters.set("exclude", excludedTerms);
+    return getQueryString(queryParameters);
 }
 
 export function saveExercise(exercise, onSuccess) {
@@ -104,4 +114,13 @@ function request(url, onSuccess, method, body) {
     } else {
         xhr.send();
     }
+}
+
+function getQueryString(queryParameterMap) {
+    if (queryParameterMap && queryParameterMap.size > 0) {
+        return "?" + Array.from(queryParameterMap)
+            .map(([key, value]) => key + "=" + value)
+            .join("&");
+    }
+    return "";
 }
