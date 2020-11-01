@@ -5,9 +5,15 @@ import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
 import uk.co.rafearnold.randomworkoutroutine.web.repository.RoutineRepository
 
+/**
+ * Service for retrieving and manipulating [Routine] entities.
+ */
 @Service
 class RoutineService(repository: RoutineRepository) : ItemService<Routine>(repository) {
 
+    /**
+     * Removes [group] from every [Routine] whose [Routine.groups] property contains it.
+     */
     fun removeGroupFromAll(group: Group) {
         val routines = (repository as RoutineRepository).findAllByGroupsContaining(group)
         for (routine in routines) {
