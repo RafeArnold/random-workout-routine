@@ -11,14 +11,26 @@ import java.util.*
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 
+/**
+ * A controller for managing a user's workout session.
+ */
 @RestController
 @RequestMapping("/api/session")
 class SessionController(private val routineService: RoutineService) {
 
+    /**
+     * Returns a boolean that indicates if the user has a session in progress.
+     */
     @GetMapping("/in-progress")
     fun isInProgress(httpSession: HttpSession): Boolean =
         httpSession.getAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME) != null
 
+    /**
+     * Begins a new workout session with the [Routine] associated with [id]. A new session can not
+     * be started if the user already has one in progress.
+     *
+     * @return The first [Exercise] of the session.
+     */
     @PostMapping("/start/{id}")
     fun start(
         httpSession: HttpSession,
@@ -38,12 +50,12 @@ class SessionController(private val routineService: RoutineService) {
         }
         val routine = routineOptional.get()
         if (routine.groups.isEmpty()) {
-            // Session does not contain any groups.
+            // Routine does not contain any groups.
             response.sendError(HttpStatus.CONFLICT.value(), "Session does not contain any groups")
             return Optional.empty()
         }
         if (routine.groups.stream().anyMatch { group: Group -> group.exercises.isEmpty() }) {
-            // Session contains a group that does not contain any exercises.
+            // Routine contains a group that does not contain any exercises.
             response.sendError(
                 HttpStatus.CONFLICT.value(),
                 "Session contains a group that does not contain any exercises"
@@ -56,6 +68,9 @@ class SessionController(private val routineService: RoutineService) {
         return Optional.of(session.currentExercise)
     }
 
+    /**
+     * Returns the next [Exercise] of the currently active session.
+     */
     @PostMapping("/next")
     fun nextExercise(httpSession: HttpSession, response: HttpServletResponse): Optional<Exercise> {
         if (!isInProgress(httpSession)) {
@@ -66,6 +81,9 @@ class SessionController(private val routineService: RoutineService) {
         return getRoutineSession(httpSession).map { it.nextExercise() }
     }
 
+    /**
+     * Returns the current [Exercise] of the currently active session.
+     */
     @GetMapping("/current")
     fun getCurrentExercise(httpSession: HttpSession, response: HttpServletResponse): Optional<Exercise> {
         if (!isInProgress(httpSession)) {
@@ -76,6 +94,9 @@ class SessionController(private val routineService: RoutineService) {
         return getRoutineSession(httpSession).map { it.currentExercise }
     }
 
+    /**
+     * Returns the set count of the currently active session.
+     */
     @GetMapping("/set-count")
     fun getSetCount(httpSession: HttpSession, response: HttpServletResponse): Optional<Int> {
         if (!isInProgress(httpSession)) {
@@ -86,6 +107,9 @@ class SessionController(private val routineService: RoutineService) {
         return getRoutineSession(httpSession).map { it.setCount }
     }
 
+    /**
+     * Stops the currently active session.
+     */
     @PostMapping("/stop")
     fun stop(httpSession: HttpSession, response: HttpServletResponse) {
         if (!isInProgress(httpSession)) {
@@ -96,11 +120,13 @@ class SessionController(private val routineService: RoutineService) {
     }
 
     companion object {
+        /**
+         * @return The currently active [RoutineSession] from [httpSession] or null if there is no
+         * active session.
+         */
         private fun getRoutineSession(httpSession: HttpSession): Optional<RoutineSession> {
             val session = httpSession.getAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME)
-            return if (session != null) {
-                Optional.of(session as RoutineSession)
-            } else Optional.empty()
+            return if (session != null) Optional.of(session as RoutineSession) else Optional.empty()
         }
     }
 }
