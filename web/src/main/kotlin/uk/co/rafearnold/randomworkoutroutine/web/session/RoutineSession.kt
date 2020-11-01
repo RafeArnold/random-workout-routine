@@ -1,8 +1,9 @@
 package uk.co.rafearnold.randomworkoutroutine.web.session
 
 import uk.co.rafearnold.randomworkoutroutine.model.Exercise
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.getExercise
 import uk.co.rafearnold.randomworkoutroutine.web.util.nextWeightedInt
 
@@ -31,33 +32,41 @@ class RoutineSession(private val routine: Routine) {
         private set
 
     /**
+     * An array of arrays determining the likelihood of each [ExerciseOption] in each [Group] in
+     * [routine] being chosen when [nextExercise] is called. Each element in the outer array
+     * corresponds to the [Group] at the same index in [routine]. Each value in each inner array
+     * corresponds to the [ExerciseOption] at the same index in the relevant [Group]. The higher a
+     * value, the more likely its corresponding [ExerciseOption] is to be chosen.
+     */
+    private val groupOptionWeights: Array<DoubleArray> = initialiseWeights(routine)
+
+    /**
      * The current exercise the user is doing.
      */
     var currentExercise: Exercise = nextExercise()
         private set
 
     /**
-     * Initialises the [Group.optionWeights] property of all [Group]s in [routine]. All weights are
-     * initially set to the same value to ensure equal probability of each exercise being chosen.
+     * Creates an array whose size is equal to the number of [Group]s in [routine]. Each element
+     * of the array is itself an array of [Double] weights whose size is equal to the number of
+     * [ExerciseOption]s in the corresponding [Group] in [routine]. All weights are initially set
+     * to the same value to ensure equal probability.
      */
-    private fun initialiseWeights(routine: Routine) {
-        for (group in routine.groups) {
-            group.optionWeights = DoubleArray(group.exercises.size) { 1.0 }
-        }
-    }
+    private fun initialiseWeights(routine: Routine): Array<DoubleArray> =
+        Array(routine.groups.size) { DoubleArray(routine.groups[it].exercises.size) { 1.0 } }
 
     /**
-     * Selects the next exercise for the session. The next exercise is selected from the next
-     * [Group] in [routine]'s cycle using the [Group]'s [Group.optionWeights] property. Once the
-     * new exercise has been selected, that exercise's weight is then adjusted to make it less
-     * likely to be selected from that [Group] again.
+     * Selects the next exercise for the session. The next exercise is selected, at random, from
+     * the next [Group] in [routine]'s cycle using [groupOptionWeights]. Once the new exercise has
+     * been selected, that exercise's weight is then adjusted to make it less likely to be selected
+     * from that [Group] again.
      */
     fun nextExercise(): Exercise {
         setCount++
         currentGroupIndex++
         currentGroupIndex %= routine.groups.size
         val currentGroup = routine.groups[currentGroupIndex]
-        val optionWeights = currentGroup.optionWeights
+        val optionWeights = groupOptionWeights[currentGroupIndex]
         val nextOptionIndex: Int = nextWeightedInt(optionWeights)
         val option = currentGroup.exercises[nextOptionIndex]
         currentExercise = option.getExercise()
