@@ -66,7 +66,7 @@ class SessionController(private val routineService: RoutineService) {
         return getRoutineSession(httpSession).map { it.nextExercise() }
     }
 
-    @PostMapping("/current")
+    @GetMapping("/current")
     fun getCurrentExercise(httpSession: HttpSession, response: HttpServletResponse): Optional<Exercise> {
         if (!isInProgress(httpSession)) {
             // No active session.

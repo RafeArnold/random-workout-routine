@@ -47,7 +47,7 @@ export function getNextExercise(onSuccess) {
 }
 
 export function getCurrentExercise(onSuccess) {
-    request(apiSessionPath + "/current", (responseText) => onSuccess(JSON.parse(responseText)), "POST");
+    request(apiSessionPath + "/current", (responseText) => onSuccess(JSON.parse(responseText)), "GET");
 }
 
 export function getSetCount(onSuccess) {
