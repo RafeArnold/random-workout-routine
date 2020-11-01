@@ -1,15 +1,14 @@
-package uk.co.rafearnold.randomworkoutroutine.web;
+package uk.co.rafearnold.randomworkoutroutine.web
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
 @ActiveProfiles("test")
-class RandomWorkoutRoutineApplicationTests {
+internal class RandomWorkoutRoutineApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    fun contextLoads() {
+    }
 }
