@@ -56,23 +56,44 @@ class SessionController(private val routineService: RoutineService) {
         return Optional.of(session.currentExercise)
     }
 
-    // TODO: Error code when user attempts to contact session endpoints when there is no active
-    //  session. Maybe 409.
     @PostMapping("/next")
-    fun nextExercise(httpSession: HttpSession): Optional<Exercise> =
-        getRoutineSession(httpSession).map { it.nextExercise() }
+    fun nextExercise(httpSession: HttpSession, response: HttpServletResponse): Optional<Exercise> {
+        if (!isInProgress(httpSession)) {
+            // No active session.
+            response.sendError(HttpStatus.CONFLICT.value(), "No active session")
+            return Optional.empty()
+        }
+        return getRoutineSession(httpSession).map { it.nextExercise() }
+    }
 
-    // TODO: This should probably not execute nextExercise when there is no current exercise. Just
-    //  give an error (like 409). Then this method can be a GET.
     @PostMapping("/current")
-    fun getCurrentExercise(httpSession: HttpSession): Optional<Exercise> =
-        getRoutineSession(httpSession).map { it.currentExercise }
+    fun getCurrentExercise(httpSession: HttpSession, response: HttpServletResponse): Optional<Exercise> {
+        if (!isInProgress(httpSession)) {
+            // No active session.
+            response.sendError(HttpStatus.CONFLICT.value(), "No active session")
+            return Optional.empty()
+        }
+        return getRoutineSession(httpSession).map { it.currentExercise }
+    }
 
     @GetMapping("/set-count")
-    fun getSetCount(httpSession: HttpSession): Optional<Int> = getRoutineSession(httpSession).map { it.setCount }
+    fun getSetCount(httpSession: HttpSession, response: HttpServletResponse): Optional<Int> {
+        if (!isInProgress(httpSession)) {
+            // No active session.
+            response.sendError(HttpStatus.CONFLICT.value(), "No active session")
+            return Optional.empty()
+        }
+        return getRoutineSession(httpSession).map { it.setCount }
+    }
 
     @PostMapping("/stop")
-    fun stop(httpSession: HttpSession) = httpSession.removeAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME)
+    fun stop(httpSession: HttpSession, response: HttpServletResponse) {
+        if (!isInProgress(httpSession)) {
+            // No active session.
+            response.sendError(HttpStatus.CONFLICT.value(), "No active session")
+        }
+        return httpSession.removeAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME)
+    }
 
     companion object {
         private fun getRoutineSession(httpSession: HttpSession): Optional<RoutineSession> {
