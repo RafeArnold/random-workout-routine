@@ -4,8 +4,6 @@ import org.springframework.stereotype.Service
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
 import uk.co.rafearnold.randomworkoutroutine.web.repository.RoutineRepository
-import java.util.*
-import java.util.stream.Collectors
 
 @Service
 class RoutineService(repository: RoutineRepository) : ItemService<Routine>(repository) {
@@ -19,6 +17,4 @@ class RoutineService(repository: RoutineRepository) : ItemService<Routine>(repos
             repository.save(routine)
         }
     }
-
-    override fun createItem(id: UUID, name: String): Routine = Routine(id, name)
 }

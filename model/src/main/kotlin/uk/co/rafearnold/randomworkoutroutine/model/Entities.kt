@@ -2,9 +2,12 @@ package uk.co.rafearnold.randomworkoutroutine.model
 
 import java.util.*
 
-interface Item {
+interface SimpleItem {
     val id: UUID
     val name: String
+}
+
+interface Item : SimpleItem {
     val tags: Set<String>
 }
 
@@ -20,6 +23,11 @@ interface Group : Item {
 interface Routine : Item {
     val groups: List<Group>
 }
+
+data class SimpleItemImpl(
+    override val id: UUID,
+    override val name: String
+) : SimpleItem
 
 data class ExerciseOptionImpl(
     override val id: UUID,

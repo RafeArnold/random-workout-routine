@@ -1,6 +1,7 @@
 package uk.co.rafearnold.randomworkoutroutine.web.controller
 
 import org.springframework.web.bind.annotation.*
+import uk.co.rafearnold.randomworkoutroutine.model.SimpleItem
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Item
 import uk.co.rafearnold.randomworkoutroutine.web.service.ItemService
 import java.util.*
@@ -20,11 +21,11 @@ abstract class ItemController<T : Item>(protected val service: ItemService<T>) {
     fun delete(@PathVariable id: UUID) = service.getById(id).ifPresent { item: T -> service.delete(item) }
 
     @GetMapping("/names")
-    fun getNames(): List<T> = service.getNames()
+    fun getNames(): List<SimpleItem> = service.getNames()
 
     @GetMapping("/search")
     fun searchNames(
         @RequestParam(name = "term", required = false, defaultValue = "") searchTerm: String,
         @RequestParam(name = "exclude", required = false, defaultValue = "") excludedNames: Set<String>
-    ): List<T> = service.search(searchTerm, excludedNames)
+    ): List<SimpleItem> = service.search(searchTerm, excludedNames)
 }
