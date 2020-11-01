@@ -74,11 +74,11 @@ class Edit extends React.Component {
                 break;
             case groupTypeName:
                 this.setState({groupSearchInputValue: searchTerm})
-                searchGroupNames({searchTerm: searchTerm}, (groups) => this.setState({groups: groups}))
+                searchGroupNames(searchTerm, null, (groups) => this.setState({groups: groups}))
                 break;
             case routineTypeName:
                 this.setState({routineSearchInputValue: searchTerm})
-                searchRoutineNames({searchTerm: searchTerm}, (routines) => this.setState({routines: routines}))
+                searchRoutineNames(searchTerm, null, (routines) => this.setState({routines: routines}))
         }
     }
 
