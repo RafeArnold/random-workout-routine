@@ -16,4 +16,4 @@ class ExerciseOption(
         @Column(nullable = false) override var repCountUpperBound: Int = 0
 ) : Item(id, name, tags), ExerciseOption
 
-fun ExerciseOption.getExercise(): Exercise = ExerciseImpl(name, Random.nextInt(repCountLowerBound, repCountUpperBound))
+fun ExerciseOption.getExercise(): Exercise = ExerciseImpl(name, Random.nextInt(repCountLowerBound, repCountUpperBound + 1))
