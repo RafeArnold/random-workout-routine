@@ -19,9 +19,7 @@ class GroupService(
     fun removeExerciseFromAll(exercise: ExerciseOption) {
         val groups = (repository as GroupRepository).findAllByExercisesContaining(exercise)
         for (group in groups) {
-            group.exercises = group.exercises.stream()
-                    .filter { e: ExerciseOption -> e.id !== exercise.id }
-                    .collect(Collectors.toList())
+            group.exercises = group.exercises.filter { it.id !== exercise.id }.toList()
             repository.save(group)
         }
     }

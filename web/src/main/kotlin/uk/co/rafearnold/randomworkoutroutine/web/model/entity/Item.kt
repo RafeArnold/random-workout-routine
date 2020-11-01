@@ -12,11 +12,11 @@ import javax.persistence.*
 abstract class Item(
     @Id @GeneratedValue override var id: UUID = UUID.randomUUID(),
     @Column(unique = true, nullable = false) override var name: String = "",
-    tags: MutableSet<String> = mutableSetOf()
+    tags: Set<String> = setOf()
 ) : Item {
 
     @ElementCollection
-    override var tags: MutableSet<String> = tags
+    override var tags: Set<String> = tags
         /**
          * Removes blank strings, trims and converts remaining strings to lowercase.
          */
@@ -25,6 +25,6 @@ abstract class Item(
                 .filter { tag: String -> !tag.isBlank() }
                 .map { obj: String -> obj.trim() }
                 .map { obj: String -> obj.toLowerCase() }
-                .toMutableSet()
+                .toSet()
         }
 }

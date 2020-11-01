@@ -14,7 +14,7 @@ import kotlin.random.Random
 class ExerciseOption(
     id: UUID = UUID.randomUUID(),
     name: String = "",
-    tags: MutableSet<String> = mutableSetOf(),
+    tags: Set<String> = setOf(),
     @Column(nullable = false) override var repCountLowerBound: Int = 0,
     @Column(nullable = false) override var repCountUpperBound: Int = 0
 ) : Item(id, name, tags), ExerciseOption

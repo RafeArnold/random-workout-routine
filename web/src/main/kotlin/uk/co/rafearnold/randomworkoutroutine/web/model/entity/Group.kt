@@ -13,6 +13,6 @@ import javax.persistence.ManyToMany
 class Group(
     id: UUID = UUID.randomUUID(),
     name: String = "",
-    tags: MutableSet<String> = mutableSetOf(),
-    @ManyToMany(fetch = FetchType.EAGER) override var exercises: MutableList<ExerciseOption> = mutableListOf()
+    tags: Set<String> = setOf(),
+    @ManyToMany(fetch = FetchType.EAGER) override var exercises: List<ExerciseOption> = listOf()
 ) : Item(id, name, tags), Group
