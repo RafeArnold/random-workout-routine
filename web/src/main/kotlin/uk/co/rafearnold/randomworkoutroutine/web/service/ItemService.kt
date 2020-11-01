@@ -21,9 +21,7 @@ abstract class ItemService<T : Item>(protected val repository: ItemRepository<T>
     fun getNames(): List<SimpleItem> = transformIdAndNameToItem(repository.findAllIdsAndNames())
 
     fun search(searchTerm: String, excludedNames: Set<String>): List<SimpleItem> =
-        transformIdAndNameToItem(
-            repository.findAllIdsAndNames(searchTerm, if (excludedNames.isEmpty()) setOf("") else excludedNames)
-        )
+        repository.findAllIdsAndNames(searchTerm, if (excludedNames.isEmpty()) setOf("") else excludedNames)
 
     private fun transformIdAndNameToItem(idsAndNames: List<Array<Any>>): List<SimpleItem> =
         idsAndNames.map { SimpleItemImpl(it[0] as UUID, it[1] as String) }
