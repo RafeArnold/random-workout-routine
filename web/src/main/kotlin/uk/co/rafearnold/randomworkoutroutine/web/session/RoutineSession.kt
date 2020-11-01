@@ -4,7 +4,6 @@ import uk.co.rafearnold.randomworkoutroutine.model.Exercise
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.getExercise
 import uk.co.rafearnold.randomworkoutroutine.web.util.nextWeightedInt
-import java.util.*
 
 class RoutineSession(private val routine: Routine) {
 
@@ -21,9 +20,7 @@ class RoutineSession(private val routine: Routine) {
 
     private fun initialiseWeights(routine: Routine) {
         for (group in routine.groups) {
-            val weights = DoubleArray(group.exercises.size)
-            Arrays.fill(weights, 1.0)
-            group.optionWeights = weights
+            group.optionWeights = DoubleArray(group.exercises.size) { 1.0 }
         }
     }
 
@@ -46,7 +43,7 @@ class RoutineSession(private val routine: Routine) {
     }
 
     private fun normaliseWeights(weights: DoubleArray) {
-        val weightSum = Arrays.stream(weights).sum()
+        val weightSum = weights.sum()
         val factor = weights.size / weightSum
         for (i in weights.indices) {
             weights[i] *= factor
