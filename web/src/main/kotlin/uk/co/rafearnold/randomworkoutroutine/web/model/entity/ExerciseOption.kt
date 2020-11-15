@@ -17,7 +17,30 @@ class ExerciseOption(
     tags: MutableSet<String> = mutableSetOf(),
     @Column(nullable = false) override var repCountLowerBound: Int = 0,
     @Column(nullable = false) override var repCountUpperBound: Int = 0
-) : Item(id, name, tags), ExerciseOption
+) : Item(id, name, tags), ExerciseOption {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ExerciseOption) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (tags != other.tags) return false
+        if (repCountLowerBound != other.repCountLowerBound) return false
+        if (repCountUpperBound != other.repCountUpperBound) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + tags.hashCode()
+        result = 31 * result + repCountLowerBound
+        result = 31 * result + repCountUpperBound
+        return result
+    }
+}
 
 /**
  * Creates an [Exercise] object whose name is equal to this [ExerciseOption] and whose

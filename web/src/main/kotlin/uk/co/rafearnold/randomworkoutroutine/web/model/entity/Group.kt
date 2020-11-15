@@ -15,4 +15,25 @@ class Group(
     name: String = "",
     tags: MutableSet<String> = mutableSetOf(),
     @ManyToMany(fetch = FetchType.EAGER) override var exercises: List<ExerciseOption> = listOf()
-) : Item(id, name, tags), Group
+) : Item(id, name, tags), Group {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Group) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (tags != other.tags) return false
+        if (exercises != other.exercises) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + tags.hashCode()
+        result = 31 * result + exercises.hashCode()
+        return result
+    }
+}
