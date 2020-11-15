@@ -18,15 +18,17 @@ abstract class Item(
 ) : Item {
 
     @ElementCollection
-    override var tags: Set<String> = tags
+    override var tags: Set<String> = formatTags(tags)
         /**
          * Removes blank strings, trims and converts remaining strings to lowercase.
          */
         set(value) {
-            field = value
-                .filter { tag: String -> !tag.isBlank() }
-                .map { obj: String -> obj.trim() }
-                .map { obj: String -> obj.toLowerCase() }
-                .toSet()
+            field = formatTags(value)
         }
+
+    private fun formatTags(tags: Set<String>) = tags
+        .filter { tag: String -> !tag.isBlank() }
+        .map { obj: String -> obj.trim() }
+        .map { obj: String -> obj.toLowerCase() }
+        .toSet()
 }
