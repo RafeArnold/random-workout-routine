@@ -18,7 +18,7 @@ abstract class Item(
 ) : Item {
 
     @ElementCollection
-    override var tags: Set<String> = formatTags(tags)
+    override var tags: MutableSet<String> = formatTags(tags)
         /**
          * Removes blank strings, trims and converts remaining strings to lowercase.
          */
@@ -26,9 +26,9 @@ abstract class Item(
             field = formatTags(value)
         }
 
-    private fun formatTags(tags: Set<String>) = tags
+    private fun formatTags(tags: Set<String>): MutableSet<String> = tags
         .filter { tag: String -> !tag.isBlank() }
         .map { obj: String -> obj.trim() }
         .map { obj: String -> obj.toLowerCase() }
-        .toSet()
+        .toMutableSet()
 }
