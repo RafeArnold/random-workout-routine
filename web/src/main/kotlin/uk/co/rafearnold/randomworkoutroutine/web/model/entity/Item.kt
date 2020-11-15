@@ -6,13 +6,15 @@ import javax.persistence.*
 
 /**
  * An implementation of [Item] for JPA.
+ *
+ * @property tags This is mutable to avoid JDBC errors when saving items.
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract class Item(
     @Id @GeneratedValue override var id: UUID = UUID.randomUUID(),
     @Column(unique = true, nullable = false) override var name: String = "",
-    tags: Set<String> = setOf()
+    tags: MutableSet<String> = mutableSetOf()
 ) : Item {
 
     @ElementCollection

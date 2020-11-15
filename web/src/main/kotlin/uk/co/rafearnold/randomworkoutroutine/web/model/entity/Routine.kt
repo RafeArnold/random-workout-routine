@@ -11,6 +11,6 @@ import javax.persistence.*
 class Routine(
     id: UUID = UUID.randomUUID(),
     name: String = "",
-    tags: Set<String> = setOf(),
+    tags: MutableSet<String> = mutableSetOf(),
     @ManyToMany(fetch = FetchType.EAGER) @OrderColumn override var groups: List<Group> = listOf()
 ) : Item(id, name, tags), Routine
