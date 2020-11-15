@@ -12,7 +12,7 @@ import javax.persistence.*
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract class Item(
-    @Id @GeneratedValue override var id: UUID = UUID.randomUUID(),
+    @Id override var id: UUID = UUID.randomUUID(),
     @Column(unique = true, nullable = false) override var name: String = "",
     tags: MutableSet<String> = mutableSetOf()
 ) : Item {
