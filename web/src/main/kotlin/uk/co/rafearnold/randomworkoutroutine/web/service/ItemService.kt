@@ -14,6 +14,9 @@ abstract class ItemService<T : Item>(protected val repository: ItemRepository<T>
     fun getById(id: UUID): Optional<T> = repository.findById(id)
 
     fun save(item: T) {
+        if (item.name.isBlank()) {
+            throw IllegalArgumentException("Item name must not be blank")
+        }
         repository.save(item)
     }
 
