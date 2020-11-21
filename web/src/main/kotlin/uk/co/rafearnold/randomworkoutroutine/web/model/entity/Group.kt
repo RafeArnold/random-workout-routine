@@ -5,6 +5,7 @@ import java.util.*
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.ManyToMany
+import javax.persistence.OrderColumn
 
 /**
  * An implementation of [Group] for JPA.
@@ -14,7 +15,7 @@ class Group(
     id: UUID = UUID.randomUUID(),
     name: String = "",
     tags: MutableSet<String> = mutableSetOf(),
-    @ManyToMany(fetch = FetchType.EAGER) override var exercises: List<ExerciseOption> = listOf()
+    @ManyToMany(fetch = FetchType.EAGER) @OrderColumn override var exercises: MutableList<ExerciseOption> = mutableListOf()
 ) : Item(id, name, tags), Group {
 
     override fun equals(other: Any?): Boolean {

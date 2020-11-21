@@ -17,7 +17,7 @@ class RoutineService(repository: RoutineRepository) : ItemService<Routine>(repos
     fun removeGroupFromAll(group: Group) {
         val routines = (repository as RoutineRepository).findAllByGroupsContaining(group)
         for (routine in routines) {
-            routine.groups = routine.groups.filter { it.id !== group.id }.toList()
+            routine.groups = routine.groups.filter { it.id !== group.id }.toMutableList()
             repository.save(routine)
         }
     }
