@@ -13,10 +13,3 @@ spring:
   datasource:
     url: jdbc:postgresql://db:5432/random-workout-routine
     password: j5NEo9*xrG&*
----
-spring:
-  profiles: test
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:random-workout-routine
-  jpa.hibernate.ddl-auto: create-drop
