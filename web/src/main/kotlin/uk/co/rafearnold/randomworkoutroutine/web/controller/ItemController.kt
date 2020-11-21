@@ -3,6 +3,7 @@ package uk.co.rafearnold.randomworkoutroutine.web.controller
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.web.bind.annotation.*
 import uk.co.rafearnold.randomworkoutroutine.model.SimpleItem
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Item
@@ -35,6 +36,9 @@ abstract class ItemController<T : Item>(protected val service: ItemService<T>) {
             if (cause is ConstraintViolationException && cause.sqlState == "23505") {
                 response.sendError(HttpStatus.CONFLICT.value(), cause.cause?.message)
             }
+        } catch (e: JpaObjectRetrievalFailureException) {
+            // A child of the item has not been saved previously.
+            response.sendError(HttpStatus.NOT_FOUND.value(), e.cause?.message)
         }
     }
 
