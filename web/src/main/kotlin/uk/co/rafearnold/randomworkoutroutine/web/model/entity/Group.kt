@@ -12,7 +12,7 @@ import javax.persistence.*
 class Group(
     @Id
     override var id: UUID = UUID.randomUUID(),
-    @ManyToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @OrderColumn
     override var exercises: MutableList<ExerciseOption> = mutableListOf(),
     @ManyToOne(cascade = [CascadeType.ALL])
