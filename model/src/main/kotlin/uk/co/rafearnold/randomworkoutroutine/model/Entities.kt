@@ -11,12 +11,17 @@ interface Item : SimpleItem {
     val tags: Set<String>
 }
 
-interface ExerciseOption : Item {
+interface Exercise : Item
+
+interface ExerciseOption {
+    val id: UUID
+    val exercise: Exercise
     val repCountLowerBound: Int
     val repCountUpperBound: Int
 }
 
-interface Group : Item {
+interface Group {
+    val id: UUID
     val exercises: List<ExerciseOption>
 }
 
@@ -31,16 +36,13 @@ data class SimpleItemImpl(
 
 data class ExerciseOptionImpl(
     override val id: UUID,
-    override val name: String,
-    override val tags: Set<String>,
+    override val exercise: Exercise,
     override val repCountLowerBound: Int,
     override val repCountUpperBound: Int
 ) : ExerciseOption
 
 data class GroupImpl(
     override val id: UUID,
-    override val name: String,
-    override val tags: Set<String>,
     override val exercises: List<ExerciseOption>
 ) : Group
 

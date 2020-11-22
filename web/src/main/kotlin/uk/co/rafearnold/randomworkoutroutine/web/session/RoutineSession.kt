@@ -1,10 +1,10 @@
 package uk.co.rafearnold.randomworkoutroutine.web.session
 
-import uk.co.rafearnold.randomworkoutroutine.model.Exercise
+import uk.co.rafearnold.randomworkoutroutine.model.ExerciseSet
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
-import uk.co.rafearnold.randomworkoutroutine.web.model.entity.getExercise
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.getSet
 import uk.co.rafearnold.randomworkoutroutine.web.util.nextWeightedInt
 
 /**
@@ -41,9 +41,9 @@ class RoutineSession(private val routine: Routine) {
     private val groupOptionWeights: Array<DoubleArray> = initialiseWeights(routine)
 
     /**
-     * The current exercise the user is doing.
+     * The current exercise set the user is doing.
      */
-    var currentExercise: Exercise = nextExercise()
+    var currentSet: ExerciseSet = nextExercise()
         private set
 
     /**
@@ -56,12 +56,12 @@ class RoutineSession(private val routine: Routine) {
         Array(routine.groups.size) { DoubleArray(routine.groups[it].exercises.size) { 1.0 } }
 
     /**
-     * Selects the next exercise for the session. The next exercise is selected, at random, from
-     * the next [Group] in [routine]'s cycle using [groupOptionWeights]. Once the new exercise has
-     * been selected, that exercise's weight is then adjusted to make it less likely to be selected
-     * from that [Group] again.
+     * Selects the next exercise set for the session. The next set is selected, at random, from the
+     * next [Group] in [routine]'s cycle using [groupOptionWeights]. Once the new exercise has been
+     * selected, that exercise's weight is then adjusted to make it less likely to be selected from
+     * that [Group] again.
      */
-    fun nextExercise(): Exercise {
+    fun nextExercise(): ExerciseSet {
         setCount++
         currentGroupIndex++
         currentGroupIndex %= routine.groups.size
@@ -69,10 +69,10 @@ class RoutineSession(private val routine: Routine) {
         val optionWeights = groupOptionWeights[currentGroupIndex]
         val nextOptionIndex: Int = nextWeightedInt(optionWeights)
         val option = currentGroup.exercises[nextOptionIndex]
-        currentExercise = option.getExercise()
+        currentSet = option.getSet()
         adjustWeight(optionWeights, nextOptionIndex)
         normaliseWeights(optionWeights)
-        return currentExercise
+        return currentSet
     }
 
     /**

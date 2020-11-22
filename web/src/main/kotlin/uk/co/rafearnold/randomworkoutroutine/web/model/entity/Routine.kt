@@ -12,8 +12,16 @@ class Routine(
     id: UUID = UUID.randomUUID(),
     name: String = "",
     tags: MutableSet<String> = mutableSetOf(),
-    @ManyToMany(fetch = FetchType.EAGER) @OrderColumn override var groups: MutableList<Group> = mutableListOf()
+    groups: MutableList<Group> = mutableListOf()
 ) : Item(id, name, tags), Routine {
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "routine", cascade = [CascadeType.ALL])
+    override var groups: MutableList<Group> = groups
+        set(value) {
+            field.forEach { it.routine = null }
+            field = value
+            field.forEach { it.routine = this }
+        }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

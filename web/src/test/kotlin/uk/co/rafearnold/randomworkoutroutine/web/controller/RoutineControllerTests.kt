@@ -23,10 +23,12 @@ import org.testcontainers.containers.PostgreSQLContainerProvider
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import uk.co.rafearnold.randomworkoutroutine.model.SimpleItemImpl
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Exercise
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
 import uk.co.rafearnold.randomworkoutroutine.web.repository.ExerciseOptionRepository
+import uk.co.rafearnold.randomworkoutroutine.web.repository.ExerciseRepository
 import uk.co.rafearnold.randomworkoutroutine.web.repository.GroupRepository
 import uk.co.rafearnold.randomworkoutroutine.web.repository.RoutineRepository
 import java.util.*
@@ -61,7 +63,10 @@ internal open class RoutineControllerTests {
     private lateinit var repository: RoutineRepository
 
     @Autowired
-    private lateinit var exerciseRepository: ExerciseOptionRepository
+    private lateinit var exerciseRepository: ExerciseRepository
+
+    @Autowired
+    private lateinit var exerciseOptionRepository: ExerciseOptionRepository
 
     @Autowired
     private lateinit var groupRepository: GroupRepository
@@ -73,6 +78,7 @@ internal open class RoutineControllerTests {
         clearAllMocks()
         repository.deleteAll()
         exerciseRepository.deleteAll()
+        exerciseOptionRepository.deleteAll()
         groupRepository.deleteAll()
     }
 
@@ -81,40 +87,38 @@ internal open class RoutineControllerTests {
     open fun `when retrieving an item and the provided id corresponds to a real item then that item is returned`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
+        val exercises: List<Exercise> = listOf(
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2")),
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2")),
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise3Tag1", "test_exercise3Tag2")),
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise4Tag1", "test_exercise4Tag2"))
+        )
         val routine = Routine(
-            id, UUID.randomUUID().toString(), mutableSetOf("test_tag1", "test_tag2"),
+            id, randomString(), mutableSetOf("test_tag1", "test_tag2"),
             mutableListOf(
                 Group(
-                    name = UUID.randomUUID().toString(),
-                    tags = mutableSetOf("test_group1Tag1", "test_group1Tag2"),
                     exercises = mutableListOf(
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2"),
+                            exercise = exercises[0],
                             repCountLowerBound = 15,
                             repCountUpperBound = 35
                         ),
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2"),
+                            exercise = exercises[1],
                             repCountLowerBound = 5,
                             repCountUpperBound = 25
                         )
                     )
                 ),
                 Group(
-                    name = UUID.randomUUID().toString(),
-                    tags = mutableSetOf("test_group1Tag1", "test_group1Tag2"),
                     exercises = mutableListOf(
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2"),
+                            exercise = exercises[2],
                             repCountLowerBound = 15,
                             repCountUpperBound = 35
                         ),
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2"),
+                            exercise = exercises[3],
                             repCountLowerBound = 5,
                             repCountUpperBound = 25
                         )
@@ -124,8 +128,9 @@ internal open class RoutineControllerTests {
         )
 
         // Save item.
+        exerciseRepository.saveAll(exercises)
         routine.groups.forEach {
-            it.exercises.forEach { exercise -> exerciseRepository.save(exercise) }
+            exerciseOptionRepository.saveAll(it.exercises)
             groupRepository.save(it)
         }
         repository.save(routine)
@@ -170,40 +175,38 @@ internal open class RoutineControllerTests {
     open fun `items can be saved`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
+        val exercises: List<Exercise> = listOf(
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2")),
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2")),
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise3Tag1", "test_exercise3Tag2")),
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise4Tag1", "test_exercise4Tag2"))
+        )
         val routine = Routine(
-            id, UUID.randomUUID().toString(), mutableSetOf("test_tag1", "test_tag2"),
+            id, randomString(), mutableSetOf("test_tag1", "test_tag2"),
             mutableListOf(
                 Group(
-                    name = UUID.randomUUID().toString(),
-                    tags = mutableSetOf("test_group1Tag1", "test_group1Tag2"),
                     exercises = mutableListOf(
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2"),
+                            exercise = exercises[0],
                             repCountLowerBound = 15,
                             repCountUpperBound = 35
                         ),
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2"),
+                            exercise = exercises[1],
                             repCountLowerBound = 5,
                             repCountUpperBound = 25
                         )
                     )
                 ),
                 Group(
-                    name = UUID.randomUUID().toString(),
-                    tags = mutableSetOf("test_group1Tag1", "test_group1Tag2"),
                     exercises = mutableListOf(
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2"),
+                            exercise = exercises[2],
                             repCountLowerBound = 15,
                             repCountUpperBound = 35
                         ),
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2"),
+                            exercise = exercises[3],
                             repCountLowerBound = 5,
                             repCountUpperBound = 25
                         )
@@ -213,10 +216,7 @@ internal open class RoutineControllerTests {
         )
 
         // Save groups and exercises.
-        routine.groups.forEach {
-            it.exercises.forEach { exercise -> exerciseRepository.save(exercise) }
-            groupRepository.save(it)
-        }
+        exerciseRepository.saveAll(exercises)
 
         // Send request and verify response.
         mockMvc
@@ -238,7 +238,7 @@ internal open class RoutineControllerTests {
     open fun `when saving an item and the id corresponds to an existing item then that item is overwritten`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val name = UUID.randomUUID().toString()
+        val name: String = randomString()
         val existingRoutine = Routine(id, name)
         val newRoutine = Routine(id, name)
 
@@ -267,7 +267,7 @@ internal open class RoutineControllerTests {
     open fun `when saving an item with the same name as another item but different id then a 409 is returned`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val name = UUID.randomUUID().toString()
+        val name: String = randomString()
         val existingRoutine = Routine(id, name)
         val newRoutine = Routine(UUID.randomUUID(), name)
 
@@ -295,40 +295,38 @@ internal open class RoutineControllerTests {
     open fun `when saving an item with a blank name then a 400 is returned`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
+        val exercises: List<Exercise> = listOf(
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2")),
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2")),
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise3Tag1", "test_exercise3Tag2")),
+            Exercise(name = randomString(), tags = mutableSetOf("test_exercise4Tag1", "test_exercise4Tag2"))
+        )
         val routine = Routine(
             id, " ", mutableSetOf("test_tag1", "test_tag2"),
             mutableListOf(
                 Group(
-                    name = UUID.randomUUID().toString(),
-                    tags = mutableSetOf("test_group1Tag1", "test_group1Tag2"),
                     exercises = mutableListOf(
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2"),
+                            exercise = exercises[0],
                             repCountLowerBound = 15,
                             repCountUpperBound = 35
                         ),
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2"),
+                            exercise = exercises[1],
                             repCountLowerBound = 5,
                             repCountUpperBound = 25
                         )
                     )
                 ),
                 Group(
-                    name = UUID.randomUUID().toString(),
-                    tags = mutableSetOf("test_group1Tag1", "test_group1Tag2"),
                     exercises = mutableListOf(
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2"),
+                            exercise = exercises[2],
                             repCountLowerBound = 15,
                             repCountUpperBound = 35
                         ),
                         ExerciseOption(
-                            name = UUID.randomUUID().toString(),
-                            tags = mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2"),
+                            exercise = exercises[3],
                             repCountLowerBound = 5,
                             repCountUpperBound = 25
                         )
@@ -338,10 +336,7 @@ internal open class RoutineControllerTests {
         )
 
         // Save groups and exercises.
-        routine.groups.forEach {
-            it.exercises.forEach { exercise -> exerciseRepository.save(exercise) }
-            groupRepository.save(it)
-        }
+        exerciseRepository.saveAll(exercises)
 
         // Send request and verify response.
         mockMvc.perform(
@@ -357,13 +352,13 @@ internal open class RoutineControllerTests {
     open fun `when saving an item that is not a routine then a 400 is returned`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val exercise = ExerciseOption(id, UUID.randomUUID().toString())
-        val group = Group(id, UUID.randomUUID().toString())
+        val exerciseOption = ExerciseOption(id)
+        val group = Group(id)
 
         // Send requests and verify responses.
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/routine/save")
-                .content(objectMapper.writeValueAsBytes(exercise))
+                .content(objectMapper.writeValueAsBytes(exerciseOption))
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -380,7 +375,7 @@ internal open class RoutineControllerTests {
     open fun `when deleting an item and the provided id corresponds to a real item then that item is deleted`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val routine = Routine(id, UUID.randomUUID().toString())
+        val routine = Routine(id, randomString())
 
         // Save item.
         repository.save(routine)
@@ -427,105 +422,33 @@ internal open class RoutineControllerTests {
         // Initialise values.
         val routines: List<Routine> = listOf(
             Routine(
-                UUID.randomUUID(),
-                UUID.randomUUID().toString(),
-                mutableSetOf("test_tag1", "test_tag2"),
-                mutableListOf(
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group1Tag1", "test_group1Tag2")
-                    ),
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group2Tag2", "test_group2Tag2")
-                    )
-                )
+                UUID.randomUUID(), randomString(),
+                mutableSetOf("test_tag1", "test_tag2")
             ),
             Routine(
-                UUID.randomUUID(),
-                UUID.randomUUID().toString(),
-                mutableSetOf("test_tag1", "test_tag2"),
-                mutableListOf(
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group1Tag1", "test_group1Tag2")
-                    ),
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group2Tag2", "test_group2Tag2")
-                    )
-                )
+                UUID.randomUUID(), randomString(),
+                mutableSetOf("test_tag1", "test_tag2")
             ),
             Routine(
-                UUID.randomUUID(),
-                UUID.randomUUID().toString(),
-                mutableSetOf("test_tag1", "test_tag2"),
-                mutableListOf(
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group1Tag1", "test_group1Tag2")
-                    ),
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group2Tag2", "test_group2Tag2")
-                    )
-                )
+                UUID.randomUUID(), randomString(),
+                mutableSetOf("test_tag1", "test_tag2")
             ),
             Routine(
-                UUID.randomUUID(),
-                UUID.randomUUID().toString(),
-                mutableSetOf("test_tag1", "test_tag2"),
-                mutableListOf(
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group1Tag1", "test_group1Tag2")
-                    ),
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group2Tag2", "test_group2Tag2")
-                    )
-                )
+                UUID.randomUUID(), randomString(),
+                mutableSetOf("test_tag1", "test_tag2")
             ),
             Routine(
-                UUID.randomUUID(),
-                UUID.randomUUID().toString(),
-                mutableSetOf("test_tag1", "test_tag2"),
-                mutableListOf(
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group1Tag1", "test_group1Tag2")
-                    ),
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group2Tag2", "test_group2Tag2")
-                    )
-                )
+                UUID.randomUUID(), randomString(),
+                mutableSetOf("test_tag1", "test_tag2")
             ),
             Routine(
-                UUID.randomUUID(),
-                UUID.randomUUID().toString(),
-                mutableSetOf("test_tag1", "test_tag2"),
-                mutableListOf(
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group1Tag1", "test_group1Tag2")
-                    ),
-                    Group(
-                        name = UUID.randomUUID().toString(),
-                        tags = mutableSetOf("test_group2Tag2", "test_group2Tag2")
-                    )
-                )
+                UUID.randomUUID(), randomString(),
+                mutableSetOf("test_tag1", "test_tag2")
             )
         )
 
         // Save items.
-        routines.forEach {
-            it.groups.forEach { group ->
-                group.exercises.forEach { exercise -> exerciseRepository.save(exercise) }
-                groupRepository.save(group)
-            }
-            repository.save(it)
-        }
+        repository.saveAll(routines)
 
         // Make sure items have been saved.
         routines.forEach { assertTrue(repository.existsById(it.id)) }
@@ -556,29 +479,29 @@ internal open class RoutineControllerTests {
     open fun `when retrieving item names then only groups are returned`() {
         // Initialise values.
         val routines: List<Routine> = listOf(
-            Routine(name = UUID.randomUUID().toString()),
-            Routine(name = UUID.randomUUID().toString()),
-            Routine(name = UUID.randomUUID().toString())
+            Routine(name = randomString()),
+            Routine(name = randomString()),
+            Routine(name = randomString())
         )
-        val exercises: List<ExerciseOption> = listOf(
-            ExerciseOption(name = UUID.randomUUID().toString()),
-            ExerciseOption(name = UUID.randomUUID().toString()),
-            ExerciseOption(name = UUID.randomUUID().toString())
+        val exercises: List<Exercise> = listOf(
+            Exercise(name = randomString()),
+            Exercise(name = randomString()),
+            Exercise(name = randomString())
         )
-        val groups: List<Group> = listOf(
-            Group(name = UUID.randomUUID().toString()),
-            Group(name = UUID.randomUUID().toString()),
-            Group(name = UUID.randomUUID().toString())
+        val exerciseOptions: List<ExerciseOption> = listOf(
+            ExerciseOption(exercise = exercises[0]),
+            ExerciseOption(exercise = exercises[1]),
+            ExerciseOption(exercise = exercises[2])
         )
 
         // Save items.
         routines.forEach { repository.save(it) }
         exercises.forEach { exerciseRepository.save(it) }
-        groups.forEach { groupRepository.save(it) }
+        exerciseOptions.forEach { exerciseOptionRepository.save(it) }
 
         // Make sure items have been saved.
         exercises.forEach { assertTrue(exerciseRepository.existsById(it.id)) }
-        groups.forEach { assertTrue(groupRepository.existsById(it.id)) }
+        exerciseOptions.forEach { assertTrue(exerciseOptionRepository.existsById(it.id)) }
         routines.forEach { assertTrue(repository.existsById(it.id)) }
 
         // Send request and verify response.
@@ -593,16 +516,16 @@ internal open class RoutineControllerTests {
     @Transactional
     open fun `items can be searched for by name or tag`() {
         // Initialise values.
-        val name = UUID.randomUUID().toString()
+        val name: String = randomString()
         val routines: List<Routine> = listOf(
             Routine(
-                UUID.randomUUID(), UUID.randomUUID().toString(),
+                UUID.randomUUID(), randomString(),
                 mutableSetOf(name, "test_routine1tag2")),
             Routine(
                 UUID.randomUUID(), name,
                 mutableSetOf("test_routine2tag1", "test_routine2tag2")),
             Routine(
-                UUID.randomUUID(), UUID.randomUUID().toString(),
+                UUID.randomUUID(), randomString(),
                 mutableSetOf("test_routine3tag1", "test_routine3tag2")
             ),
         )
@@ -629,10 +552,10 @@ internal open class RoutineControllerTests {
     @Transactional
     open fun `when searching for items and exclusion terms are provided then only items matching one of those exact names are excluded`() {
         // Initialise values.
-        val name1 = UUID.randomUUID().toString()
-        val name2 = UUID.randomUUID().toString()
+        val name1: String = randomString()
+        val name2: String = randomString()
         val routines: List<Routine> = listOf(
-            Routine(UUID.randomUUID(), UUID.randomUUID().toString(), mutableSetOf(name1, "test_routine1tag2")),
+            Routine(UUID.randomUUID(), randomString(), mutableSetOf(name1, "test_routine1tag2")),
             Routine(UUID.randomUUID(), name1, mutableSetOf("test_routine2tag1", "test_routine2tag2")),
             Routine(UUID.randomUUID(), name2, mutableSetOf("test_routine3tag1", "test_routine3tag2")),
         )
@@ -660,9 +583,9 @@ internal open class RoutineControllerTests {
     open fun `when searching for items and no search term or exclusion terms is provided then all items are returned`() {
         // Initialise values.
         val routines: List<Routine> = listOf(
-            Routine(UUID.randomUUID(), UUID.randomUUID().toString(), mutableSetOf("test_routine1tag1", "test_routine1tag2")),
-            Routine(UUID.randomUUID(), UUID.randomUUID().toString(), mutableSetOf("test_routine2tag1", "test_routine2tag2")),
-            Routine(UUID.randomUUID(), UUID.randomUUID().toString(), mutableSetOf("test_routine3tag1", "test_routine3tag2")),
+            Routine(UUID.randomUUID(), randomString(), mutableSetOf("test_routine1tag1", "test_routine1tag2")),
+            Routine(UUID.randomUUID(), randomString(), mutableSetOf("test_routine2tag1", "test_routine2tag2")),
+            Routine(UUID.randomUUID(), randomString(), mutableSetOf("test_routine3tag1", "test_routine3tag2")),
         )
 
         // Save items.
@@ -684,32 +607,32 @@ internal open class RoutineControllerTests {
     @Transactional
     open fun `when searching for items then only groups are returned`() {
         // Initialise values.
-        val name = UUID.randomUUID().toString()
+        val name: String = randomString()
         val routines: List<Routine> = listOf(
             Routine(name = name),
-            Routine(name = UUID.randomUUID().toString()),
-            Routine(name = UUID.randomUUID().toString())
+            Routine(name = randomString()),
+            Routine(name = randomString())
         )
-        val exercises: List<ExerciseOption> = listOf(
-            ExerciseOption(name = name),
-            ExerciseOption(name = UUID.randomUUID().toString()),
-            ExerciseOption(name = UUID.randomUUID().toString())
+        val exercises: List<Exercise> = listOf(
+            Exercise(name = randomString()),
+            Exercise(name = randomString()),
+            Exercise(name = randomString())
         )
-        val groups: List<Group> = listOf(
-            Group(name = name),
-            Group(name = UUID.randomUUID().toString()),
-            Group(name = UUID.randomUUID().toString())
+        val exerciseOptions: List<ExerciseOption> = listOf(
+            ExerciseOption(exercise = exercises[0]),
+            ExerciseOption(exercise = exercises[1]),
+            ExerciseOption(exercise = exercises[2])
         )
 
         // Save items.
         routines.forEach { repository.save(it) }
         exercises.forEach { exerciseRepository.save(it) }
-        groups.forEach { groupRepository.save(it) }
+        exerciseOptions.forEach { exerciseOptionRepository.save(it) }
 
         // Make sure items have been saved.
-        routines.forEach { assertTrue(repository.existsById(it.id)) }
         exercises.forEach { assertTrue(exerciseRepository.existsById(it.id)) }
-        groups.forEach { assertTrue(groupRepository.existsById(it.id)) }
+        exerciseOptions.forEach { assertTrue(exerciseOptionRepository.existsById(it.id)) }
+        routines.forEach { assertTrue(repository.existsById(it.id)) }
 
         // Send request and verify response.
         val expectedJson: String =
@@ -728,19 +651,7 @@ internal open class RoutineControllerTests {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
         val routine = Routine(
-            id,
-            UUID.randomUUID().toString(),
-            mutableSetOf("test_tag1", "test_tag2"),
-            mutableListOf(
-                Group(
-                    name = UUID.randomUUID().toString(),
-                    tags = mutableSetOf("test_group1Tag1", "test_group1Tag2")
-                ),
-                Group(
-                    name = UUID.randomUUID().toString(),
-                    tags = mutableSetOf("test_group2Tag1", "test_group2Tag2")
-                )
-            )
+            id, randomString(), mutableSetOf("test_tag1", "test_tag2"), mutableListOf(Group(), Group())
         )
 
         // Send request and verify response.
@@ -755,4 +666,6 @@ internal open class RoutineControllerTests {
         // Verify item has not been saved.
         assertEquals(0, repository.count())
     }
+
+    private fun randomString(): String = UUID.randomUUID().toString()
 }

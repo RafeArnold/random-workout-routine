@@ -2,7 +2,7 @@ package uk.co.rafearnold.randomworkoutroutine.web.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import uk.co.rafearnold.randomworkoutroutine.model.Exercise
+import uk.co.rafearnold.randomworkoutroutine.model.ExerciseSet
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
 import uk.co.rafearnold.randomworkoutroutine.web.service.RoutineService
@@ -29,14 +29,14 @@ class SessionController(private val routineService: RoutineService) {
      * Begins a new workout session with the [Routine] associated with [id]. A new session can not
      * be started if the user already has one in progress.
      *
-     * @return The first [Exercise] of the session.
+     * @return The first [ExerciseSet] of the session.
      */
     @PostMapping("/start/{id}")
     fun start(
         httpSession: HttpSession,
         response: HttpServletResponse,
         @PathVariable id: UUID
-    ): Optional<Exercise> {
+    ): Optional<ExerciseSet> {
         if (isInProgress(httpSession)) {
             // Session already in progress.
             response.sendError(HttpStatus.CONFLICT.value(), "Session already in progress")
@@ -65,14 +65,14 @@ class SessionController(private val routineService: RoutineService) {
         val session = RoutineSession(routine)
         httpSession.setAttribute(RoutineSession.ROUTINE_SESSION_ATTRIBUTE_NAME, session)
         // Return the session's first exercise.
-        return Optional.of(session.currentExercise)
+        return Optional.of(session.currentSet)
     }
 
     /**
-     * Returns the next [Exercise] of the currently active session.
+     * Returns the next [ExerciseSet] of the currently active session.
      */
     @PostMapping("/next")
-    fun nextExercise(httpSession: HttpSession, response: HttpServletResponse): Optional<Exercise> {
+    fun nextExercise(httpSession: HttpSession, response: HttpServletResponse): Optional<ExerciseSet> {
         if (!isInProgress(httpSession)) {
             // No active session.
             response.sendError(HttpStatus.CONFLICT.value(), "No active session")
@@ -82,16 +82,16 @@ class SessionController(private val routineService: RoutineService) {
     }
 
     /**
-     * Returns the current [Exercise] of the currently active session.
+     * Returns the current [ExerciseSet] of the currently active session.
      */
     @GetMapping("/current")
-    fun getCurrentExercise(httpSession: HttpSession, response: HttpServletResponse): Optional<Exercise> {
+    fun getCurrentExercise(httpSession: HttpSession, response: HttpServletResponse): Optional<ExerciseSet> {
         if (!isInProgress(httpSession)) {
             // No active session.
             response.sendError(HttpStatus.CONFLICT.value(), "No active session")
             return Optional.empty()
         }
-        return getRoutineSession(httpSession).map { it.currentExercise }
+        return getRoutineSession(httpSession).map { it.currentSet }
     }
 
     /**

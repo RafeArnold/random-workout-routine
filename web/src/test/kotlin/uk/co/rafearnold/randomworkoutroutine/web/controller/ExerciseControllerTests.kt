@@ -23,10 +23,12 @@ import org.testcontainers.containers.PostgreSQLContainerProvider
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import uk.co.rafearnold.randomworkoutroutine.model.SimpleItemImpl
+import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Exercise
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.ExerciseOption
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Group
 import uk.co.rafearnold.randomworkoutroutine.web.model.entity.Routine
 import uk.co.rafearnold.randomworkoutroutine.web.repository.ExerciseOptionRepository
+import uk.co.rafearnold.randomworkoutroutine.web.repository.ExerciseRepository
 import uk.co.rafearnold.randomworkoutroutine.web.repository.GroupRepository
 import uk.co.rafearnold.randomworkoutroutine.web.repository.RoutineRepository
 import java.util.*
@@ -34,8 +36,8 @@ import java.util.*
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-@ContextConfiguration(initializers = [ExerciseOptionControllerTests.Companion.Initializer::class])
-internal open class ExerciseOptionControllerTests {
+@ContextConfiguration(initializers = [ExerciseControllerTests.Companion.Initializer::class])
+internal open class ExerciseControllerTests {
 
     companion object {
 
@@ -58,7 +60,10 @@ internal open class ExerciseOptionControllerTests {
     private lateinit var mockMvc: MockMvc
 
     @Autowired
-    private lateinit var repository: ExerciseOptionRepository
+    private lateinit var repository: ExerciseRepository
+
+    @Autowired
+    private lateinit var exerciseOptionRepository: ExerciseOptionRepository
 
     @Autowired
     private lateinit var groupRepository: GroupRepository
@@ -72,6 +77,7 @@ internal open class ExerciseOptionControllerTests {
     open fun beforeEach() {
         clearAllMocks()
         repository.deleteAll()
+        exerciseOptionRepository.deleteAll()
         groupRepository.deleteAll()
         routineRepository.deleteAll()
     }
@@ -80,7 +86,7 @@ internal open class ExerciseOptionControllerTests {
     open fun `when retrieving an item and the provided id corresponds to a real item then that item is returned`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val exercise = ExerciseOption(id, "test_exercise", mutableSetOf("test_tag1", "test_tag2"), 5, 35)
+        val exercise = Exercise(id, randomString(), mutableSetOf("test_tag1", "test_tag2"))
 
         // Save item.
         repository.save(exercise)
@@ -125,7 +131,7 @@ internal open class ExerciseOptionControllerTests {
     open fun `items can be saved`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val exercise = ExerciseOption(id, "test_exercise", mutableSetOf("test_tag1", "test_tag2"), 5, 35)
+        val exercise = Exercise(id, randomString(), mutableSetOf("test_tag1", "test_tag2"))
 
         // Send request and verify response.
         mockMvc
@@ -137,7 +143,7 @@ internal open class ExerciseOptionControllerTests {
             .andExpect(MockMvcResultMatchers.status().isOk)
 
         // Verify item has been saved.
-        val optional: Optional<ExerciseOption> = repository.findById(id)
+        val optional: Optional<Exercise> = repository.findById(id)
         assertTrue(optional.isPresent)
         assertEquals(exercise, optional.get())
     }
@@ -147,16 +153,8 @@ internal open class ExerciseOptionControllerTests {
     open fun `when saving an item and the id corresponds to an existing item then that item is overwritten`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val existingExercise = ExerciseOption(
-            id, "test_exercise1",
-            mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2"),
-            5, 35
-        )
-        val newExercise = ExerciseOption(
-            id, "test_exercise2",
-            mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2"),
-            15, 25
-        )
+        val existingExercise = Exercise(id, randomString(), mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2"))
+        val newExercise = Exercise(id, randomString(), mutableSetOf("test_exercise2Tag1", "test_exercise2Tag2"))
 
         // Save existing item.
         repository.save(existingExercise)
@@ -174,7 +172,7 @@ internal open class ExerciseOptionControllerTests {
 
         // Verify item has been overwritten.
         assertEquals(1, repository.count())
-        val optional: Optional<ExerciseOption> = repository.findById(id)
+        val optional: Optional<Exercise> = repository.findById(id)
         assertTrue(optional.isPresent)
         assertEquals(newExercise, optional.get())
     }
@@ -183,8 +181,9 @@ internal open class ExerciseOptionControllerTests {
     open fun `when saving an item with the same name as another item but different id then a 409 is returned`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val existingExercise = ExerciseOption(id, "test_exercise")
-        val newExercise = ExerciseOption(UUID.randomUUID(), "test_exercise")
+        val name: String = randomString()
+        val existingExercise = Exercise(id, name)
+        val newExercise = Exercise(UUID.randomUUID(), name)
 
         // Save existing item.
         repository.save(existingExercise)
@@ -210,11 +209,7 @@ internal open class ExerciseOptionControllerTests {
     open fun `when saving an item with a blank name then a 400 is returned`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val exercise = ExerciseOption(
-            id, " ",
-            mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2"),
-            5, 35
-        )
+        val exercise = Exercise(id, " ", mutableSetOf("test_exercise1Tag1", "test_exercise1Tag2"))
 
         // Send request and verify response.
         mockMvc.perform(
@@ -230,10 +225,17 @@ internal open class ExerciseOptionControllerTests {
     open fun `when saving an item that is not an exercise then a 400 is returned`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val group = Group(id, "test_group")
-        val routine = Routine(id, "test_routine")
+        val exerciseOption = ExerciseOption(id)
+        val group = Group(id)
+        val routine = Routine(id, randomString())
 
         // Send requests and verify responses.
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/exercise/save")
+                .content(objectMapper.writeValueAsBytes(exerciseOption))
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/exercise/save")
                 .content(objectMapper.writeValueAsBytes(group))
@@ -252,7 +254,7 @@ internal open class ExerciseOptionControllerTests {
     open fun `when deleting an item and the provided id corresponds to a real item then that item is deleted`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val exercise = ExerciseOption(id, "test_exercise", mutableSetOf("test_tag1", "test_tag2"), 5, 35)
+        val exercise = Exercise(id, randomString(), mutableSetOf("test_tag1", "test_tag2"))
 
         // Save item.
         repository.save(exercise)
@@ -298,16 +300,32 @@ internal open class ExerciseOptionControllerTests {
     open fun `when an item is deleted then it is also removed from all groups that contain it`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val exercise = ExerciseOption(id, "test_exercise")
-        val otherExercise1 = ExerciseOption(name = "test_otherExercise1")
-        val otherExercise2 = ExerciseOption(name = "test_otherExercise2")
-        val group1 = Group(name = "test_group1", exercises = mutableListOf(exercise, otherExercise1))
-        val group2 = Group(name = "test_group2", exercises = mutableListOf(otherExercise2, exercise))
+        val exercise = Exercise(id, randomString())
+        val otherExercise1 = Exercise(name = randomString())
+        val otherExercise2 = Exercise(name = randomString())
+        val otherExerciseOption1 =
+            ExerciseOption(exercise = otherExercise1, repCountLowerBound = 25, repCountUpperBound = 40)
+        val otherExerciseOption2 =
+            ExerciseOption(exercise = otherExercise2, repCountLowerBound = 0, repCountUpperBound = 1)
+        val group1 = Group(
+            exercises = mutableListOf(
+                ExerciseOption(exercise = exercise, repCountLowerBound = 5, repCountUpperBound = 35),
+                otherExerciseOption1
+            )
+        )
+        val group2 = Group(
+            exercises = mutableListOf(
+                otherExerciseOption2,
+                ExerciseOption(exercise = exercise, repCountLowerBound = 15, repCountUpperBound = 25)
+            )
+        )
 
         // Save the items.
         repository.save(exercise)
         repository.save(otherExercise1)
         repository.save(otherExercise2)
+        exerciseOptionRepository.saveAll(group1.exercises)
+        exerciseOptionRepository.saveAll(group2.exercises)
         groupRepository.save(group1)
         groupRepository.save(group2)
 
@@ -316,7 +334,9 @@ internal open class ExerciseOptionControllerTests {
         assertTrue(repository.existsById(otherExercise1.id))
         assertTrue(repository.existsById(otherExercise2.id))
         assertTrue(groupRepository.existsById(group1.id))
+        group1.exercises.forEach { assertTrue(exerciseOptionRepository.existsById(it.id)) }
         assertTrue(groupRepository.existsById(group2.id))
+        group2.exercises.forEach { assertTrue(exerciseOptionRepository.existsById(it.id)) }
 
         // Send request and verify response.
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/exercise/delete/$id"))
@@ -328,23 +348,23 @@ internal open class ExerciseOptionControllerTests {
         // Verify item has been removed from groups.
         val updatedGroup1: Optional<Group> = groupRepository.findById(group1.id)
         assertTrue(updatedGroup1.isPresent)
-        assertEquals(listOf(otherExercise1), updatedGroup1.get().exercises)
+        assertEquals(listOf(otherExerciseOption1), updatedGroup1.get().exercises)
         val updatedGroup2: Optional<Group> = groupRepository.findById(group2.id)
         assertTrue(updatedGroup2.isPresent)
-        assertEquals(listOf(otherExercise2), updatedGroup2.get().exercises)
+        assertEquals(listOf(otherExerciseOption2), updatedGroup2.get().exercises)
     }
 
     @Test
     @Transactional
     open fun `all item names can be retrieved`() {
         // Initialise values.
-        val exercises: List<ExerciseOption> = listOf(
-            ExerciseOption(UUID.randomUUID(), "test_exercise1", mutableSetOf("test_tag1", "test_tag2"), 5, 35),
-            ExerciseOption(UUID.randomUUID(), "test_exercise2", mutableSetOf("test_tag1", "test_tag2"), 5, 35),
-            ExerciseOption(UUID.randomUUID(), "test_exercise3", mutableSetOf("test_tag1", "test_tag2"), 5, 35),
-            ExerciseOption(UUID.randomUUID(), "test_exercise4", mutableSetOf("test_tag1", "test_tag2"), 5, 35),
-            ExerciseOption(UUID.randomUUID(), "test_exercise5", mutableSetOf("test_tag1", "test_tag2"), 5, 35),
-            ExerciseOption(UUID.randomUUID(), "test_exercise6", mutableSetOf("test_tag1", "test_tag2"), 5, 35)
+        val exercises: List<Exercise> = listOf(
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf("test_tag1", "test_tag2")),
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf("test_tag1", "test_tag2")),
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf("test_tag1", "test_tag2")),
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf("test_tag1", "test_tag2")),
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf("test_tag1", "test_tag2")),
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf("test_tag1", "test_tag2"))
         )
 
         // Save items.
@@ -378,30 +398,30 @@ internal open class ExerciseOptionControllerTests {
     @Transactional
     open fun `when retrieving item names then only exercises are returned`() {
         // Initialise values.
-        val exercises: List<ExerciseOption> = listOf(
-            ExerciseOption(name = "test_exercise1"),
-            ExerciseOption(name = "test_exercise2"),
-            ExerciseOption(name = "test_exercise3")
+        val exercises: List<Exercise> = listOf(
+            Exercise(name = randomString()),
+            Exercise(name = randomString()),
+            Exercise(name = randomString())
         )
-        val groups: List<Group> = listOf(
-            Group(name = "test_group1"),
-            Group(name = "test_group2"),
-            Group(name = "test_group3")
+        val exerciseOptions: List<ExerciseOption> = listOf(
+            ExerciseOption(exercise = exercises[0]),
+            ExerciseOption(exercise = exercises[1]),
+            ExerciseOption(exercise = exercises[2])
         )
         val routines: List<Routine> = listOf(
-            Routine(name = "test_routine1"),
-            Routine(name = "test_routine2"),
-            Routine(name = "test_routine3")
+            Routine(name = randomString()),
+            Routine(name = randomString()),
+            Routine(name = randomString())
         )
 
         // Save items.
         exercises.forEach { repository.save(it) }
-        groups.forEach { groupRepository.save(it) }
+        exerciseOptions.forEach { exerciseOptionRepository.save(it) }
         routines.forEach { routineRepository.save(it) }
 
         // Make sure items have been saved.
         exercises.forEach { assertTrue(repository.existsById(it.id)) }
-        groups.forEach { assertTrue(groupRepository.existsById(it.id)) }
+        exerciseOptions.forEach { assertTrue(exerciseOptionRepository.existsById(it.id)) }
         routines.forEach { assertTrue(routineRepository.existsById(it.id)) }
 
         // Send request and verify response.
@@ -416,28 +436,11 @@ internal open class ExerciseOptionControllerTests {
     @Transactional
     open fun `items can be searched for by name or tag`() {
         // Initialise values.
-        val exercises: List<ExerciseOption> = listOf(
-            ExerciseOption(
-                UUID.randomUUID(),
-                "test_exercise1",
-                mutableSetOf("test_exercise2", "test_exercise1tag2"),
-                5,
-                35
-            ),
-            ExerciseOption(
-                UUID.randomUUID(),
-                "test_exercise2",
-                mutableSetOf("test_exercise2tag1", "test_exercise2tag2"),
-                1,
-                13
-            ),
-            ExerciseOption(
-                UUID.randomUUID(),
-                "test_exercise3",
-                mutableSetOf("test_exercise3tag1", "test_exercise3tag2"),
-                1,
-                13
-            )
+        val name: String = randomString()
+        val exercises: List<Exercise> = listOf(
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf(name, "test_exercise1tag2")),
+            Exercise(UUID.randomUUID(), name, mutableSetOf("test_exercise2tag1", "test_exercise2tag2")),
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf("test_exercise3tag1", "test_exercise3tag2"))
         )
 
         // Save items.
@@ -451,7 +454,7 @@ internal open class ExerciseOptionControllerTests {
             objectMapper.writeValueAsString(listOf(exercises[0], exercises[1]).map { SimpleItemImpl(it.id, it.name) })
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/exercise/search")
-                .queryParam("term", "test_exercise2")
+                .queryParam("term", name)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -462,28 +465,12 @@ internal open class ExerciseOptionControllerTests {
     @Transactional
     open fun `when searching for items and exclusion terms are provided then only items matching one of those exact names are excluded`() {
         // Initialise values.
-        val exercises: List<ExerciseOption> = listOf(
-            ExerciseOption(
-                UUID.randomUUID(),
-                "test_exercise1",
-                mutableSetOf("test_exercise2", "test_exercise1tag2"),
-                5,
-                35
-            ),
-            ExerciseOption(
-                UUID.randomUUID(),
-                "test_exercise2",
-                mutableSetOf("test_exercise2tag1", "test_exercise2tag2"),
-                1,
-                13
-            ),
-            ExerciseOption(
-                UUID.randomUUID(),
-                "test_exercise3",
-                mutableSetOf("test_exercise3tag1", "test_exercise3tag2"),
-                1,
-                13
-            )
+        val name1: String = randomString()
+        val name2: String = randomString()
+        val exercises: List<Exercise> = listOf(
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf(name1, "test_exercise1tag2")),
+            Exercise(UUID.randomUUID(), name1, mutableSetOf("test_exercise2tag1", "test_exercise2tag2")),
+            Exercise(UUID.randomUUID(), name2, mutableSetOf("test_exercise3tag1", "test_exercise3tag2"))
         )
 
         // Save items.
@@ -497,7 +484,7 @@ internal open class ExerciseOptionControllerTests {
             objectMapper.writeValueAsString(listOf(exercises[0]).map { SimpleItemImpl(it.id, it.name) })
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/exercise/search")
-                .queryParam("exclude", "test_exercise2", "test_exercise3")
+                .queryParam("exclude", name1, name2)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -508,28 +495,10 @@ internal open class ExerciseOptionControllerTests {
     @Transactional
     open fun `when searching for items and no search term or exclusion terms is provided then all items are returned`() {
         // Initialise values.
-        val exercises: List<ExerciseOption> = listOf(
-            ExerciseOption(
-                UUID.randomUUID(),
-                "test_exercise1",
-                mutableSetOf("test_exercise2", "test_exercise1tag2"),
-                5,
-                35
-            ),
-            ExerciseOption(
-                UUID.randomUUID(),
-                "test_exercise2",
-                mutableSetOf("test_exercise2tag1", "test_exercise2tag2"),
-                1,
-                13
-            ),
-            ExerciseOption(
-                UUID.randomUUID(),
-                "test_exercise3",
-                mutableSetOf("test_exercise3tag1", "test_exercise3tag2"),
-                1,
-                13
-            )
+        val exercises: List<Exercise> = listOf(
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf("test_exercise2", "test_exercise1tag2")),
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf("test_exercise2tag1", "test_exercise2tag2")),
+            Exercise(UUID.randomUUID(), randomString(), mutableSetOf("test_exercise3tag1", "test_exercise3tag2"))
         )
 
         // Save items.
@@ -551,30 +520,31 @@ internal open class ExerciseOptionControllerTests {
     @Transactional
     open fun `when searching for items then only exercises are returned`() {
         // Initialise values.
-        val exercises: List<ExerciseOption> = listOf(
-            ExerciseOption(name = "test_exercise1"),
-            ExerciseOption(name = "test_exercise2"),
-            ExerciseOption(name = "test_exercise3")
+        val name = randomString()
+        val exercises: List<Exercise> = listOf(
+            Exercise(name = name),
+            Exercise(name = randomString()),
+            Exercise(name = randomString())
         )
-        val groups: List<Group> = listOf(
-            Group(name = "test_exercise1"),
-            Group(name = "test_group2"),
-            Group(name = "test_group3")
+        val exerciseOptions: List<ExerciseOption> = listOf(
+            ExerciseOption(exercise = exercises[0]),
+            ExerciseOption(exercise = exercises[1]),
+            ExerciseOption(exercise = exercises[2])
         )
         val routines: List<Routine> = listOf(
-            Routine(name = "test_exercise1"),
-            Routine(name = "test_routine2"),
-            Routine(name = "test_routine3")
+            Routine(name = name),
+            Routine(name = randomString(), tags = mutableSetOf(name)),
+            Routine(name = randomString())
         )
 
         // Save items.
         exercises.forEach { repository.save(it) }
-        groups.forEach { groupRepository.save(it) }
+        exerciseOptions.forEach { exerciseOptionRepository.save(it) }
         routines.forEach { routineRepository.save(it) }
 
         // Make sure items have been saved.
         exercises.forEach { assertTrue(repository.existsById(it.id)) }
-        groups.forEach { assertTrue(groupRepository.existsById(it.id)) }
+        exerciseOptions.forEach { assertTrue(exerciseOptionRepository.existsById(it.id)) }
         routines.forEach { assertTrue(routineRepository.existsById(it.id)) }
 
         // Send request and verify response.
@@ -582,10 +552,12 @@ internal open class ExerciseOptionControllerTests {
             objectMapper.writeValueAsString(listOf(exercises[0]).map { SimpleItemImpl(it.id, it.name) })
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/exercise/search")
-                .queryParam("term", "test_exercise1")
+                .queryParam("term", name)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.content().json(expectedJson, true))
     }
+
+    private fun randomString() = UUID.randomUUID().toString()
 }

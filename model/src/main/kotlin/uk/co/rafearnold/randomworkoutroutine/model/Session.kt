@@ -1,8 +1,8 @@
 package uk.co.rafearnold.randomworkoutroutine.model
 
-interface Exercise {
-    val name: String
+interface ExerciseSet {
+    val exerciseName: String
     val repCount: Int
 }
 
-data class ExerciseImpl(override val name: String, override val repCount: Int) : Exercise
+data class ExerciseSetImpl(override val exerciseName: String, override val repCount: Int) : ExerciseSet

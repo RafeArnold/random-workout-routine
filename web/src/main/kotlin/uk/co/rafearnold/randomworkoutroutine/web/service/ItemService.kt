@@ -13,12 +13,15 @@ abstract class ItemService<T : Item>(protected val repository: ItemRepository<T>
 
     fun getById(id: UUID): Optional<T> = repository.findById(id)
 
-    fun save(item: T) {
+    open fun save(item: T) {
         if (item.name.isBlank()) {
             throw IllegalArgumentException("Item name must not be blank")
         }
+        saveChildren(item)
         repository.save(item)
     }
+
+    abstract fun saveChildren(item: T)
 
     open fun delete(item: T) {
         repository.delete(item)
