@@ -520,10 +520,12 @@ internal open class RoutineControllerTests {
         val routines: List<Routine> = listOf(
             Routine(
                 UUID.randomUUID(), randomString(),
-                mutableSetOf(name, "test_routine1tag2")),
+                mutableSetOf(name, "test_routine1tag2")
+            ),
             Routine(
                 UUID.randomUUID(), name,
-                mutableSetOf("test_routine2tag1", "test_routine2tag2")),
+                mutableSetOf("test_routine2tag1", "test_routine2tag2")
+            ),
             Routine(
                 UUID.randomUUID(), randomString(),
                 mutableSetOf("test_routine3tag1", "test_routine3tag2")
@@ -730,6 +732,63 @@ internal open class RoutineControllerTests {
             .andExpect(MockMvcResultMatchers.status().isNotFound)
 
         // Verify item has not been saved.
+        assertEquals(0, repository.count())
+    }
+
+    @Test
+    @Transactional
+    open fun `when deleting an item then all its children are also deleted`() {
+        // Initialise values.
+        val id: UUID = UUID.randomUUID()
+        val exercises: List<Exercise> = listOf(
+            Exercise(name = randomString()),
+            Exercise(name = randomString()),
+            Exercise(name = randomString()),
+            Exercise(name = randomString())
+        )
+        val routine = Routine(
+            id = id,
+            name = randomString(),
+            groups = mutableListOf(
+                Group(
+                    exercises = mutableListOf(
+                        ExerciseOption(exercise = exercises[0]),
+                        ExerciseOption(exercise = exercises[1])
+                    )
+                ),
+                Group(
+                    exercises = mutableListOf(
+                        ExerciseOption(exercise = exercises[2]),
+                        ExerciseOption(exercise = exercises[3])
+                    )
+                )
+            )
+        )
+
+        // Save items.
+        exerciseRepository.saveAll(exercises)
+        routine.groups.forEach {
+            exerciseOptionRepository.saveAll(it.exercises)
+            groupRepository.save(it)
+        }
+        repository.save(routine)
+
+        // Make sure items have been saved.
+        exercises.forEach { assertTrue(exerciseRepository.existsById(it.id)) }
+        assertTrue(repository.existsById(id))
+        routine.groups.forEach {
+            it.exercises.forEach { exercise -> assertTrue(exerciseOptionRepository.existsById(exercise.id)) }
+            assertTrue(groupRepository.existsById(it.id))
+        }
+
+        // Send request and verify response.
+        mockMvc
+            .perform(MockMvcRequestBuilders.delete("/api/routine/delete/$id"))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+
+        // Verify items have been deleted.
+        assertEquals(0, exerciseOptionRepository.count())
+        assertEquals(0, groupRepository.count())
         assertEquals(0, repository.count())
     }
 
