@@ -647,12 +647,36 @@ internal open class RoutineControllerTests {
     }
 
     @Test
-    open fun `when saving a routine with groups that have not been saved then nothing is saved and a 404 is returned`() {
+    open fun `when saving a routine with groups that have not been saved then these groups are also saved and their exercise options`() {
         // Initialise values.
         val id: UUID = UUID.randomUUID()
-        val routine = Routine(
-            id, randomString(), mutableSetOf("test_tag1", "test_tag2"), mutableListOf(Group(), Group())
+        val exercises: List<Exercise> = listOf(
+            Exercise(name = randomString()),
+            Exercise(name = randomString()),
+            Exercise(name = randomString()),
+            Exercise(name = randomString())
         )
+        val groups: MutableList<Group> = mutableListOf(
+            Group(
+                exercises = mutableListOf(
+                    ExerciseOption(exercise = exercises[0], repCountLowerBound = 0, repCountUpperBound = 1),
+                    ExerciseOption(exercise = exercises[1], repCountLowerBound = 1, repCountUpperBound = 2)
+                )
+            ),
+            Group(
+                exercises = mutableListOf(
+                    ExerciseOption(exercise = exercises[2], repCountLowerBound = 2, repCountUpperBound = 3),
+                    ExerciseOption(exercise = exercises[3], repCountLowerBound = 3, repCountUpperBound = 4)
+                )
+            )
+        )
+        val routine = Routine(id, randomString(), mutableSetOf("test_tag1", "test_tag2"), groups)
+
+        // Save exercises.
+        exerciseRepository.saveAll(exercises)
+
+        // Make sure exercises have been saved.
+        exercises.forEach { assertTrue(exerciseRepository.existsById(it.id)) }
 
         // Send request and verify response.
         mockMvc
@@ -661,10 +685,10 @@ internal open class RoutineControllerTests {
                     .content(objectMapper.writeValueAsBytes(routine))
                     .contentType(MediaType.APPLICATION_JSON)
             )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect(MockMvcResultMatchers.status().isOk)
 
-        // Verify item has not been saved.
-        assertEquals(0, repository.count())
+        // Verify item has been saved.
+        assertTrue(repository.existsById(id))
     }
 
     private fun randomString(): String = UUID.randomUUID().toString()
