@@ -21,6 +21,9 @@ abstract class ItemService<T : Item>(protected val repository: ItemRepository<T>
         repository.save(item)
     }
 
+    /**
+     * Saves all children of [item], if applicable.
+     */
     abstract fun saveChildren(item: T)
 
     open fun delete(item: T) {

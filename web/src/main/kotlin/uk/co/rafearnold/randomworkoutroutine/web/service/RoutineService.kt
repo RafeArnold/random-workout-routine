@@ -20,18 +20,30 @@ class RoutineService(
     private val groupRepository: GroupRepository
 ) : ItemService<Routine>(routineRepository) {
 
+    /**
+     * Saves all [Group]s of [item], as well as each [Group]'s [ExerciseOption]s.
+     */
     override fun saveChildren(item: Routine) {
         val groups: List<Group> = item.groups
         exerciseOptionRepository.saveAll(groups.flatMap { it.exercises })
         groupRepository.saveAll(groups)
     }
 
+    /**
+     * Deletes every [ExerciseOption] associated with [exercise] (i.e. any [ExerciseOption] whose
+     * [ExerciseOption.exercise] property equals [exercise]). This also removes each deleted
+     * [ExerciseOption] from the [Group] that contains it.
+     */
     fun deleteOptionsByExercise(exercise: Exercise) {
         val exerciseOptions: Iterable<ExerciseOption> = exerciseOptionRepository.findAllByExercise(exercise)
         removeAllExerciseOptionsFromGroups(exerciseOptions)
         exerciseOptionRepository.deleteAll(exerciseOptions)
     }
 
+    /**
+     * Removes each [ExerciseOption] of [exerciseOptions] from the [Group] that contains it (i.e.
+     * the [Group] whose [Group.exercises] property contains it).
+     */
     private fun removeAllExerciseOptionsFromGroups(exerciseOptions: Iterable<ExerciseOption>) {
         val groups: Set<Group> =
             exerciseOptions.flatMap { groupRepository.findAllByExercisesContaining(it) }.toSet()
@@ -42,6 +54,9 @@ class RoutineService(
         groupRepository.saveAll(groups)
     }
 
+    /**
+     * Deletes [item], as well as its children.
+     */
     override fun delete(item: Routine) {
         super.delete(item)
         val groups: List<Group> = item.groups
