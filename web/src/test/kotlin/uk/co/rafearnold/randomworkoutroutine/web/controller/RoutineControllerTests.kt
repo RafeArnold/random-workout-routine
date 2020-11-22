@@ -691,5 +691,47 @@ internal open class RoutineControllerTests {
         assertTrue(repository.existsById(id))
     }
 
+    @Test
+    open fun `when saving a routine whose exercises have not been saved then nothing is saved and a 404 is returned`() {
+        // Initialise values.
+        val id: UUID = UUID.randomUUID()
+        val exercises: List<Exercise> = listOf(
+            Exercise(name = randomString()),
+            Exercise(name = randomString()),
+            Exercise(name = randomString()),
+            Exercise(name = randomString())
+        )
+        val groups: MutableList<Group> = mutableListOf(
+            Group(
+                exercises = mutableListOf(
+                    ExerciseOption(exercise = exercises[0], repCountLowerBound = 0, repCountUpperBound = 1),
+                    ExerciseOption(exercise = exercises[1], repCountLowerBound = 1, repCountUpperBound = 2)
+                )
+            ),
+            Group(
+                exercises = mutableListOf(
+                    ExerciseOption(exercise = exercises[2], repCountLowerBound = 2, repCountUpperBound = 3),
+                    ExerciseOption(exercise = exercises[3], repCountLowerBound = 3, repCountUpperBound = 4)
+                )
+            )
+        )
+        val routine = Routine(id, randomString(), mutableSetOf("test_tag1", "test_tag2"), groups)
+
+        // Make sure exercises have not been saved.
+        assertEquals(0, exerciseRepository.count())
+
+        // Send request and verify response.
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders.post("/api/routine/save")
+                    .content(objectMapper.writeValueAsBytes(routine))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+
+        // Verify item has not been saved.
+        assertEquals(0, repository.count())
+    }
+
     private fun randomString(): String = UUID.randomUUID().toString()
 }
